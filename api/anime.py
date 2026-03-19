@@ -1,5 +1,5 @@
 import json
-from .db import load_data
+from db import load_data
 
 def handler(request):
     headers = {
