@@ -9,10 +9,9 @@ import shutil
 import argparse
 import logging
 from datetime import datetime
-from urllib.parse import urlparse
 
-BASE_URL = "https://anime.oploverz.ac"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+BASE_URL = "https://coba.oploverz.ltd"
+HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
 os.makedirs("logs", exist_ok=True)
 logging.basicConfig(
@@ -26,7 +25,7 @@ console.setLevel(logging.INFO)
 logging.getLogger().addHandler(console)
 
 COUNT_FILE = "logs/last_total.txt"
-EXPECTED_MIN = 500  # threshold realistis
+EXPECTED_MIN = 500
 
 def clean(text):
     return ' '.join(text.strip().split()) if text else ''
@@ -34,7 +33,7 @@ def clean(text):
 def get_soup(url, retries=3):
     for i in range(retries):
         try:
-            res = requests.get(url, headers=HEADERS, timeout=10)
+            res = requests.get(url, headers=HEADERS, timeout=15)
             res.encoding = 'utf-8'
             return BeautifulSoup(res.text, 'html.parser')
         except Exception as e:
@@ -44,19 +43,15 @@ def get_soup(url, retries=3):
     return None
 
 def is_video_url(url):
-    # Cek ekstensi video
-    if re.search(r'\.(mp4|m3u8)', url, re.IGNORECASE):
-        return True
-    # Opsional: HEAD request untuk validasi lebih lanjut (bisa diaktifkan jika diperlukan)
-    return False
+    return bool(re.search(r'\.(mp4|m3u8)', url, re.IGNORECASE))
 
 def extract_episode_sources(episode_url):
+    """Fungsi ini akan dipanggil oleh API, bukan saat scraping"""
     sources = {}
     soup = get_soup(episode_url)
     if not soup:
         return None
 
-    # Cari link download – biasanya di area download
     download_links = soup.select('.download-eps a, .download-links a, a[href*=".mp4"], a[href*=".m3u8"]')
     
     for link in download_links:
@@ -64,10 +59,8 @@ def extract_episode_sources(episode_url):
         href = link.get('href', '')
         if not href:
             continue
-
         if not is_video_url(href):
             continue
-
         if '360' in text:
             sources['360p'] = href
         elif '480' in text:
@@ -83,10 +76,8 @@ def extract_episode_sources(episode_url):
 
 def extract_episodes(soup):
     episodes = []
-    # Cari container episode – biasanya class episodelist, eplister, list-episode
     containers = soup.select('.episodelist ul li, .list-episode li, .eplister li')
     if not containers:
-        # Fallback ke semua link yang mengandung /episode/
         containers = soup.find_all('a', href=True)
     
     seen = set()
@@ -111,19 +102,12 @@ def extract_episodes(soup):
         if not href.startswith('http'):
             href = BASE_URL + href if href.startswith('/') else href
 
-        sources = extract_episode_sources(href)
-        if not sources:
-            logging.warning(f"Episode {num} tidak memiliki source valid")
-            sources = {}
-
-        priority = ['1080p', '720p', '480p', '360p']
-        default = next((q for q in priority if q in sources), list(sources.keys())[0] if sources else '360p')
-
+        # Jangan ambil sumber video di sini, biarkan API yang mengambil
         episodes.append({
             "number": num,
             "url": href,
-            "sources": sources,
-            "default": default
+            "sources": {},          # akan diisi oleh API
+            "default": '360p'        # sementara
         })
         time.sleep(random.uniform(0.5, 1))
 
@@ -140,10 +124,8 @@ def scrape_anime_detail(url):
     title = clean(title_elem.text) if title_elem else url.split('/')[-1].replace('-', ' ').title()
     title = title.split('|')[0].strip()
     
-    # SLUG konsisten: ambil dari URL
     slug = url.rstrip('/').split('/')[-1]
 
-    # Cari gambar poster – biasanya dalam container khusus
     img = soup.select_one('.anime-poster img, .poster img, .thumb img')
     if not img:
         img = soup.find('img')
@@ -151,7 +133,6 @@ def scrape_anime_detail(url):
     if image and image.startswith('/'):
         image = BASE_URL + image
 
-    # Synopsis – biasanya paragraf panjang setelah info
     synopsis = ''
     for p in soup.find_all('p'):
         text = clean(p.text)
@@ -159,7 +140,6 @@ def scrape_anime_detail(url):
             synopsis = text
             break
 
-    # Ambil info dari teks halaman
     full_text = soup.get_text(separator="\n")
     info = {'studio': '', 'release_date': '', 'status': 'Unknown', 'genre': []}
     for line in full_text.split('\n'):
@@ -182,7 +162,6 @@ def scrape_anime_detail(url):
 
     episodes = extract_episodes(soup)
 
-    # Validasi: jika tidak ada episode, tetap simpan tapi warning
     if not episodes:
         logging.warning(f"Anime {title} tidak memiliki episode, tetap disimpan")
 
@@ -201,7 +180,7 @@ def scrape_anime_detail(url):
     }
 
 def get_all_anime_links():
-    """Ambil semua link anime dari halaman utama dengan selector container yang tepat"""
+    """Ambil semua link anime dari halaman utama /series"""
     url = f"{BASE_URL}/series"
     logging.info(f"Mengambil daftar anime dari {url}")
     soup = get_soup(url)
@@ -209,18 +188,12 @@ def get_all_anime_links():
         return []
 
     links = set()
-    # Coba beberapa selector umum untuk container anime
-    selectors = ['.listupd a', '.bs a', '.animepost a', '.series a', 'article a']
-    for sel in selectors:
-        for a in soup.select(sel):
-            href = a.get('href')
-            if href and '/series/' in href and not '/episode/' in href:
-                # Normalisasi URL: hapus trailing slash, parameter
-                parsed = urlparse(href)
-                href = parsed.scheme + "://" + parsed.netloc + parsed.path.rstrip('/')
-                links.add(href)
-        if links:
-            break  # stop jika sudah dapat
+    for a in soup.find_all('a', href=True):
+        href = a['href']
+        if '/series/' in href and not '/episode/' in href:
+            if href.startswith('/'):
+                href = BASE_URL + href
+            links.add(href.rstrip('/'))
 
     logging.info(f"Ditemukan {len(links)} anime unik")
     return list(links)
@@ -248,7 +221,6 @@ def is_data_valid(data, min_total=EXPECTED_MIN, min_episode_ratio=0.5):
     return True
 
 def safe_save(data, final_path):
-    # Hapus duplikat berdasarkan slug (jaga-jaga)
     unique = {}
     for a in data:
         unique[a['slug']] = a
@@ -287,7 +259,6 @@ def main():
         shutil.copy(db_path, 'public/data/anime_master_backup.json')
         logging.info("Backup dibuat")
 
-    # Ambil semua link anime dari halaman utama
     all_anime_links = get_all_anime_links()
     logging.info(f"Total anime di website: {len(all_anime_links)}")
 
@@ -305,10 +276,8 @@ def main():
         db = list(existing.values())
         existing_slugs = set(existing.keys())
         
-        # Cari anime baru
         new_links = [url for url in all_anime_links if url.rstrip('/').split('/')[-1] not in existing_slugs]
         
-        # Proses anime baru
         for url in new_links:
             slug = url.rstrip('/').split('/')[-1]
             logging.info(f"[NEW] {slug}")
@@ -317,7 +286,6 @@ def main():
                 db.append(data)
             time.sleep(random.uniform(0.8, 1.5))
 
-        # Update semua anime yang sudah ada (cek perubahan episode/status)
         for url in all_anime_links:
             slug = url.rstrip('/').split('/')[-1]
             if slug not in existing_slugs:
@@ -328,7 +296,6 @@ def main():
             if not soup:
                 continue
             
-            # Ambil episode terbaru
             new_eps = extract_episodes(soup)
             old_eps_numbers = {ep['number'] for ep in anime.get('episodes', [])}
             added = 0
@@ -341,7 +308,6 @@ def main():
                 anime['last_updated'] = datetime.now().isoformat()
                 logging.info(f"➕ {added} episode baru ditambahkan")
             
-            # Update status jika berubah
             full_text = soup.get_text(separator="\n")
             for line in full_text.split('\n'):
                 line = line.strip()
@@ -355,12 +321,10 @@ def main():
             
             time.sleep(random.uniform(0.5, 1))
 
-    # Validasi data
     if not is_data_valid(db, args.min_data):
         logging.error("Data tidak valid. Proses dibatalkan.")
         exit(1)
 
-    # Cek penurunan jumlah anime jika diminta
     if args.check_drop:
         last_total = load_last_total()
         if last_total is not None:
