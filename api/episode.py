@@ -1,5 +1,5 @@
 import json
-from .db import get_episode_data
+from db import get_episode_data
 
 def handler(request):
     headers = {
