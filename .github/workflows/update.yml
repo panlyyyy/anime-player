@@ -1,0 +1,57 @@
+name: Update Anime Data (Safe Mode)
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Hitung jumlah data lama
+        id: old_count
+        run: |
+          if [ -f public/data/anime_master.json ]; then
+            echo "count=$(jq '.data | length' public/data/anime_master.json)" >> $GITHUB_OUTPUT
+          else
+            echo "count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run scraper (safe update)
+        run: python scraper.py --mode update --min-data 500 --check-drop
+
+      - name: Hitung jumlah data baru
+        id: new_count
+        run: echo "count=$(jq '.data | length' public/data/anime_master.json)" >> $GITHUB_OUTPUT
+
+      - name: Validasi data tidak drop drastis
+        run: |
+          OLD=${{ steps.old_count.outputs.count }}
+          NEW=${{ steps.new_count.outputs.count }}
+          if [ $OLD -gt 0 ] && [ $NEW -lt $((OLD * 80 / 100)) ]; then
+            echo "❌ Data drop terlalu besar (${OLD} → ${NEW})"
+            exit 1
+          fi
+          echo "✅ Data ok (${OLD} → ${NEW})"
+
+      - name: Show log
+        run: cat logs/scraper.log || echo "No log yet"
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add public/data/anime_master.json logs/scraper.log logs/last_total.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto update anime data [safe]" && git push)
