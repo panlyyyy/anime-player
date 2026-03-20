@@ -50,7 +50,34 @@ const API = {
 
     async getAnimeList(page = 1, limit = 50) {
         try {
-            return await this.fetch('/api/anime', { page, limit });
+            const payload = await this.fetch('/api/anime', { page, limit });
+
+            // Skenario tertentu bisa bikin endpoint sukses tapi isi data kosong (contoh:
+            // file anime_master.json tidak ikut ke runtime serverless).
+            // Jangan biarkan UI blank; fallback ke data statis.
+            if (
+                payload?.success === true &&
+                Array.isArray(payload?.data) &&
+                payload.data.length === 0 &&
+                Number(payload?.total || 0) === 0
+            ) {
+                const data = await this.loadStaticData();
+                const safePage = Number(page) || 1;
+                const safeLimit = Number(limit) || 50;
+                const start = (safePage - 1) * safeLimit;
+                const end = start + safeLimit;
+
+                return {
+                    success: true,
+                    data: data.slice(start, end),
+                    total: data.length,
+                    page: safePage,
+                    limit: safeLimit,
+                    fallback: 'static'
+                };
+            }
+
+            return payload;
         } catch (error) {
             console.warn('API anime gagal, fallback ke data statis:', error);
             const data = await this.loadStaticData();
