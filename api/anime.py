@@ -1,4 +1,3 @@
-import json
 import os
 import sys
 
@@ -11,25 +10,28 @@ if API_DIR not in sys.path:
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
-from http_utils import JsonHandler
 from db import load_data
+from http_utils import JsonHandler
+
 
 class handler(JsonHandler):
     def do_GET(self):
         try:
             data = load_data()
             params = self.get_query_params()
-            page = int(params.get('page', 1))
-            limit = int(params.get('limit', 50))
+            page = int(params.get("page", 1))
+            limit = int(params.get("limit", 50))
             start = (page - 1) * limit
             end = start + limit
             paginated = data[start:end]
-            self.send_json({
-                'success': True,
-                'data': paginated,
-                'total': len(data),
-                'page': page,
-                'limit': limit
-            })
+            self.send_json(
+                {
+                    "success": True,
+                    "data": paginated,
+                    "total": len(data),
+                    "page": page,
+                    "limit": limit,
+                }
+            )
         except Exception as e:
-            self.send_json({'success': False, 'error': str(e)}, status=500)
+            self.send_json({"success": False, "error": str(e)}, status=500)
