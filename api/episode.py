@@ -1,16 +1,19 @@
 import json
+import os
+import sys
 import time
 
-try:
-    from .db import get_episode_data
-except ImportError:
-    from db import get_episode_data
+# Stabilkan import di runtime serverless (Vercel) yang tidak selalu menganggap
+# folder `api/` sebagai package.
+API_DIR = os.path.dirname(__file__)
+ROOT_DIR = os.path.dirname(API_DIR)
+if API_DIR not in sys.path:
+    sys.path.insert(0, API_DIR)
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
-try:
-    from scraper import extract_episode_sources
-except ImportError:
-    # fallback jika environment mengatur import berbeda
-    from ..scraper import extract_episode_sources  # type: ignore
+from db import get_episode_data
+from scraper import extract_episode_sources
 
 MEDIA_CACHE = {}
 MEDIA_CACHE_TTL_SECONDS = 6 * 60 * 60  # 6 jam

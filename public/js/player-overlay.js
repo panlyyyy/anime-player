@@ -133,6 +133,11 @@ function playCurrentEpisodeMediaByQuality(quality) {
         videoElement.load();
         videoElement.play().catch(() => {});
     } else if (streamUrl) {
+        // Guard: jangan sampai kita embed "halaman episode asli" yang penuh UI.
+        // Kalau ini kejadian, biasanya iframe akan tampil sebagai halaman website, bukan player stream.
+        if (/\/episode\/\d+/.test(streamUrl) && /\/series\//.test(streamUrl)) {
+            throw new Error('StreamUrl terdeteksi mengarah ke halaman episode (bukan media).');
+        }
         videoElement.style.display = 'none';
         iframeElement.style.display = '';
         iframeElement.src = streamUrl;
