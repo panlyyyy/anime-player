@@ -169,6 +169,47 @@ def extract_episode_sources(episode_url):
         if validate_video_url(href):
             videos[quality] = href
 
+    # Halaman episode ini SvelteKit: tombol "Nonton Online 360p/480p/..." kadang tidak
+    # berupa `<a href>`, tapi tersimpan di payload `streamUrl` pada script.
+    # Kalau extractor berbasis `<a>` gagal, coba ambil dari script hydrated data.
+    if (not streams) or len(streams) < 4:
+        try:
+            script_chunks = []
+            for s in soup.find_all('script'):
+                if not s:
+                    continue
+                txt = s.get_text(strip=True)
+                if txt and 'streamUrl' in txt:
+                    script_chunks.append(txt)
+            joined = '\n'.join(script_chunks)
+
+            # Ambil pair: { source: "...360p...", url: "https://..." }
+            pair_re = re.compile(
+                r'(?:"source"|source)\s*:\s*"([^"]+)"\s*,\s*(?:"url"|url)\s*:\s*"([^"]+)"',
+                flags=re.IGNORECASE
+            )
+            for m in pair_re.finditer(joined):
+                source = (m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
+                url = (m.group(2) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
+                if not url:
+                    continue
+
+                lower_url = url.lower()
+                if not (any(hint in lower_url for hint in STREAM_HINTS) or 'video.g' in lower_url):
+                    continue
+
+                q = guess_quality(source) or guess_quality(url)
+                if not q:
+                    continue
+
+                # Pastikan absolute URL
+                if url.startswith('/'):
+                    url = urljoin(episode_url, url)
+
+                streams[q] = url
+        except Exception as e:
+            logging.warning(f"Gagal ekstrak streamUrl dari script: {e}")
+
     default_q = best_default_quality(videos, streams)
     if not default_q:
         return None

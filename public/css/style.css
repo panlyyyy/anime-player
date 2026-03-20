@@ -335,6 +335,35 @@ section h2 span {
     line-height: 1.6; 
 }
 
+.quality-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px 0;
+}
+
+.quality-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--ease);
+}
+
+.quality-btn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.quality-btn.active {
+    background: rgba(255, 62, 62, 0.18);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(255, 62, 62, 0.15);
+}
+
 .episode-scroll {
     display: flex;
     gap: 12px;
