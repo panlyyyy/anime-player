@@ -92,6 +92,10 @@ def guess_quality(text_or_url: str) -> Optional[str]:
     t = text_or_url.lower()
     if '2160' in t or '4k' in t:
         return '4k'
+    if 'uhd' in t:
+        return '4k'
+    if 'fhd' in t:
+        return '1080p'
     if '1080' in t:
         return '1080p'
     if '720' in t:
@@ -102,6 +106,12 @@ def guess_quality(text_or_url: str) -> Optional[str]:
         return '360p'
     if '240' in t:
         return '240p'
+    # Sering muncul di streamUrl script sebagai "sd"/"hd" tanpa angka.
+    # Map konservatif agar player punya pilihan kualitas minimal.
+    if re.search(r'(?:^|\\W)sd(?:\\W|$)', t):
+        return '360p'
+    if re.search(r'(?:^|\\W)hd(?:\\W|$)', t):
+        return '720p'
     return None
 
 def best_default_quality(videos: dict, streams: dict) -> Optional[str]:
@@ -193,11 +203,6 @@ def extract_episode_sources(episode_url):
                 url = (m.group(2) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
                 if not url:
                     continue
-
-                lower_url = url.lower()
-                if not (any(hint in lower_url for hint in STREAM_HINTS) or 'video.g' in lower_url):
-                    continue
-
                 q = guess_quality(source) or guess_quality(url)
                 if not q:
                     continue
@@ -206,7 +211,17 @@ def extract_episode_sources(episode_url):
                 if url.startswith('/'):
                     url = urljoin(episode_url, url)
 
-                streams[q] = url
+                lower_url = url.lower()
+
+                # streamUrl pada halaman bisa berupa:
+                # - embed/player URL (iframe)
+                # - link video langsung (mp4/m3u8)
+                # Jangan buang URL embed hanya karena host tidak ada di STREAM_HINTS.
+                if looks_like_direct_video_url(url):
+                    if validate_video_url(url):
+                        videos[q] = url
+                else:
+                    streams[q] = url
         except Exception as e:
             logging.warning(f"Gagal ekstrak streamUrl dari script: {e}")
 

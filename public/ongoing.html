@@ -71,31 +71,30 @@
         document.addEventListener('DOMContentLoaded', async () => {
             UI.showLoading(true);
             try {
-                const res = await API.getAnimeList(1, 100);
-                if (res.success) {
-                    // Beberapa data status menggunakan bahasa Indonesia (mis. "Berlangsung").
-                    const ongoing = res.data.filter(a => {
-                        const s = (a.status || '').toLowerCase();
-                        return s.includes('ongoing') || s.includes('berlangsung') || s.includes('tayang');
-                    });
-                    const container = document.getElementById('ongoingList');
-                    if (ongoing.length === 0) {
-                        container.innerHTML = '<div class="empty">Tidak ada anime ongoing</div>';
-                    } else {
-                        container.innerHTML = ongoing.map(anime => UI.renderGridCard(anime)).join('');
-                        container.querySelectorAll('.anime-card').forEach(card => {
-                            card.addEventListener('click', async () => {
-                                const slug = card.dataset.slug;
-                                UI.showLoading(true);
-                                try {
-                                    const res = await API.getDetail(slug);
-                                    if (res.success) openPlayer(res.data);
-                                } finally {
-                                    UI.showLoading(false);
-                                }
-                            });
+                const data = await API.loadStaticData();
+                // Beberapa data status menggunakan bahasa Indonesia (mis. "Berlangsung").
+                const ongoing = data.filter(a => {
+                    const s = (a.status || '').toLowerCase();
+                    return s.includes('ongoing') || s.includes('berlangsung') || s.includes('tayang');
+                });
+
+                const container = document.getElementById('ongoingList');
+                if (ongoing.length === 0) {
+                    container.innerHTML = '<div class="empty">Tidak ada anime ongoing</div>';
+                } else {
+                    container.innerHTML = ongoing.map(anime => UI.renderGridCard(anime)).join('');
+                    container.querySelectorAll('.anime-card').forEach(card => {
+                        card.addEventListener('click', async () => {
+                            const slug = card.dataset.slug;
+                            UI.showLoading(true);
+                            try {
+                                const res = await API.getDetail(slug);
+                                if (res.success) openPlayer(res.data);
+                            } finally {
+                                UI.showLoading(false);
+                            }
                         });
-                    }
+                    });
                 }
             } catch (err) {
                 console.error(err);

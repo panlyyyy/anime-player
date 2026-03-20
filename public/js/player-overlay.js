@@ -150,6 +150,9 @@ window.openPlayer = function(anime, episode = null) {
     currentAnime = anime;
     currentEpisodes = anime.episodes || [];
 
+    // History (untuk bagian "Lanjutkan Menonton" dan halaman history)
+    Storage.addToHistory(anime);
+
     document.getElementById('overlayTitle').textContent = anime.title || '';
     document.getElementById('overlayDescription').textContent = anime.synopsis || 'Sinopsis tidak tersedia.';
 

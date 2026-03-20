@@ -150,7 +150,37 @@ const API = {
 
     async search(query) {
         try {
-            return await this.fetch('/api/search', { q: query });
+            const payload = await this.fetch('/api/search', { q: query });
+
+            // Hindari skenario: backend sukses tapi data kosong
+            if (
+                payload?.success === true &&
+                Array.isArray(payload?.data) &&
+                payload.data.length === 0 &&
+                Number(payload?.total || 0) === 0
+            ) {
+                const keyword = String(query || '').trim().toLowerCase();
+                if (!keyword) {
+                    return {
+                        success: true,
+                        data: [],
+                        total: 0,
+                        fallback: 'static'
+                    };
+                }
+
+                const data = await this.loadStaticData();
+                const results = data.filter(item => (item.title_lower || item.title || '').toLowerCase().includes(keyword));
+
+                return {
+                    success: true,
+                    data: results,
+                    total: results.length,
+                    fallback: 'static'
+                };
+            }
+
+            return payload;
         } catch (error) {
             console.warn('API search gagal, fallback ke data statis:', error);
             const keyword = String(query || '').trim().toLowerCase();
