@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -11,27 +12,37 @@ if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 from db import load_data
-from http_utils import JsonHandler
 
+def handler(request):
+    headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+    }
+    if request.method == 'OPTIONS':
+        return {'statusCode': 200, 'headers': headers, 'body': ''}
 
-class handler(JsonHandler):
-    def do_GET(self):
-        try:
-            data = load_data()
-            params = self.get_query_params()
-            page = int(params.get("page", 1))
-            limit = int(params.get("limit", 50))
-            start = (page - 1) * limit
-            end = start + limit
-            paginated = data[start:end]
-            self.send_json(
-                {
-                    "success": True,
-                    "data": paginated,
-                    "total": len(data),
-                    "page": page,
-                    "limit": limit,
-                }
-            )
-        except Exception as e:
-            self.send_json({"success": False, "error": str(e)}, status=500)
+    try:
+        data = load_data()
+        params = request.query_params or {}
+        page = int(params.get('page', 1))
+        limit = int(params.get('limit', 50))
+        start = (page - 1) * limit
+        end = start + limit
+        paginated = data[start:end]
+        return {
+            'statusCode': 200,
+            'headers': headers,
+            'body': json.dumps({
+                'success': True,
+                'data': paginated,
+                'total': len(data),
+                'page': page,
+                'limit': limit
+            }, ensure_ascii=False)
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': headers,
+            'body': json.dumps({'success': False, 'error': str(e)})
+        }

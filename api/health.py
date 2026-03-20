@@ -1,6 +1,9 @@
-from http_utils import JsonHandler
-
-
-class handler(JsonHandler):
-    def do_GET(self):
-        self.send_json({"status": "ok", "message": "API is working"})
+def handler(request):
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        },
+        "body": '{"status":"ok","message":"API is working"}'
+    }
