@@ -23,7 +23,7 @@ def _parse_query(path: str) -> dict:
     return {k: (v[0] if isinstance(v, list) and v else '') for k, v in raw.items()}
 
 
-class handler(BaseHTTPRequestHandler):
+class Handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
