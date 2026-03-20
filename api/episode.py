@@ -1,5 +1,9 @@
 import json
-from db import get_episode_data
+
+try:
+    from .db import get_episode_data
+except ImportError:
+    from db import get_episode_data
 
 def handler(request):
     headers = {
