@@ -15,22 +15,65 @@ def _fetch_static_data() -> list:
     Fallback untuk skenario Vercel: file lokal tidak ikut ke bundle.
     Ambil lewat HTTP ke static route: `/data/anime_master.json`.
     """
-    vercel_url = os.environ.get("VERCEL_URL")
-    if not vercel_url:
-        return []
-
     url = os.environ.get("ANIME_MASTER_URL")
-    if not url:
-        url = f"https://{vercel_url}/data/anime_master.json"
+    if url:
+        url = url.strip()
+        if not url:
+            url = None
 
-    try:
-        res = requests.get(url, timeout=20)
-        res.raise_for_status()
-        payload = res.json()
-        data = payload.get("data", [])
-        return data if isinstance(data, list) else []
-    except Exception:
+    host_candidates = [
+        os.environ.get("VERCEL_URL"),
+        os.environ.get("VERCEL_PROJECT_PRODUCTION_URL"),
+        os.environ.get("VERCEL_DEPLOYMENT_URL"),
+        os.environ.get("VERCEL_BRANCH_URL"),
+    ]
+    host_candidates = [h for h in host_candidates if h]
+
+    # Try explicit ANIME_MASTER_URL first, otherwise try common Vercel host env vars.
+    urls_to_try: list[str] = []
+    if url:
+        urls_to_try.append(url)
+    for host in host_candidates:
+        if host.startswith("http://") or host.startswith("https://"):
+            urls_to_try.append(host.rstrip("/") + "/data/anime_master.json")
+        else:
+            urls_to_try.append(f"https://{host}/data/anime_master.json")
+
+    if not urls_to_try:
         return []
+
+    last_err = None
+    for candidate in urls_to_try:
+        try:
+            res = requests.get(
+                candidate,
+                timeout=20,
+                headers={"Accept": "application/json"},
+            )
+            if not res.ok:
+                last_err = f"HTTP {res.status_code}"
+                continue
+
+            payload = res.json()
+            # payload bentuk yang diharapkan: {"data":[...]}.
+            if isinstance(payload, dict):
+                data = payload.get("data", [])
+            elif isinstance(payload, list):
+                data = payload
+            else:
+                data = []
+
+            return data if isinstance(data, list) else []
+        except Exception as e:
+            last_err = str(e)
+            continue
+
+    # Kalau semua gagal, log error terakhir biar bisa di-debug dari Vercel logs.
+    try:
+        print(f"[db] Failed to load static anime_master.json. last_err={last_err}")
+    except Exception:
+        pass
+    return []
 
 def load_data():
     global CACHE, CACHE_MTIME, EPISODE_MAP
