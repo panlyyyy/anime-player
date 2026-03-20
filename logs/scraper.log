@@ -1,0 +1,1117 @@
+2026-03-19 18:03:05,630 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-19 18:03:05,632 - INFO - Mengambil daftar anime dari https://anime.oploverz.ac/series
+2026-03-19 18:03:06,840 - WARNING - Request gagal (1/3): HTTPSConnectionPool(host='anime.oploverz.ac', port=443): Max retries exceeded with url: /series (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'anime.oploverz.ac'. (_ssl.c:1081)")))
+2026-03-19 18:03:09,170 - WARNING - Request gagal (2/3): HTTPSConnectionPool(host='anime.oploverz.ac', port=443): Max retries exceeded with url: /series (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'anime.oploverz.ac'. (_ssl.c:1081)")))
+2026-03-19 18:03:12,182 - WARNING - Request gagal (3/3): HTTPSConnectionPool(host='anime.oploverz.ac', port=443): Max retries exceeded with url: /series (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'anime.oploverz.ac'. (_ssl.c:1081)")))
+2026-03-19 18:03:12,183 - INFO - Total anime di website: 0
+2026-03-19 18:03:12,184 - ERROR - Data terlalu sedikit: 0 < 500
+2026-03-19 18:03:12,184 - ERROR - Data tidak valid. Proses dibatalkan.
+2026-03-19 18:05:56,316 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-19 18:05:56,317 - INFO - Mengambil daftar anime dari http://anime.oploverz.ac/series
+2026-03-19 18:06:06,375 - WARNING - Request gagal (1/3): HTTPConnectionPool(host='anime.oploverz.ac', port=80): Max retries exceeded with url: /series (Caused by ConnectTimeoutError(<HTTPConnection(host='anime.oploverz.ac', port=80) at 0x1fd8f8f4050>, 'Connection to anime.oploverz.ac timed out. (connect timeout=10)'))
+2026-03-19 18:06:09,508 - WARNING - Request gagal (2/3): HTTPConnectionPool(host='anime.oploverz.ac', port=80): Max retries exceeded with url: /series (Caused by NewConnectionError("HTTPConnection(host='anime.oploverz.ac', port=80): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-03-19 18:06:18,562 - WARNING - Request gagal (3/3): HTTPConnectionPool(host='anime.oploverz.ac', port=80): Max retries exceeded with url: /series (Caused by NewConnectionError("HTTPConnection(host='anime.oploverz.ac', port=80): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-03-19 18:06:18,564 - INFO - Total anime di website: 0
+2026-03-19 18:06:18,564 - ERROR - Data terlalu sedikit: 0 < 500
+2026-03-19 18:06:18,565 - ERROR - Data tidak valid. Proses dibatalkan.
+2026-03-19 18:10:45,972 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-19 18:10:45,991 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-19 18:10:49,761 - INFO - Ditemukan 0 anime unik
+2026-03-19 18:10:49,761 - INFO - Total anime di website: 0
+2026-03-19 18:10:49,762 - ERROR - Data terlalu sedikit: 0 < 500
+2026-03-19 18:10:49,762 - ERROR - Data tidak valid. Proses dibatalkan.
+2026-03-19 18:16:39,383 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-19 18:16:39,387 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-19 18:16:42,834 - INFO - Ditemukan 526 anime unik
+2026-03-19 18:16:42,835 - INFO - Total anime di website: 526
+2026-03-19 18:16:42,835 - INFO - [1/526] https://coba.oploverz.ltd/series/3d-kanojo-real-girl-s2
+2026-03-19 18:16:42,836 - INFO - Scraping detail: https://coba.oploverz.ltd/series/3d-kanojo-real-girl-s2
+2026-03-19 18:16:46,168 - WARNING - Episode 11 tidak memiliki source valid
+2026-03-19 18:16:48,634 - WARNING - Episode 10 tidak memiliki source valid
+2026-03-19 18:16:51,464 - WARNING - Episode 9 tidak memiliki source valid
+2026-03-19 18:16:53,795 - WARNING - Episode 8 tidak memiliki source valid
+2026-03-19 18:16:56,315 - WARNING - Episode 7 tidak memiliki source valid
+2026-03-19 18:16:58,934 - WARNING - Episode 6 tidak memiliki source valid
+2026-03-19 18:17:01,864 - WARNING - Episode 5 tidak memiliki source valid
+2026-03-19 18:17:04,634 - WARNING - Episode 4 tidak memiliki source valid
+2026-03-19 18:17:07,263 - WARNING - Episode 3 tidak memiliki source valid
+2026-03-19 18:17:09,662 - WARNING - Episode 2 tidak memiliki source valid
+2026-03-19 18:17:12,067 - WARNING - Episode 1 tidak memiliki source valid
+2026-03-19 18:17:14,803 - WARNING - Episode 12 tidak memiliki source valid
+2026-03-19 18:17:16,710 - INFO - [2/526] https://coba.oploverz.ltd/series/darwins-game
+2026-03-19 18:17:16,711 - INFO - Scraping detail: https://coba.oploverz.ltd/series/darwins-game
+2026-03-19 18:17:31,914 - WARNING - Episode 11 tidak memiliki source valid
+2026-03-19 18:17:34,369 - WARNING - Episode 10 tidak memiliki source valid
+2026-03-19 18:17:37,040 - WARNING - Episode 9 tidak memiliki source valid
+2026-03-19 18:17:39,462 - WARNING - Episode 8 tidak memiliki source valid
+2026-03-19 18:17:42,148 - WARNING - Episode 7 tidak memiliki source valid
+2026-03-19 18:22:00,977 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-19 18:22:00,995 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-19 18:22:04,212 - INFO - Ditemukan 526 anime unik
+2026-03-19 18:22:04,213 - INFO - Total anime di website: 526
+2026-03-19 18:22:04,214 - INFO - [1/526] https://coba.oploverz.ltd/series/koutetsujou-no-kabaneri
+2026-03-19 18:22:04,214 - INFO - Scraping detail: https://coba.oploverz.ltd/series/koutetsujou-no-kabaneri
+2026-03-19 18:22:15,638 - INFO - [2/526] https://coba.oploverz.ltd/series/shigatsu-wa-kimi-no-uso
+2026-03-19 18:22:15,638 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shigatsu-wa-kimi-no-uso
+2026-03-19 18:22:37,247 - INFO - [3/526] https://coba.oploverz.ltd/series/a-gatherers-adventure-in-isekai
+2026-03-19 18:22:37,248 - INFO - Scraping detail: https://coba.oploverz.ltd/series/a-gatherers-adventure-in-isekai
+2026-03-19 18:22:50,153 - INFO - [4/526] https://coba.oploverz.ltd/series/inazuma-eleven-s1
+2026-03-19 18:22:50,153 - INFO - Scraping detail: https://coba.oploverz.ltd/series/inazuma-eleven-s1
+2026-03-19 18:24:28,964 - INFO - [5/526] https://coba.oploverz.ltd/series/yowamushi-pedal-season-4
+2026-03-19 18:24:28,966 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yowamushi-pedal-season-4
+2026-03-19 18:24:51,070 - INFO - [6/526] https://coba.oploverz.ltd/series/ao-no-exorcist-s2-kyoto-fujouou-hen
+2026-03-19 18:24:51,070 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-no-exorcist-s2-kyoto-fujouou-hen
+2026-03-19 18:25:02,157 - INFO - [7/526] https://coba.oploverz.ltd/series/goblin-slayer-s2
+2026-03-19 18:25:02,158 - INFO - Scraping detail: https://coba.oploverz.ltd/series/goblin-slayer-s2
+2026-03-19 18:25:14,363 - INFO - [8/526] https://coba.oploverz.ltd/series/the-eminence-in-shadow-s2
+2026-03-19 18:25:14,363 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-eminence-in-shadow-s2
+2026-03-19 18:25:26,994 - INFO - [9/526] https://coba.oploverz.ltd/series/psycho-pass
+2026-03-19 18:25:26,995 - INFO - Scraping detail: https://coba.oploverz.ltd/series/psycho-pass
+2026-03-19 18:25:45,876 - INFO - [10/526] https://coba.oploverz.ltd/series/date-a-live-season-4
+2026-03-19 18:25:45,881 - INFO - Scraping detail: https://coba.oploverz.ltd/series/date-a-live-season-4
+2026-03-19 18:25:59,348 - INFO - [11/526] https://coba.oploverz.ltd/series/monster
+2026-03-19 18:25:59,348 - INFO - Scraping detail: https://coba.oploverz.ltd/series/monster
+2026-03-19 18:26:58,825 - INFO - [12/526] https://coba.oploverz.ltd/series/mashle-s2
+2026-03-19 18:26:58,833 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mashle-s2
+2026-03-19 18:27:11,788 - INFO - [13/526] https://coba.oploverz.ltd/series/the-god-of-high-school
+2026-03-19 18:27:11,789 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-god-of-high-school
+2026-03-19 18:27:23,693 - INFO - [14/526] https://coba.oploverz.ltd/series/clevatess-majuu-no-ou-to-akago-to-shikabane-no-yuusha
+2026-03-19 18:27:23,730 - INFO - Scraping detail: https://coba.oploverz.ltd/series/clevatess-majuu-no-ou-to-akago-to-shikabane-no-yuusha
+2026-03-19 18:27:36,336 - INFO - [15/526] https://coba.oploverz.ltd/series/yu-gi-oh-1-duel-monsters
+2026-03-19 18:27:36,337 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-gi-oh-1-duel-monsters
+2026-03-19 18:30:26,853 - INFO - [16/526] https://coba.oploverz.ltd/series/hai-to-gensou-no-grimgar
+2026-03-19 18:30:26,854 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hai-to-gensou-no-grimgar
+2026-03-19 18:30:39,508 - INFO - [17/526] https://coba.oploverz.ltd/series/log-horizon-season-1
+2026-03-19 18:30:39,509 - INFO - Scraping detail: https://coba.oploverz.ltd/series/log-horizon-season-1
+2026-03-19 18:30:59,929 - INFO - [18/526] https://coba.oploverz.ltd/series/suki-na-ko-ga-megane-wo-wasureta
+2026-03-19 18:30:59,930 - INFO - Scraping detail: https://coba.oploverz.ltd/series/suki-na-ko-ga-megane-wo-wasureta
+2026-03-19 18:31:13,233 - INFO - [19/526] https://coba.oploverz.ltd/series/relife
+2026-03-19 18:31:13,233 - INFO - Scraping detail: https://coba.oploverz.ltd/series/relife
+2026-03-19 18:31:25,553 - INFO - [20/526] https://coba.oploverz.ltd/series/blue-lock-s2-blue-lock-vs-u-20-japan
+2026-03-19 18:31:25,554 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blue-lock-s2-blue-lock-vs-u-20-japan
+2026-03-19 18:31:39,135 - INFO - [21/526] https://coba.oploverz.ltd/series/mato-seihei-no-slave-s1
+2026-03-19 18:31:39,136 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mato-seihei-no-slave-s1
+2026-03-19 18:31:50,020 - INFO - [22/526] https://coba.oploverz.ltd/series/undead-unluck-winter-hen
+2026-03-19 18:31:50,021 - INFO - Scraping detail: https://coba.oploverz.ltd/series/undead-unluck-winter-hen
+2026-03-19 18:31:53,754 - INFO - [23/526] https://coba.oploverz.ltd/series/sword-art-online-alternative-gun-gale-online
+2026-03-19 18:31:53,755 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sword-art-online-alternative-gun-gale-online
+2026-03-19 18:32:04,735 - INFO - [24/526] https://coba.oploverz.ltd/series/fateapocrypha
+2026-03-19 18:32:04,736 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fateapocrypha
+2026-03-19 18:32:26,645 - INFO - [25/526] https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken-s2
+2026-03-19 18:32:26,646 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken-s2
+2026-03-19 18:32:46,951 - INFO - [26/526] https://coba.oploverz.ltd/series/noblesse
+2026-03-19 18:32:46,952 - INFO - Scraping detail: https://coba.oploverz.ltd/series/noblesse
+2026-03-19 18:33:00,102 - INFO - [27/526] https://coba.oploverz.ltd/series/btooom
+2026-03-19 18:33:00,102 - INFO - Scraping detail: https://coba.oploverz.ltd/series/btooom
+2026-03-19 18:33:12,044 - INFO - [28/526] https://coba.oploverz.ltd/series/magi-the-kingdom-of-magic
+2026-03-19 18:33:12,045 - INFO - Scraping detail: https://coba.oploverz.ltd/series/magi-the-kingdom-of-magic
+2026-03-19 18:33:32,599 - INFO - [29/526] https://coba.oploverz.ltd/series/promised-neverland
+2026-03-19 18:33:32,599 - INFO - Scraping detail: https://coba.oploverz.ltd/series/promised-neverland
+2026-03-19 18:33:44,328 - INFO - [30/526] https://coba.oploverz.ltd/series/naruto-shippuuden
+2026-03-19 18:33:44,329 - INFO - Scraping detail: https://coba.oploverz.ltd/series/naruto-shippuuden
+2026-03-19 18:39:57,592 - INFO - [31/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-4
+2026-03-19 18:39:57,593 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-4
+2026-03-19 18:40:19,465 - INFO - [32/526] https://coba.oploverz.ltd/series/s9-hanamonogatari
+2026-03-19 18:40:19,466 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s9-hanamonogatari
+2026-03-19 18:40:23,362 - INFO - [33/526] https://coba.oploverz.ltd/series/gugure-kokkuri-san
+2026-03-19 18:40:23,363 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gugure-kokkuri-san
+2026-03-19 18:40:35,878 - INFO - [34/526] https://coba.oploverz.ltd/series/divine-gate
+2026-03-19 18:40:35,879 - INFO - Scraping detail: https://coba.oploverz.ltd/series/divine-gate
+2026-03-19 18:40:48,272 - INFO - [35/526] https://coba.oploverz.ltd/series/haikyuu-riku-vs-kuu
+2026-03-19 18:40:48,273 - INFO - Scraping detail: https://coba.oploverz.ltd/series/haikyuu-riku-vs-kuu
+2026-03-19 18:40:52,883 - INFO - [36/526] https://coba.oploverz.ltd/series/s7-koyomimonogatari
+2026-03-19 18:40:52,884 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s7-koyomimonogatari
+2026-03-19 18:41:04,778 - INFO - [37/526] https://coba.oploverz.ltd/series/kakumeiki-valvrave
+2026-03-19 18:41:04,778 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kakumeiki-valvrave
+2026-03-19 18:41:25,743 - INFO - [38/526] https://coba.oploverz.ltd/series/shuumatsu-no-izetta
+2026-03-19 18:41:25,743 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shuumatsu-no-izetta
+2026-03-19 18:41:36,865 - INFO - [39/526] https://coba.oploverz.ltd/series/overlord-season-4
+2026-03-19 18:41:36,866 - INFO - Scraping detail: https://coba.oploverz.ltd/series/overlord-season-4
+2026-03-19 18:41:49,295 - INFO - [40/526] https://coba.oploverz.ltd/series/haikyuu-season-4
+2026-03-19 18:41:49,296 - INFO - Scraping detail: https://coba.oploverz.ltd/series/haikyuu-season-4
+2026-03-19 18:42:10,758 - INFO - [41/526] https://coba.oploverz.ltd/series/magi-the-labyrinth-of-magic
+2026-03-19 18:42:10,759 - INFO - Scraping detail: https://coba.oploverz.ltd/series/magi-the-labyrinth-of-magic
+2026-03-19 18:42:32,608 - INFO - [42/526] https://coba.oploverz.ltd/series/dr-stone-ryusui
+2026-03-19 18:42:32,608 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dr-stone-ryusui
+2026-03-19 18:42:36,359 - INFO - [43/526] https://coba.oploverz.ltd/series/overlord
+2026-03-19 18:42:36,360 - INFO - Scraping detail: https://coba.oploverz.ltd/series/overlord
+2026-03-19 18:42:49,648 - INFO - [44/526] https://coba.oploverz.ltd/series/the-eminence-in-shadow
+2026-03-19 18:42:49,649 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-eminence-in-shadow
+2026-03-19 18:43:08,088 - INFO - [45/526] https://coba.oploverz.ltd/series/toaru-kagaku-no-railgun-s3-t
+2026-03-19 18:43:08,089 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-kagaku-no-railgun-s3-t
+2026-03-19 18:43:29,658 - INFO - [46/526] https://coba.oploverz.ltd/series/arifureta-shokugyou-de-sekai-saikyou-s3
+2026-03-19 18:43:29,659 - INFO - Scraping detail: https://coba.oploverz.ltd/series/arifureta-shokugyou-de-sekai-saikyou-s3
+2026-03-19 18:43:44,105 - INFO - [47/526] https://coba.oploverz.ltd/series/hazurewaku-no-joutai-ijou-skill-de-saikyou-ni-natta-ore-ga-subete-wo-juurin-suru-made
+2026-03-19 18:43:44,131 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hazurewaku-no-joutai-ijou-skill-de-saikyou-ni-natta-ore-ga-subete-wo-juurin-suru-made
+2026-03-19 18:43:55,806 - INFO - [48/526] https://coba.oploverz.ltd/series/fuuun-ishin-dai-shogun
+2026-03-19 18:43:55,807 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fuuun-ishin-dai-shogun
+2026-03-19 18:44:07,759 - INFO - [49/526] https://coba.oploverz.ltd/series/zom-100-zombie-ni-naru-made-ni-shitai-100-no-koto
+2026-03-19 18:44:07,760 - INFO - Scraping detail: https://coba.oploverz.ltd/series/zom-100-zombie-ni-naru-made-ni-shitai-100-no-koto
+2026-03-19 18:44:19,258 - INFO - [50/526] https://coba.oploverz.ltd/series/overlord-season-3
+2026-03-19 18:44:19,259 - INFO - Scraping detail: https://coba.oploverz.ltd/series/overlord-season-3
+2026-03-19 18:44:31,822 - INFO - [51/526] https://coba.oploverz.ltd/series/fatezero
+2026-03-19 18:44:31,823 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatezero
+2026-03-19 18:44:53,759 - INFO - [52/526] https://coba.oploverz.ltd/series/yu-gi-oh-3-5ds
+2026-03-19 18:44:53,760 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-gi-oh-3-5ds
+2026-03-19 18:46:52,336 - INFO - [53/526] https://coba.oploverz.ltd/series/fatekaleid-liner-3-prismaillya-2wei-herz
+2026-03-19 18:46:52,337 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatekaleid-liner-3-prismaillya-2wei-herz
+2026-03-19 18:47:02,903 - INFO - [54/526] https://coba.oploverz.ltd/series/digimon-adventure-tri-2-ketsui
+2026-03-19 18:47:02,903 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-tri-2-ketsui
+2026-03-19 18:47:08,689 - INFO - [55/526] https://coba.oploverz.ltd/series/kuroko-no-basket-season-3
+2026-03-19 18:47:08,689 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kuroko-no-basket-season-3
+2026-03-19 18:47:30,177 - INFO - [56/526] https://coba.oploverz.ltd/series/golden-kamuy-s1
+2026-03-19 18:47:30,178 - INFO - Scraping detail: https://coba.oploverz.ltd/series/golden-kamuy-s1
+2026-03-19 18:47:41,612 - INFO - [57/526] https://coba.oploverz.ltd/series/tower-of-god
+2026-03-19 18:47:41,613 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tower-of-god
+2026-03-19 18:47:53,992 - INFO - [58/526] https://coba.oploverz.ltd/series/mob-psycho-100
+2026-03-19 18:47:53,993 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mob-psycho-100
+2026-03-19 18:48:06,774 - INFO - [59/526] https://coba.oploverz.ltd/series/kingdom-s2
+2026-03-19 18:48:06,775 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kingdom-s2
+2026-03-19 19:48:44,951 - INFO - [60/526] https://coba.oploverz.ltd/series/blue-box
+2026-03-19 19:48:44,973 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blue-box
+2026-03-19 19:49:09,159 - INFO - [61/526] https://coba.oploverz.ltd/series/s1-nekomonogatari-kuro
+2026-03-19 19:49:09,160 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s1-nekomonogatari-kuro
+2026-03-19 19:49:15,220 - INFO - [62/526] https://coba.oploverz.ltd/series/psycho-pass-season-2
+2026-03-19 19:49:15,220 - INFO - Scraping detail: https://coba.oploverz.ltd/series/psycho-pass-season-2
+2026-03-19 19:49:27,010 - INFO - [63/526] https://coba.oploverz.ltd/series/golden-time
+2026-03-19 19:49:27,010 - INFO - Scraping detail: https://coba.oploverz.ltd/series/golden-time
+2026-03-19 19:49:48,723 - INFO - [64/526] https://coba.oploverz.ltd/series/digimon-adventure-tri-1-saikai
+2026-03-19 19:49:48,723 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-tri-1-saikai
+2026-03-19 19:49:54,978 - INFO - [65/526] https://coba.oploverz.ltd/series/satsuriku-no-tenshi
+2026-03-19 19:49:54,978 - INFO - Scraping detail: https://coba.oploverz.ltd/series/satsuriku-no-tenshi
+2026-03-19 19:50:09,461 - INFO - [66/526] https://coba.oploverz.ltd/series/kusuriya-no-hitorigoto-s1
+2026-03-19 19:50:09,466 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kusuriya-no-hitorigoto-s1
+2026-03-19 19:50:31,538 - INFO - [67/526] https://coba.oploverz.ltd/series/amaama-to-inazuma
+2026-03-19 19:50:31,544 - INFO - Scraping detail: https://coba.oploverz.ltd/series/amaama-to-inazuma
+2026-03-19 19:50:44,494 - INFO - [68/526] https://coba.oploverz.ltd/series/arifureta-shokugyou-de-sekai-saikyou-s1
+2026-03-19 19:50:44,495 - INFO - Scraping detail: https://coba.oploverz.ltd/series/arifureta-shokugyou-de-sekai-saikyou-s1
+2026-03-19 19:50:57,203 - INFO - [69/526] https://coba.oploverz.ltd/series/no-game-no-life
+2026-03-19 19:50:57,204 - INFO - Scraping detail: https://coba.oploverz.ltd/series/no-game-no-life
+2026-03-19 19:51:09,179 - INFO - [70/526] https://coba.oploverz.ltd/series/fairy-tail
+2026-03-19 19:51:09,180 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fairy-tail
+2026-03-19 19:55:20,550 - INFO - [71/526] https://coba.oploverz.ltd/series/dragon-ball-super
+2026-03-19 19:55:20,551 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dragon-ball-super
+2026-03-19 19:56:59,269 - INFO - [72/526] https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari-s2
+2026-03-19 19:56:59,270 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari-s2
+2026-03-19 19:57:11,619 - INFO - [73/526] https://coba.oploverz.ltd/series/grand-blue-s2
+2026-03-19 19:57:11,620 - INFO - Scraping detail: https://coba.oploverz.ltd/series/grand-blue-s2
+2026-03-19 19:57:24,218 - INFO - [74/526] https://coba.oploverz.ltd/series/natsume-yuujinchou-go
+2026-03-19 19:57:24,219 - INFO - Scraping detail: https://coba.oploverz.ltd/series/natsume-yuujinchou-go
+2026-03-19 19:57:35,252 - INFO - [75/526] https://coba.oploverz.ltd/series/sword-art-online-season-2
+2026-03-19 19:57:35,252 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sword-art-online-season-2
+2026-03-19 19:57:56,342 - INFO - [76/526] https://coba.oploverz.ltd/series/record-of-ragnarok-s3
+2026-03-19 19:57:56,344 - INFO - Scraping detail: https://coba.oploverz.ltd/series/record-of-ragnarok-s3
+2026-03-19 19:58:11,019 - INFO - [77/526] https://coba.oploverz.ltd/series/one-piece-episode-special
+2026-03-19 19:58:11,020 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece-episode-special
+2026-03-19 19:58:24,912 - INFO - [78/526] https://coba.oploverz.ltd/series/ookami-shoujo-to-kuro-ouji
+2026-03-19 19:58:24,914 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ookami-shoujo-to-kuro-ouji
+2026-03-19 19:58:36,970 - INFO - [79/526] https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken
+2026-03-19 19:58:36,971 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken
+2026-03-19 19:58:57,831 - INFO - [80/526] https://coba.oploverz.ltd/series/isekai-nonbiri-nouka
+2026-03-19 19:58:57,832 - INFO - Scraping detail: https://coba.oploverz.ltd/series/isekai-nonbiri-nouka
+2026-03-19 19:59:09,475 - INFO - [81/526] https://coba.oploverz.ltd/series/fate-stay-night-unlimited-blade-works
+2026-03-19 19:59:09,476 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fate-stay-night-unlimited-blade-works
+2026-03-19 19:59:31,331 - INFO - [82/526] https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-tsuioku-hen
+2026-03-19 19:59:31,331 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-tsuioku-hen
+2026-03-19 19:59:35,373 - INFO - [83/526] https://coba.oploverz.ltd/series/inazuma-eleven-s3-go-chrono-stone
+2026-03-19 19:59:35,373 - INFO - Scraping detail: https://coba.oploverz.ltd/series/inazuma-eleven-s3-go-chrono-stone
+2026-03-19 20:00:19,214 - INFO - [84/526] https://coba.oploverz.ltd/series/area-no-kishi
+2026-03-19 20:00:19,215 - INFO - Scraping detail: https://coba.oploverz.ltd/series/area-no-kishi
+2026-03-19 20:00:48,849 - INFO - [85/526] https://coba.oploverz.ltd/series/akatsuki-no-yona-ova
+2026-03-19 20:00:48,850 - INFO - Scraping detail: https://coba.oploverz.ltd/series/akatsuki-no-yona-ova
+2026-03-19 20:00:52,277 - INFO - [86/526] https://coba.oploverz.ltd/series/kingdom-s6
+2026-03-19 20:00:52,278 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kingdom-s6
+2026-03-19 20:01:04,011 - INFO - [87/526] https://coba.oploverz.ltd/series/promised-neverland-season-2
+2026-03-19 20:01:04,012 - INFO - Scraping detail: https://coba.oploverz.ltd/series/promised-neverland-season-2
+2026-03-19 20:01:14,769 - INFO - [88/526] https://coba.oploverz.ltd/series/soul-eater
+2026-03-19 20:01:14,770 - INFO - Scraping detail: https://coba.oploverz.ltd/series/soul-eater
+2026-03-19 20:01:56,620 - INFO - [89/526] https://coba.oploverz.ltd/series/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e-s2
+2026-03-19 20:01:56,620 - INFO - Scraping detail: https://coba.oploverz.ltd/series/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e-s2
+2026-03-19 20:02:09,961 - INFO - [90/526] https://coba.oploverz.ltd/series/back-street-girls-gokudolls
+2026-03-19 20:02:09,962 - INFO - Scraping detail: https://coba.oploverz.ltd/series/back-street-girls-gokudolls
+2026-03-19 20:02:19,788 - INFO - [91/526] https://coba.oploverz.ltd/series/tengen-toppa-gurren-lagann
+2026-03-19 20:02:19,789 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tengen-toppa-gurren-lagann
+2026-03-19 20:02:41,847 - INFO - [92/526] https://coba.oploverz.ltd/series/record-of-ragnarok-s2
+2026-03-19 20:02:41,848 - INFO - Scraping detail: https://coba.oploverz.ltd/series/record-of-ragnarok-s2
+2026-03-19 20:02:55,530 - INFO - [93/526] https://coba.oploverz.ltd/series/kijin-gentoushou
+2026-03-19 20:02:55,586 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kijin-gentoushou
+2026-03-19 20:03:17,165 - INFO - [94/526] https://coba.oploverz.ltd/series/sword-art-online-the-movie-1-progressive-aria-of-a-starless-night
+2026-03-19 20:03:17,166 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sword-art-online-the-movie-1-progressive-aria-of-a-starless-night
+2026-03-19 20:03:20,811 - INFO - [95/526] https://coba.oploverz.ltd/series/inazuma-eleven-s2-go
+2026-03-19 20:03:20,812 - INFO - Scraping detail: https://coba.oploverz.ltd/series/inazuma-eleven-s2-go
+2026-03-19 20:03:59,255 - INFO - [96/526] https://coba.oploverz.ltd/series/white-album-2
+2026-03-19 20:03:59,255 - INFO - Scraping detail: https://coba.oploverz.ltd/series/white-album-2
+2026-03-19 20:04:11,811 - INFO - [97/526] https://coba.oploverz.ltd/series/yowamushi-pedal-season-5
+2026-03-19 20:04:11,812 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yowamushi-pedal-season-5
+2026-03-19 20:04:33,737 - INFO - [98/526] https://coba.oploverz.ltd/series/alya-sometimes-hides-her-feelings-in-russian
+2026-03-19 20:04:33,738 - INFO - Scraping detail: https://coba.oploverz.ltd/series/alya-sometimes-hides-her-feelings-in-russian
+2026-03-19 20:04:46,374 - INFO - [99/526] https://coba.oploverz.ltd/series/prison-school
+2026-03-19 20:04:46,375 - INFO - Scraping detail: https://coba.oploverz.ltd/series/prison-school
+2026-03-19 20:04:57,101 - INFO - [100/526] https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s1-demon-slayer-s1
+2026-03-19 20:04:57,102 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s1-demon-slayer-s1
+2026-03-19 20:05:21,088 - INFO - [101/526] https://coba.oploverz.ltd/series/new-prince-of-tennis
+2026-03-19 20:05:21,089 - INFO - Scraping detail: https://coba.oploverz.ltd/series/new-prince-of-tennis
+2026-03-19 20:05:33,393 - INFO - [102/526] https://coba.oploverz.ltd/series/yu-gi-oh-5-arc-v
+2026-03-19 20:05:33,393 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-gi-oh-5-arc-v
+2026-03-19 20:07:27,076 - INFO - [103/526] https://coba.oploverz.ltd/series/the-beginning-after-the-end
+2026-03-19 20:07:27,077 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-beginning-after-the-end
+2026-03-19 20:07:38,554 - INFO - [104/526] https://coba.oploverz.ltd/series/jigoku-shoujo-yoi-no-togi
+2026-03-19 20:07:38,554 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jigoku-shoujo-yoi-no-togi
+2026-03-19 20:07:49,704 - INFO - [105/526] https://coba.oploverz.ltd/series/isekai-maou-to-shoukan-shoujo-no-dorei-majutsu
+2026-03-19 20:07:49,705 - INFO - Scraping detail: https://coba.oploverz.ltd/series/isekai-maou-to-shoukan-shoujo-no-dorei-majutsu
+2026-03-19 20:08:01,454 - INFO - [106/526] https://coba.oploverz.ltd/series/white-album-1
+2026-03-19 20:08:01,454 - INFO - Scraping detail: https://coba.oploverz.ltd/series/white-album-1
+2026-03-19 20:08:23,763 - INFO - [107/526] https://coba.oploverz.ltd/series/shokugeki-no-souma-season-3
+2026-03-19 20:08:23,764 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shokugeki-no-souma-season-3
+2026-03-19 20:08:43,696 - INFO - [108/526] https://coba.oploverz.ltd/series/vanitas-no-carte-part-2
+2026-03-19 20:08:43,697 - INFO - Scraping detail: https://coba.oploverz.ltd/series/vanitas-no-carte-part-2
+2026-03-19 20:08:55,869 - INFO - [109/526] https://coba.oploverz.ltd/series/eureka-seven-s2-ao
+2026-03-19 20:08:55,869 - INFO - Scraping detail: https://coba.oploverz.ltd/series/eureka-seven-s2-ao
+2026-03-19 20:09:16,377 - INFO - [110/526] https://coba.oploverz.ltd/series/nanatsu-no-taizai-season-2
+2026-03-19 20:09:16,378 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nanatsu-no-taizai-season-2
+2026-03-19 20:09:37,515 - INFO - [111/526] https://coba.oploverz.ltd/series/digimon-adventure-tri-3-kokuhaku
+2026-03-19 20:09:37,515 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-tri-3-kokuhaku
+2026-03-19 20:09:44,436 - INFO - [112/526] https://coba.oploverz.ltd/series/vinland-saga-s2
+2026-03-19 20:09:44,437 - INFO - Scraping detail: https://coba.oploverz.ltd/series/vinland-saga-s2
+2026-03-19 20:10:04,312 - INFO - [113/526] https://coba.oploverz.ltd/series/mirai-nikki
+2026-03-19 20:10:04,313 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mirai-nikki
+2026-03-19 20:10:26,671 - INFO - [114/526] https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-3-ultra-romantic
+2026-03-19 20:10:26,672 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-3-ultra-romantic
+2026-03-19 20:10:40,657 - INFO - [115/526] https://coba.oploverz.ltd/series/takopii-no-genzai
+2026-03-19 20:10:40,658 - INFO - Scraping detail: https://coba.oploverz.ltd/series/takopii-no-genzai
+2026-03-19 20:10:48,843 - INFO - [116/526] https://coba.oploverz.ltd/series/masamune-kun-no-revenge-r
+2026-03-19 20:10:48,844 - INFO - Scraping detail: https://coba.oploverz.ltd/series/masamune-kun-no-revenge-r
+2026-03-19 20:11:00,756 - INFO - [117/526] https://coba.oploverz.ltd/series/digimon-xros-wars-s2-the-evil-death-generals-and-the-seven-kingdoms
+2026-03-19 20:11:00,756 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-xros-wars-s2-the-evil-death-generals-and-the-seven-kingdoms
+2026-03-19 20:11:02,351 - WARNING - Anime Digimon Xros Wars S2 The Evil Death Generals And The Seven Kingdoms tidak memiliki episode, tetap disimpan
+2026-03-19 20:11:03,547 - INFO - [118/526] https://coba.oploverz.ltd/series/campfire-cooking-in-another-world-with-my-absurd-skill
+2026-03-19 20:11:03,548 - INFO - Scraping detail: https://coba.oploverz.ltd/series/campfire-cooking-in-another-world-with-my-absurd-skill
+2026-03-19 20:11:15,348 - INFO - [119/526] https://coba.oploverz.ltd/series/dragon-ball-daima
+2026-03-19 20:11:15,349 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dragon-ball-daima
+2026-03-19 20:11:33,899 - INFO - [120/526] https://coba.oploverz.ltd/series/s8-zoku-owarimonogatari
+2026-03-19 20:11:33,899 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s8-zoku-owarimonogatari
+2026-03-19 20:11:41,951 - INFO - [121/526] https://coba.oploverz.ltd/series/rurouni-kenshin-s2-kyoto-disturbance-2024
+2026-03-19 20:11:41,952 - INFO - Scraping detail: https://coba.oploverz.ltd/series/rurouni-kenshin-s2-kyoto-disturbance-2024
+2026-03-19 20:12:00,289 - INFO - [122/526] https://coba.oploverz.ltd/series/ranpo-kitan-game-of-laplace
+2026-03-19 20:12:00,289 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ranpo-kitan-game-of-laplace
+2026-03-19 20:12:11,197 - INFO - [123/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-5
+2026-03-19 20:12:11,198 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-5
+2026-03-19 20:12:34,079 - INFO - [124/526] https://coba.oploverz.ltd/series/ao-no-exorcist-s1
+2026-03-19 20:12:34,079 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-no-exorcist-s1
+2026-03-19 20:12:56,641 - INFO - [125/526] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-3-diamond-is-unbreakable
+2026-03-19 20:12:56,642 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-3-diamond-is-unbreakable
+2026-03-19 20:13:28,616 - INFO - [126/526] https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s3-katanakaji-no-sato-hen-demon-slayer-s3-swordsmith-village-arc
+2026-03-19 20:13:28,617 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s3-katanakaji-no-sato-hen-demon-slayer-s3-swordsmith-village-arc
+2026-03-19 20:13:39,301 - INFO - [127/526] https://coba.oploverz.ltd/series/zankyou-no-terror
+2026-03-19 20:13:39,302 - INFO - Scraping detail: https://coba.oploverz.ltd/series/zankyou-no-terror
+2026-03-19 20:13:49,390 - INFO - [128/526] https://coba.oploverz.ltd/series/diamond-no-ace-season-1
+2026-03-19 20:13:49,391 - INFO - Scraping detail: https://coba.oploverz.ltd/series/diamond-no-ace-season-1
+2026-03-19 20:14:46,995 - INFO - [129/526] https://coba.oploverz.ltd/series/chainsaw-man
+2026-03-19 20:14:46,996 - INFO - Scraping detail: https://coba.oploverz.ltd/series/chainsaw-man
+2026-03-19 20:14:59,624 - INFO - [130/526] https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-5-stairway-to-adulthood
+2026-03-19 20:14:59,624 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-5-stairway-to-adulthood
+2026-03-19 20:15:04,455 - INFO - [131/526] https://coba.oploverz.ltd/series/fateextra-last-encore
+2026-03-19 20:15:04,455 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fateextra-last-encore
+2026-03-19 20:15:17,614 - INFO - [132/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-2
+2026-03-19 20:15:17,614 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-2
+2026-03-19 20:15:39,354 - INFO - [133/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-1
+2026-03-19 20:15:39,355 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-1
+2026-03-19 22:01:38,317 - INFO - [134/526] https://coba.oploverz.ltd/series/hunter-x-hunter-2011
+2026-03-19 22:01:38,418 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hunter-x-hunter-2011
+2026-03-19 22:03:35,390 - INFO - [135/526] https://coba.oploverz.ltd/series/yowamushi-pedal-season-2
+2026-03-19 22:03:35,391 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yowamushi-pedal-season-2
+2026-03-19 22:03:58,149 - INFO - [136/526] https://coba.oploverz.ltd/series/shingeki-no-kyojin-attack-on-titan
+2026-03-19 22:03:58,149 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shingeki-no-kyojin-attack-on-titan
+2026-03-19 22:04:18,945 - INFO - [137/526] https://coba.oploverz.ltd/series/yowamushi-pedal-season-3
+2026-03-19 22:04:18,946 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yowamushi-pedal-season-3
+2026-03-19 22:04:42,410 - INFO - [138/526] https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s4-hashira-geiko-hen-demon-slayer-s4-hashira-training-arc
+2026-03-19 22:04:42,411 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s4-hashira-geiko-hen-demon-slayer-s4-hashira-training-arc
+2026-03-19 22:04:51,505 - INFO - [139/526] https://coba.oploverz.ltd/series/gintama-s3-enchousen
+2026-03-19 22:04:51,521 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s3-enchousen
+2026-03-19 22:05:07,160 - INFO - [140/526] https://coba.oploverz.ltd/series/fruits-basket-remake-s1
+2026-03-19 22:05:07,161 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fruits-basket-remake-s1
+2026-03-19 22:05:29,957 - INFO - [141/526] https://coba.oploverz.ltd/series/gintama-s2
+2026-03-19 22:05:29,958 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s2
+2026-03-19 22:06:10,850 - INFO - [142/526] https://coba.oploverz.ltd/series/haikyuu-season-2
+2026-03-19 22:06:10,850 - INFO - Scraping detail: https://coba.oploverz.ltd/series/haikyuu-season-2
+2026-03-19 22:06:35,121 - INFO - [143/526] https://coba.oploverz.ltd/series/aoashi
+2026-03-19 22:06:35,121 - INFO - Scraping detail: https://coba.oploverz.ltd/series/aoashi
+2026-03-19 22:06:57,232 - INFO - [144/526] https://coba.oploverz.ltd/series/ao-haru-ride
+2026-03-19 22:06:57,233 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-haru-ride
+2026-03-19 22:07:08,883 - INFO - [145/526] https://coba.oploverz.ltd/series/digimon-savers
+2026-03-19 22:07:08,883 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-savers
+2026-03-19 22:07:11,236 - WARNING - Anime Digimon Savers tidak memiliki episode, tetap disimpan
+2026-03-19 22:07:12,051 - INFO - [146/526] https://coba.oploverz.ltd/series/digimon-frontier
+2026-03-19 22:07:12,052 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-frontier
+2026-03-19 22:07:55,599 - INFO - [147/526] https://coba.oploverz.ltd/series/jigokuraku-s1
+2026-03-19 22:07:55,600 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jigokuraku-s1
+2026-03-19 22:08:08,344 - INFO - [148/526] https://coba.oploverz.ltd/series/lord-of-mysteries
+2026-03-19 22:08:08,345 - INFO - Scraping detail: https://coba.oploverz.ltd/series/lord-of-mysteries
+2026-03-19 22:08:21,783 - INFO - [149/526] https://coba.oploverz.ltd/series/gintama-s8-the-semi-final
+2026-03-19 22:08:21,850 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s8-the-semi-final
+2026-03-19 22:08:28,720 - INFO - [150/526] https://coba.oploverz.ltd/series/oregairu
+2026-03-19 22:08:28,721 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oregairu
+2026-03-19 22:08:44,191 - INFO - [151/526] https://coba.oploverz.ltd/series/shingeki-no-kyojin-the-final-season-kanketsu-hen-attack-on-titan-final-season-the-final-chapters
+2026-03-19 22:08:44,193 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shingeki-no-kyojin-the-final-season-kanketsu-hen-attack-on-titan-final-season-the-final-chapters
+2026-03-19 22:08:51,235 - INFO - [152/526] https://coba.oploverz.ltd/series/gintama-s1
+2026-03-19 22:08:51,240 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s1
+2026-03-19 22:11:28,593 - INFO - [153/526] https://coba.oploverz.ltd/series/initial-d-second-stage
+2026-03-19 22:11:28,593 - INFO - Scraping detail: https://coba.oploverz.ltd/series/initial-d-second-stage
+2026-03-19 22:11:41,528 - INFO - [154/526] https://coba.oploverz.ltd/series/tokyo-revengers-s1
+2026-03-19 22:11:41,528 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-revengers-s1
+2026-03-19 22:12:01,558 - INFO - [155/526] https://coba.oploverz.ltd/series/ushio-to-tora
+2026-03-19 22:12:01,558 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ushio-to-tora
+2026-03-19 22:12:33,363 - INFO - [156/526] https://coba.oploverz.ltd/series/terra-formars
+2026-03-19 22:12:33,363 - INFO - Scraping detail: https://coba.oploverz.ltd/series/terra-formars
+2026-03-19 22:12:46,412 - INFO - [157/526] https://coba.oploverz.ltd/series/initial-d-fourth-stage
+2026-03-19 22:12:46,413 - INFO - Scraping detail: https://coba.oploverz.ltd/series/initial-d-fourth-stage
+2026-03-19 22:13:09,090 - INFO - [158/526] https://coba.oploverz.ltd/series/slam-dunk
+2026-03-19 22:13:09,091 - INFO - Scraping detail: https://coba.oploverz.ltd/series/slam-dunk
+2026-03-19 22:14:29,991 - INFO - [159/526] https://coba.oploverz.ltd/series/kingdom-s4
+2026-03-19 22:14:29,991 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kingdom-s4
+2026-03-19 22:14:53,182 - INFO - [160/526] https://coba.oploverz.ltd/series/date-a-live
+2026-03-19 22:14:53,183 - INFO - Scraping detail: https://coba.oploverz.ltd/series/date-a-live
+2026-03-19 22:15:04,695 - INFO - [161/526] https://coba.oploverz.ltd/series/mobile-suit-gundam-seed
+2026-03-19 22:15:04,695 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mobile-suit-gundam-seed
+2026-03-19 22:15:43,401 - INFO - [162/526] https://coba.oploverz.ltd/series/boku-dake-ga-inai-machi
+2026-03-19 22:15:43,403 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-dake-ga-inai-machi
+2026-03-19 22:15:55,239 - INFO - [163/526] https://coba.oploverz.ltd/series/one-punch-man
+2026-03-19 22:15:55,240 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-punch-man
+2026-03-19 22:16:07,105 - INFO - [164/526] https://coba.oploverz.ltd/series/itai-no-wa-iya-nano-de-bougyoryoku-ni-kyokufuri-shitai-to-omoimasu-s2
+2026-03-19 22:16:07,106 - INFO - Scraping detail: https://coba.oploverz.ltd/series/itai-no-wa-iya-nano-de-bougyoryoku-ni-kyokufuri-shitai-to-omoimasu-s2
+2026-03-19 22:16:19,469 - INFO - [165/526] https://coba.oploverz.ltd/series/hataraku-maou-sama-s2
+2026-03-19 22:16:19,470 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hataraku-maou-sama-s2
+2026-03-19 22:16:31,865 - INFO - [166/526] https://coba.oploverz.ltd/series/dramatical-murder
+2026-03-19 22:16:31,865 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dramatical-murder
+2026-03-19 22:16:45,332 - INFO - [167/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-6
+2026-03-19 22:16:45,333 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-6
+2026-03-19 22:17:08,568 - INFO - [168/526] https://coba.oploverz.ltd/series/digimon-adventure-01
+2026-03-19 22:17:08,569 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-01
+2026-03-19 22:17:52,275 - INFO - [169/526] https://coba.oploverz.ltd/series/digimon-adventure-tri-5-kyousei
+2026-03-19 22:17:52,275 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-tri-5-kyousei
+2026-03-19 22:17:59,291 - INFO - [170/526] https://coba.oploverz.ltd/series/gintama-movie-1-shinyaku-benizakura-hen
+2026-03-19 22:17:59,292 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-movie-1-shinyaku-benizakura-hen
+2026-03-19 22:18:03,641 - INFO - [171/526] https://coba.oploverz.ltd/series/shinka-no-mi-shiranai-uchi-ni-kachigumi-jinsei
+2026-03-19 22:18:03,642 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shinka-no-mi-shiranai-uchi-ni-kachigumi-jinsei
+2026-03-19 22:18:15,620 - INFO - [172/526] https://coba.oploverz.ltd/series/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e-s3
+2026-03-19 22:18:15,621 - INFO - Scraping detail: https://coba.oploverz.ltd/series/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e-s3
+2026-03-19 22:18:30,589 - INFO - [173/526] https://coba.oploverz.ltd/series/nijiiro-days
+2026-03-19 22:18:30,824 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nijiiro-days
+2026-03-19 22:18:55,964 - INFO - [174/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-7
+2026-03-19 22:18:55,964 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-7
+2026-03-19 22:19:14,603 - INFO - [175/526] https://coba.oploverz.ltd/series/death-march-kara-hajimaru-isekai-kyousoukyoku
+2026-03-19 22:19:14,603 - INFO - Scraping detail: https://coba.oploverz.ltd/series/death-march-kara-hajimaru-isekai-kyousoukyoku
+2026-03-19 22:19:27,507 - INFO - [176/526] https://coba.oploverz.ltd/series/bleach
+2026-03-19 22:19:27,509 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bleach
+2026-03-19 22:24:37,226 - INFO - [177/526] https://coba.oploverz.ltd/series/86-eighty-six-part-1
+2026-03-19 22:24:37,228 - INFO - Scraping detail: https://coba.oploverz.ltd/series/86-eighty-six-part-1
+2026-03-19 22:24:49,961 - INFO - [178/526] https://coba.oploverz.ltd/series/one-punch-man-season-2
+2026-03-19 22:24:49,962 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-punch-man-season-2
+2026-03-19 22:25:02,827 - INFO - [179/526] https://coba.oploverz.ltd/series/dandadan
+2026-03-19 22:25:02,828 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dandadan
+2026-03-19 22:25:23,473 - INFO - [180/526] https://coba.oploverz.ltd/series/grand-blue
+2026-03-19 22:25:23,474 - INFO - Scraping detail: https://coba.oploverz.ltd/series/grand-blue
+2026-03-19 22:25:34,933 - INFO - [181/526] https://coba.oploverz.ltd/series/blade-and-soul
+2026-03-19 22:25:34,934 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blade-and-soul
+2026-03-19 22:25:48,527 - INFO - [182/526] https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-1
+2026-03-19 22:25:48,528 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-1
+2026-03-19 22:26:00,842 - INFO - [183/526] https://coba.oploverz.ltd/series/nageki-no-bourei-wa-intai-shitai-part-2
+2026-03-19 22:26:00,843 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nageki-no-bourei-wa-intai-shitai-part-2
+2026-03-19 22:26:14,479 - INFO - [184/526] https://coba.oploverz.ltd/series/re-zero-kara-hajimeru-isekai-seikatsu-season-2
+2026-03-19 22:26:14,480 - INFO - Scraping detail: https://coba.oploverz.ltd/series/re-zero-kara-hajimeru-isekai-seikatsu-season-2
+2026-03-19 22:26:36,927 - INFO - [185/526] https://coba.oploverz.ltd/series/kono-subarashii-sekai-ni-shukufuku-wo
+2026-03-19 22:26:36,928 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kono-subarashii-sekai-ni-shukufuku-wo
+2026-03-19 22:26:48,434 - INFO - [186/526] https://coba.oploverz.ltd/series/kaiju-no-8-s2
+2026-03-19 22:26:48,434 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaiju-no-8-s2
+2026-03-19 22:27:00,218 - INFO - [187/526] https://coba.oploverz.ltd/series/kaiju-no-8
+2026-03-19 22:27:00,218 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaiju-no-8
+2026-03-19 22:27:12,526 - INFO - [188/526] https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari-s4
+2026-03-19 22:27:12,526 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari-s4
+2026-03-19 22:27:27,698 - INFO - [189/526] https://coba.oploverz.ltd/series/to-your-eternity-s2
+2026-03-19 22:27:27,698 - INFO - Scraping detail: https://coba.oploverz.ltd/series/to-your-eternity-s2
+2026-03-19 22:27:46,018 - INFO - [190/526] https://coba.oploverz.ltd/series/3d-kanojo-real-girl
+2026-03-19 22:27:46,018 - INFO - Scraping detail: https://coba.oploverz.ltd/series/3d-kanojo-real-girl
+2026-03-19 22:27:58,235 - INFO - [191/526] https://coba.oploverz.ltd/series/golden-kamuy-s4
+2026-03-19 22:27:58,236 - INFO - Scraping detail: https://coba.oploverz.ltd/series/golden-kamuy-s4
+2026-03-19 22:28:11,562 - INFO - [192/526] https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-1
+2026-03-19 22:28:11,563 - INFO - Scraping detail: https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-1
+2026-03-19 22:28:32,358 - INFO - [193/526] https://coba.oploverz.ltd/series/arcana-famiglia
+2026-03-19 22:28:32,358 - INFO - Scraping detail: https://coba.oploverz.ltd/series/arcana-famiglia
+2026-03-19 22:28:44,990 - INFO - [194/526] https://coba.oploverz.ltd/series/fire-force-season-1
+2026-03-19 22:28:44,990 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fire-force-season-1
+2026-03-19 22:29:05,848 - INFO - [195/526] https://coba.oploverz.ltd/series/one-punch-man-ova-road-to-hero
+2026-03-19 22:29:05,849 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-punch-man-ova-road-to-hero
+2026-03-19 22:29:09,306 - INFO - [196/526] https://coba.oploverz.ltd/series/cowboy-bebop
+2026-03-19 22:29:09,384 - INFO - Scraping detail: https://coba.oploverz.ltd/series/cowboy-bebop
+2026-03-19 22:29:31,995 - INFO - [197/526] https://coba.oploverz.ltd/series/tsue-to-tsurugi-no-wistoria
+2026-03-19 22:29:31,996 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tsue-to-tsurugi-no-wistoria
+2026-03-19 22:29:43,848 - INFO - [198/526] https://coba.oploverz.ltd/series/musaigen-no-phantom-world
+2026-03-19 22:29:43,849 - INFO - Scraping detail: https://coba.oploverz.ltd/series/musaigen-no-phantom-world
+2026-03-19 22:29:57,764 - INFO - [199/526] https://coba.oploverz.ltd/series/violet-evergarden
+2026-03-19 22:29:57,765 - INFO - Scraping detail: https://coba.oploverz.ltd/series/violet-evergarden
+2026-03-19 22:30:09,502 - INFO - [200/526] https://coba.oploverz.ltd/series/tomodachi-game
+2026-03-19 22:30:09,502 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tomodachi-game
+2026-03-19 22:30:23,017 - INFO - [201/526] https://coba.oploverz.ltd/series/yu-gi-oh-2-gx
+2026-03-19 22:30:23,018 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-gi-oh-2-gx
+2026-03-19 22:32:42,531 - INFO - [202/526] https://coba.oploverz.ltd/series/initial-d-final-stage
+2026-03-19 22:32:42,532 - INFO - Scraping detail: https://coba.oploverz.ltd/series/initial-d-final-stage
+2026-03-19 22:32:48,503 - INFO - [203/526] https://coba.oploverz.ltd/series/one-piece-ova
+2026-03-19 22:32:48,504 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece-ova
+2026-03-19 22:32:53,421 - INFO - [204/526] https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s4
+2026-03-19 22:32:53,421 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s4
+2026-03-19 22:33:06,683 - INFO - [205/526] https://coba.oploverz.ltd/series/gundam-build-fighters-battlogue
+2026-03-19 22:33:06,684 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gundam-build-fighters-battlogue
+2026-03-19 22:33:11,984 - INFO - [206/526] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-1
+2026-03-19 22:33:11,984 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-1
+2026-03-19 22:33:24,601 - INFO - [207/526] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-1
+2026-03-19 22:33:24,602 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-1
+2026-03-19 22:33:48,441 - INFO - [208/526] https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s3
+2026-03-19 22:33:48,442 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s3
+2026-03-19 22:34:00,537 - INFO - [209/526] https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-season-3
+2026-03-19 22:34:00,538 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-season-3
+2026-03-19 22:34:12,393 - INFO - [210/526] https://coba.oploverz.ltd/series/noragami-s2-aragoto
+2026-03-19 22:34:12,394 - INFO - Scraping detail: https://coba.oploverz.ltd/series/noragami-s2-aragoto
+2026-03-19 22:34:25,035 - INFO - [211/526] https://coba.oploverz.ltd/series/ansatsu-kyoushitsu-season-2
+2026-03-19 22:34:25,036 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ansatsu-kyoushitsu-season-2
+2026-03-19 22:34:48,735 - INFO - [212/526] https://coba.oploverz.ltd/series/charlotte
+2026-03-19 22:34:48,736 - INFO - Scraping detail: https://coba.oploverz.ltd/series/charlotte
+2026-03-19 22:35:02,653 - INFO - [213/526] https://coba.oploverz.ltd/series/rurouni-kenshin-meiji-kenkaku-romantan-2023
+2026-03-19 22:35:02,653 - INFO - Scraping detail: https://coba.oploverz.ltd/series/rurouni-kenshin-meiji-kenkaku-romantan-2023
+2026-03-19 22:35:23,825 - INFO - [214/526] https://coba.oploverz.ltd/series/kingdom-s3
+2026-03-19 22:35:23,826 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kingdom-s3
+2026-03-19 22:35:47,103 - INFO - [215/526] https://coba.oploverz.ltd/series/vigilante-boku-no-hero-academia-illegals-s1
+2026-03-19 22:35:47,104 - INFO - Scraping detail: https://coba.oploverz.ltd/series/vigilante-boku-no-hero-academia-illegals-s1
+2026-03-19 22:36:00,507 - INFO - [216/526] https://coba.oploverz.ltd/series/log-horizon-season-2
+2026-03-19 22:36:00,508 - INFO - Scraping detail: https://coba.oploverz.ltd/series/log-horizon-season-2
+2026-03-19 22:36:22,998 - INFO - [217/526] https://coba.oploverz.ltd/series/itai-no-wa-iya-nano-de-bougyoryoku-ni-kyokufuri-shitai-to-omoimasu
+2026-03-19 22:36:22,999 - INFO - Scraping detail: https://coba.oploverz.ltd/series/itai-no-wa-iya-nano-de-bougyoryoku-ni-kyokufuri-shitai-to-omoimasu
+2026-03-19 22:36:35,167 - INFO - [218/526] https://coba.oploverz.ltd/series/darling-in-the-franxx
+2026-03-19 22:36:35,167 - INFO - Scraping detail: https://coba.oploverz.ltd/series/darling-in-the-franxx
+2026-03-19 22:36:56,373 - INFO - [219/526] https://coba.oploverz.ltd/series/dragon-ball-gt
+2026-03-19 22:36:56,374 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dragon-ball-gt
+2026-03-19 22:37:49,080 - INFO - [220/526] https://coba.oploverz.ltd/series/gachiakuta
+2026-03-19 22:37:49,081 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gachiakuta
+2026-03-19 22:38:10,824 - INFO - [221/526] https://coba.oploverz.ltd/series/yu-gi-oh-4-zexal
+2026-03-19 22:38:10,825 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-gi-oh-4-zexal
+2026-03-19 22:40:01,954 - INFO - [222/526] https://coba.oploverz.ltd/series/shokugeki-no-souma-season-5
+2026-03-19 22:40:01,955 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shokugeki-no-souma-season-5
+2026-03-19 22:40:16,153 - INFO - [223/526] https://coba.oploverz.ltd/series/free-season-2
+2026-03-19 22:40:16,154 - INFO - Scraping detail: https://coba.oploverz.ltd/series/free-season-2
+2026-03-19 22:40:30,273 - INFO - [224/526] https://coba.oploverz.ltd/series/sakamoto-desu-ga
+2026-03-19 22:40:30,274 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sakamoto-desu-ga
+2026-03-19 22:40:42,597 - INFO - [225/526] https://coba.oploverz.ltd/series/kingdom-s5
+2026-03-19 22:40:42,598 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kingdom-s5
+2026-03-19 22:40:55,770 - INFO - [226/526] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-2-stardust-crusaders
+2026-03-19 22:40:55,771 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-2-stardust-crusaders
+2026-03-19 22:41:35,178 - INFO - [227/526] https://coba.oploverz.ltd/series/k-season-2
+2026-03-19 22:41:35,179 - INFO - Scraping detail: https://coba.oploverz.ltd/series/k-season-2
+2026-03-19 22:41:47,590 - INFO - [228/526] https://coba.oploverz.ltd/series/gintama-s9-the-final
+2026-03-19 22:41:47,591 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s9-the-final
+2026-03-19 22:41:52,698 - INFO - [229/526] https://coba.oploverz.ltd/series/date-a-live-season-2
+2026-03-19 22:41:52,699 - INFO - Scraping detail: https://coba.oploverz.ltd/series/date-a-live-season-2
+2026-03-19 22:42:04,124 - INFO - [230/526] https://coba.oploverz.ltd/series/isekai-maou-to-shoukan-shoujo-no-dorei-majutsu-season-2
+2026-03-19 22:42:04,124 - INFO - Scraping detail: https://coba.oploverz.ltd/series/isekai-maou-to-shoukan-shoujo-no-dorei-majutsu-season-2
+2026-03-19 22:42:15,043 - INFO - [231/526] https://coba.oploverz.ltd/series/sword-art-online-the-movie-2-progressive-scherzo-of-deep-night
+2026-03-19 22:42:15,043 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sword-art-online-the-movie-2-progressive-scherzo-of-deep-night
+2026-03-19 22:42:18,732 - INFO - [232/526] https://coba.oploverz.ltd/series/mato-seihei-no-slave-s2
+2026-03-19 22:42:18,733 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mato-seihei-no-slave-s2
+2026-03-19 22:42:28,951 - INFO - [233/526] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-4
+2026-03-19 22:42:28,952 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-4
+2026-03-19 22:42:49,183 - INFO - [234/526] https://coba.oploverz.ltd/series/vinland-saga
+2026-03-19 22:42:49,183 - INFO - Scraping detail: https://coba.oploverz.ltd/series/vinland-saga
+2026-03-19 22:43:10,007 - INFO - [235/526] https://coba.oploverz.ltd/series/nanatsu-no-taizai-season-3
+2026-03-19 22:43:10,008 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nanatsu-no-taizai-season-3
+2026-03-19 22:43:31,058 - INFO - [236/526] https://coba.oploverz.ltd/series/digimon-tamers
+2026-03-19 22:43:31,059 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-tamers
+2026-03-19 22:43:33,406 - WARNING - Anime Digimon Tamers tidak memiliki episode, tetap disimpan
+2026-03-19 22:43:34,898 - INFO - [237/526] https://coba.oploverz.ltd/series/fire-force-season-3
+2026-03-19 22:43:34,899 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fire-force-season-3
+2026-03-19 22:43:56,765 - INFO - [238/526] https://coba.oploverz.ltd/series/koi-wa-ameagari-no-you-ni
+2026-03-19 22:43:56,766 - INFO - Scraping detail: https://coba.oploverz.ltd/series/koi-wa-ameagari-no-you-ni
+2026-03-19 22:44:09,160 - INFO - [239/526] https://coba.oploverz.ltd/series/kingdom-s1
+2026-03-19 22:44:09,160 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kingdom-s1
+2026-03-19 22:44:41,125 - INFO - [240/526] https://coba.oploverz.ltd/series/initial-d-third-stage
+2026-03-19 22:44:41,125 - INFO - Scraping detail: https://coba.oploverz.ltd/series/initial-d-third-stage
+2026-03-19 22:44:45,337 - INFO - [241/526] https://coba.oploverz.ltd/series/my-dress-up-darling-s1
+2026-03-19 22:44:45,338 - INFO - Scraping detail: https://coba.oploverz.ltd/series/my-dress-up-darling-s1
+2026-03-19 22:44:59,049 - INFO - [242/526] https://coba.oploverz.ltd/series/non-non-biyori-repeat
+2026-03-19 22:44:59,049 - INFO - Scraping detail: https://coba.oploverz.ltd/series/non-non-biyori-repeat
+2026-03-19 22:45:11,176 - INFO - [243/526] https://coba.oploverz.ltd/series/taboo-tatto
+2026-03-19 22:45:11,177 - INFO - Scraping detail: https://coba.oploverz.ltd/series/taboo-tatto
+2026-03-19 22:45:22,693 - INFO - [244/526] https://coba.oploverz.ltd/series/death-note
+2026-03-19 22:45:22,694 - INFO - Scraping detail: https://coba.oploverz.ltd/series/death-note
+2026-03-19 22:45:53,451 - INFO - [245/526] https://coba.oploverz.ltd/series/k-season-1
+2026-03-19 22:45:53,452 - INFO - Scraping detail: https://coba.oploverz.ltd/series/k-season-1
+2026-03-19 22:46:06,818 - INFO - [246/526] https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari-s3
+2026-03-19 22:46:06,818 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari-s3
+2026-03-19 22:46:19,342 - INFO - [247/526] https://coba.oploverz.ltd/series/aldnoah-zero
+2026-03-19 22:46:19,343 - INFO - Scraping detail: https://coba.oploverz.ltd/series/aldnoah-zero
+2026-03-19 22:46:32,878 - INFO - [248/526] https://coba.oploverz.ltd/series/shinchou-yuusha-kono-yuusha-ga-ore-tueee-kuse-ni-shinchou-sugiru
+2026-03-19 22:46:32,879 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shinchou-yuusha-kono-yuusha-ga-ore-tueee-kuse-ni-shinchou-sugiru
+2026-03-19 22:46:45,069 - INFO - [249/526] https://coba.oploverz.ltd/series/3-gatsu-no-lion-s1
+2026-03-19 22:46:45,070 - INFO - Scraping detail: https://coba.oploverz.ltd/series/3-gatsu-no-lion-s1
+2026-03-19 22:47:05,632 - INFO - [250/526] https://coba.oploverz.ltd/series/hibike-euphonium-season-2
+2026-03-19 22:47:05,633 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hibike-euphonium-season-2
+2026-03-19 22:47:19,519 - INFO - [251/526] https://coba.oploverz.ltd/series/wind-breaker-s2
+2026-03-19 22:47:19,520 - INFO - Scraping detail: https://coba.oploverz.ltd/series/wind-breaker-s2
+2026-03-19 22:47:32,960 - INFO - [252/526] https://coba.oploverz.ltd/series/diamond-no-ace-season-2
+2026-03-19 22:47:32,961 - INFO - Scraping detail: https://coba.oploverz.ltd/series/diamond-no-ace-season-2
+2026-03-19 22:48:16,632 - INFO - [253/526] https://coba.oploverz.ltd/series/orient
+2026-03-19 22:48:16,633 - INFO - Scraping detail: https://coba.oploverz.ltd/series/orient
+2026-03-19 22:48:29,549 - INFO - [254/526] https://coba.oploverz.ltd/series/solo-leveling-s1
+2026-03-19 22:48:29,550 - INFO - Scraping detail: https://coba.oploverz.ltd/series/solo-leveling-s1
+2026-03-19 22:48:42,525 - INFO - [255/526] https://coba.oploverz.ltd/series/boruto-naruto-next-generations
+2026-03-19 22:48:42,526 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boruto-naruto-next-generations
+2026-03-19 22:52:24,525 - INFO - [256/526] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-5-stone-ocean
+2026-03-19 22:52:24,525 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-5-stone-ocean
+2026-03-19 22:52:57,309 - INFO - [257/526] https://coba.oploverz.ltd/series/aoharu-x-kikanjuu
+2026-03-19 22:52:57,309 - INFO - Scraping detail: https://coba.oploverz.ltd/series/aoharu-x-kikanjuu
+2026-03-19 22:53:08,748 - INFO - [258/526] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-3
+2026-03-19 22:53:08,748 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-3
+2026-03-19 22:53:20,304 - INFO - [259/526] https://coba.oploverz.ltd/series/darwins-game
+2026-03-19 22:53:20,304 - INFO - Scraping detail: https://coba.oploverz.ltd/series/darwins-game
+2026-03-19 22:53:32,826 - INFO - [260/526] https://coba.oploverz.ltd/series/toaru-kagaku-no-railgun-s2-s
+2026-03-19 22:53:32,827 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-kagaku-no-railgun-s2-s
+2026-03-19 22:53:54,028 - INFO - [261/526] https://coba.oploverz.ltd/series/shokugeki-no-soma
+2026-03-19 22:53:54,028 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shokugeki-no-soma
+2026-03-19 22:54:16,128 - INFO - [262/526] https://coba.oploverz.ltd/series/aldnoah-zero-season-2
+2026-03-19 22:54:16,129 - INFO - Scraping detail: https://coba.oploverz.ltd/series/aldnoah-zero-season-2
+2026-03-19 22:54:28,708 - INFO - [263/526] https://coba.oploverz.ltd/series/shingeki-no-kyojin-season-4-attack-on-titan-s4
+2026-03-19 22:54:28,709 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shingeki-no-kyojin-season-4-attack-on-titan-s4
+2026-03-19 22:54:52,999 - INFO - [264/526] https://coba.oploverz.ltd/series/lazarus
+2026-03-19 22:54:53,000 - INFO - Scraping detail: https://coba.oploverz.ltd/series/lazarus
+2026-03-19 22:55:06,411 - INFO - [265/526] https://coba.oploverz.ltd/series/date-a-live-season-3
+2026-03-19 22:55:06,412 - INFO - Scraping detail: https://coba.oploverz.ltd/series/date-a-live-season-3
+2026-03-19 22:55:18,306 - INFO - [266/526] https://coba.oploverz.ltd/series/high-school-dxd-s4
+2026-03-19 22:55:18,307 - INFO - Scraping detail: https://coba.oploverz.ltd/series/high-school-dxd-s4
+2026-03-19 22:55:30,730 - INFO - [267/526] https://coba.oploverz.ltd/series/frieren-beyond-journeys-end-s2
+2026-03-19 22:55:30,731 - INFO - Scraping detail: https://coba.oploverz.ltd/series/frieren-beyond-journeys-end-s2
+2026-03-19 22:55:40,040 - INFO - [268/526] https://coba.oploverz.ltd/series/masamune-kun-no-revenge
+2026-03-19 22:55:40,041 - INFO - Scraping detail: https://coba.oploverz.ltd/series/masamune-kun-no-revenge
+2026-03-19 22:55:52,472 - INFO - [269/526] https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s2
+2026-03-19 22:55:52,473 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s2
+2026-03-19 22:56:13,319 - INFO - [270/526] https://coba.oploverz.ltd/series/dragon-ball-kai-2014
+2026-03-19 22:56:13,319 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dragon-ball-kai-2014
+2026-03-19 22:58:04,633 - INFO - [271/526] https://coba.oploverz.ltd/series/black-clover
+2026-03-19 22:58:04,634 - INFO - Scraping detail: https://coba.oploverz.ltd/series/black-clover
+2026-03-19 23:00:18,232 - INFO - [272/526] https://coba.oploverz.ltd/series/sasaki-to-pii-chan
+2026-03-19 23:00:18,232 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sasaki-to-pii-chan
+2026-03-19 23:00:30,180 - INFO - [273/526] https://coba.oploverz.ltd/series/shokugeki-no-souma-season-2
+2026-03-19 23:00:30,181 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shokugeki-no-souma-season-2
+2026-03-19 23:00:43,793 - INFO - [274/526] https://coba.oploverz.ltd/series/eureka-seven-s1
+2026-03-19 23:00:43,793 - INFO - Scraping detail: https://coba.oploverz.ltd/series/eureka-seven-s1
+2026-03-19 23:01:23,040 - INFO - [275/526] https://coba.oploverz.ltd/series/chuunibyou-demo-koi-ga-shitai-s1
+2026-03-19 23:01:23,041 - INFO - Scraping detail: https://coba.oploverz.ltd/series/chuunibyou-demo-koi-ga-shitai-s1
+2026-03-19 23:01:35,630 - INFO - [276/526] https://coba.oploverz.ltd/series/dr-stone
+2026-03-19 23:01:35,630 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dr-stone
+2026-03-19 23:01:56,564 - INFO - [277/526] https://coba.oploverz.ltd/series/shangri-la-frontier-s1
+2026-03-19 23:01:56,565 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shangri-la-frontier-s1
+2026-03-19 23:02:18,166 - INFO - [278/526] https://coba.oploverz.ltd/series/naruto
+2026-03-19 23:02:18,166 - INFO - Scraping detail: https://coba.oploverz.ltd/series/naruto
+2026-03-19 23:05:06,056 - INFO - [279/526] https://coba.oploverz.ltd/series/detective-conan-movie-26-black-iron-submarine
+2026-03-19 23:05:06,057 - INFO - Scraping detail: https://coba.oploverz.ltd/series/detective-conan-movie-26-black-iron-submarine
+2026-03-19 23:05:10,287 - INFO - [280/526] https://coba.oploverz.ltd/series/toaru-kagaku-no-railgun-s1
+2026-03-19 23:05:10,287 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-kagaku-no-railgun-s1
+2026-03-19 23:05:31,719 - INFO - [281/526] https://coba.oploverz.ltd/series/glasslip
+2026-03-19 23:05:31,719 - INFO - Scraping detail: https://coba.oploverz.ltd/series/glasslip
+2026-03-19 23:05:45,392 - INFO - [282/526] https://coba.oploverz.ltd/series/to-your-eternity-s1
+2026-03-19 23:05:45,393 - INFO - Scraping detail: https://coba.oploverz.ltd/series/to-your-eternity-s1
+2026-03-19 23:06:03,974 - INFO - [283/526] https://coba.oploverz.ltd/series/the-water-magician
+2026-03-19 23:06:03,975 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-water-magician
+2026-03-19 23:06:15,534 - INFO - [284/526] https://coba.oploverz.ltd/series/kenja-no-mago
+2026-03-19 23:06:15,535 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kenja-no-mago
+2026-03-19 23:06:28,887 - INFO - [285/526] https://coba.oploverz.ltd/series/hakkenden-touhou-hakken-ibun
+2026-03-19 23:06:28,888 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hakkenden-touhou-hakken-ibun
+2026-03-19 23:06:42,551 - INFO - [286/526] https://coba.oploverz.ltd/series/fatestrange-fake-whispers-of-dawn
+2026-03-19 23:06:42,552 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatestrange-fake-whispers-of-dawn
+2026-03-19 23:06:46,771 - INFO - [287/526] https://coba.oploverz.ltd/series/akatsuki-no-yona
+2026-03-19 23:06:46,772 - INFO - Scraping detail: https://coba.oploverz.ltd/series/akatsuki-no-yona
+2026-03-19 23:07:08,957 - INFO - [288/526] https://coba.oploverz.ltd/series/blue-lock-s1
+2026-03-19 23:07:08,958 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blue-lock-s1
+2026-03-19 23:07:33,023 - INFO - [289/526] https://coba.oploverz.ltd/series/nisekoi
+2026-03-19 23:07:33,023 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nisekoi
+2026-03-19 23:07:51,078 - INFO - [290/526] https://coba.oploverz.ltd/series/steins-gate-0
+2026-03-19 23:07:51,079 - INFO - Scraping detail: https://coba.oploverz.ltd/series/steins-gate-0
+2026-03-19 23:08:11,961 - INFO - [291/526] https://coba.oploverz.ltd/series/kusuriya-no-hitorigoto-s2
+2026-03-19 23:08:11,961 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kusuriya-no-hitorigoto-s2
+2026-03-19 23:08:32,985 - INFO - [292/526] https://coba.oploverz.ltd/series/one-piece-special-edited-version
+2026-03-19 23:08:32,986 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece-special-edited-version
+2026-03-19 23:08:52,033 - INFO - [293/526] https://coba.oploverz.ltd/series/plunderer
+2026-03-19 23:08:52,034 - INFO - Scraping detail: https://coba.oploverz.ltd/series/plunderer
+2026-03-19 23:09:13,754 - INFO - [294/526] https://coba.oploverz.ltd/series/inazuma-eleven-s4-go-galaxy
+2026-03-19 23:09:13,755 - INFO - Scraping detail: https://coba.oploverz.ltd/series/inazuma-eleven-s4-go-galaxy
+2026-03-19 23:09:48,205 - INFO - [295/526] https://coba.oploverz.ltd/series/akame-ga-kill
+2026-03-19 23:09:48,206 - INFO - Scraping detail: https://coba.oploverz.ltd/series/akame-ga-kill
+2026-03-19 23:10:09,969 - INFO - [296/526] https://coba.oploverz.ltd/series/code-geass-hangyaku-no-lelouch-r1
+2026-03-19 23:10:09,970 - INFO - Scraping detail: https://coba.oploverz.ltd/series/code-geass-hangyaku-no-lelouch-r1
+2026-03-19 23:10:32,640 - INFO - [297/526] https://coba.oploverz.ltd/series/solo-leveling-s2
+2026-03-19 23:10:32,641 - INFO - Scraping detail: https://coba.oploverz.ltd/series/solo-leveling-s2
+2026-03-19 23:10:45,949 - INFO - [298/526] https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari
+2026-03-19 23:10:45,949 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tate-no-yuusha-no-nariagari
+2026-03-19 23:11:08,941 - INFO - [299/526] https://coba.oploverz.ltd/series/amagi-brilliant-park
+2026-03-19 23:11:08,942 - INFO - Scraping detail: https://coba.oploverz.ltd/series/amagi-brilliant-park
+2026-03-19 23:11:21,541 - INFO - [300/526] https://coba.oploverz.ltd/series/beelzebub
+2026-03-19 23:11:21,542 - INFO - Scraping detail: https://coba.oploverz.ltd/series/beelzebub
+2026-03-19 23:12:09,904 - INFO - [301/526] https://coba.oploverz.ltd/series/toaru-kagaku-no-accelerator
+2026-03-19 23:12:09,904 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-kagaku-no-accelerator
+2026-03-19 23:12:22,290 - INFO - [302/526] https://coba.oploverz.ltd/series/katekyou-hitman-reborn
+2026-03-19 23:12:22,291 - INFO - Scraping detail: https://coba.oploverz.ltd/series/katekyou-hitman-reborn
+2026-03-19 23:14:57,980 - INFO - [303/526] https://coba.oploverz.ltd/series/nurarihyon-no-mago-s2
+2026-03-19 23:14:57,980 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nurarihyon-no-mago-s2
+2026-03-19 23:15:19,341 - INFO - [304/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-8-final
+2026-03-19 23:15:19,342 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-8-final
+2026-03-19 23:15:30,646 - INFO - [305/526] https://coba.oploverz.ltd/series/3-gatsu-no-lion-s2
+2026-03-19 23:15:30,647 - INFO - Scraping detail: https://coba.oploverz.ltd/series/3-gatsu-no-lion-s2
+2026-03-19 23:15:50,571 - INFO - [306/526] https://coba.oploverz.ltd/series/ajin
+2026-03-19 23:15:50,572 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ajin
+2026-03-19 23:16:03,766 - INFO - [307/526] https://coba.oploverz.ltd/series/dr-stone-season-3
+2026-03-19 23:16:03,766 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dr-stone-season-3
+2026-03-19 23:16:22,903 - INFO - [308/526] https://coba.oploverz.ltd/series/gundam-build-fighters-try
+2026-03-19 23:16:22,904 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gundam-build-fighters-try
+2026-03-19 23:16:43,260 - INFO - [309/526] https://coba.oploverz.ltd/series/koi-to-uso
+2026-03-19 23:16:43,260 - INFO - Scraping detail: https://coba.oploverz.ltd/series/koi-to-uso
+2026-03-19 23:16:54,956 - INFO - [310/526] https://coba.oploverz.ltd/series/danshi-koukousei-no-nichijou
+2026-03-19 23:16:54,956 - INFO - Scraping detail: https://coba.oploverz.ltd/series/danshi-koukousei-no-nichijou
+2026-03-19 23:17:07,099 - INFO - [311/526] https://coba.oploverz.ltd/series/owari-no-seraph-season-2
+2026-03-19 23:17:07,099 - INFO - Scraping detail: https://coba.oploverz.ltd/series/owari-no-seraph-season-2
+2026-03-19 23:17:21,628 - INFO - [312/526] https://coba.oploverz.ltd/series/mushoku-tensei-isekai-ittara-honki-dasu-s2
+2026-03-19 23:17:21,629 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mushoku-tensei-isekai-ittara-honki-dasu-s2
+2026-03-19 23:17:43,098 - INFO - [313/526] https://coba.oploverz.ltd/series/tokyo-ghoul-s1
+2026-03-19 23:17:43,099 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-ghoul-s1
+2026-03-19 23:17:56,437 - INFO - [314/526] https://coba.oploverz.ltd/series/vanitas-no-carte-part-1
+2026-03-19 23:17:56,439 - INFO - Scraping detail: https://coba.oploverz.ltd/series/vanitas-no-carte-part-1
+2026-03-19 23:18:08,914 - INFO - [315/526] https://coba.oploverz.ltd/series/shangri-la-frontier-s2
+2026-03-19 23:18:08,915 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shangri-la-frontier-s2
+2026-03-19 23:18:32,072 - INFO - [316/526] https://coba.oploverz.ltd/series/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e
+2026-03-19 23:18:32,073 - INFO - Scraping detail: https://coba.oploverz.ltd/series/youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e
+2026-03-19 23:18:44,468 - INFO - [317/526] https://coba.oploverz.ltd/series/jormungand
+2026-03-19 23:18:44,469 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jormungand
+2026-03-19 23:18:58,187 - INFO - [318/526] https://coba.oploverz.ltd/series/ansatsu-kyoushitsu
+2026-03-19 23:18:58,188 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ansatsu-kyoushitsu
+2026-03-19 23:19:18,005 - INFO - [319/526] https://coba.oploverz.ltd/series/shingeki-no-kyojin-season-3-attack-on-titan-s3
+2026-03-19 23:19:18,006 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shingeki-no-kyojin-season-3-attack-on-titan-s3
+2026-03-19 23:19:40,189 - INFO - [320/526] https://coba.oploverz.ltd/series/aho-girl
+2026-03-19 23:19:40,190 - INFO - Scraping detail: https://coba.oploverz.ltd/series/aho-girl
+2026-03-19 23:19:53,103 - INFO - [321/526] https://coba.oploverz.ltd/series/s2-bakemonogatari
+2026-03-19 23:19:53,104 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s2-bakemonogatari
+2026-03-19 23:20:07,555 - INFO - [322/526] https://coba.oploverz.ltd/series/to-your-eternity-s3
+2026-03-19 23:20:07,555 - INFO - Scraping detail: https://coba.oploverz.ltd/series/to-your-eternity-s3
+2026-03-19 23:20:25,511 - INFO - [323/526] https://coba.oploverz.ltd/series/captain-tsubasa-2018-s1
+2026-03-19 23:20:25,512 - INFO - Scraping detail: https://coba.oploverz.ltd/series/captain-tsubasa-2018-s1
+2026-03-19 23:21:07,305 - INFO - [324/526] https://coba.oploverz.ltd/series/86-eighty-six-part-2
+2026-03-19 23:21:07,306 - INFO - Scraping detail: https://coba.oploverz.ltd/series/86-eighty-six-part-2
+2026-03-19 23:21:21,076 - INFO - [325/526] https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken-coleus-no-yume
+2026-03-19 23:21:21,076 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken-coleus-no-yume
+2026-03-19 23:21:28,427 - INFO - [326/526] https://coba.oploverz.ltd/series/ao-no-exorcist-s3-shimane-illuminati-hen
+2026-03-19 23:21:28,484 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-no-exorcist-s3-shimane-illuminati-hen
+2026-03-19 23:21:41,292 - INFO - [327/526] https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s1
+2026-03-19 23:21:41,293 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s1
+2026-03-19 23:21:57,240 - INFO - [328/526] https://coba.oploverz.ltd/series/code-geass-hangyaku-no-lelouch-r2
+2026-03-19 23:21:57,241 - INFO - Scraping detail: https://coba.oploverz.ltd/series/code-geass-hangyaku-no-lelouch-r2
+2026-03-19 23:22:20,080 - INFO - [329/526] https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-2
+2026-03-19 23:22:20,081 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-2
+2026-03-19 23:22:31,729 - INFO - [330/526] https://coba.oploverz.ltd/series/yu-yu-hakusho-ghost-files
+2026-03-19 23:22:31,730 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-yu-hakusho-ghost-files
+2026-03-19 23:24:01,915 - INFO - [331/526] https://coba.oploverz.ltd/series/digimon-adventure-tri-6-bokura-no-mirai
+2026-03-19 23:24:01,916 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-tri-6-bokura-no-mirai
+2026-03-19 23:24:09,401 - INFO - [332/526] https://coba.oploverz.ltd/series/spy-x-family-s3
+2026-03-19 23:24:09,402 - INFO - Scraping detail: https://coba.oploverz.ltd/series/spy-x-family-s3
+2026-03-19 23:24:21,259 - INFO - [333/526] https://coba.oploverz.ltd/series/fire-force-season-2
+2026-03-19 23:24:21,260 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fire-force-season-2
+2026-03-19 23:24:43,033 - INFO - [334/526] https://coba.oploverz.ltd/series/golden-kamuy-s2
+2026-03-19 23:24:43,033 - INFO - Scraping detail: https://coba.oploverz.ltd/series/golden-kamuy-s2
+2026-03-19 23:24:54,574 - INFO - [335/526] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-2
+2026-03-19 23:24:54,575 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-2
+2026-03-19 23:25:08,323 - INFO - [336/526] https://coba.oploverz.ltd/series/nurarihyon-no-mago-s1
+2026-03-19 23:25:08,324 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nurarihyon-no-mago-s1
+2026-03-19 23:25:29,392 - INFO - [337/526] https://coba.oploverz.ltd/series/terra-formars-revenge
+2026-03-19 23:25:29,393 - INFO - Scraping detail: https://coba.oploverz.ltd/series/terra-formars-revenge
+2026-03-19 23:25:42,934 - INFO - [338/526] https://coba.oploverz.ltd/series/jujutsu-kaisen-s3-the-culling-game
+2026-03-19 23:25:42,935 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jujutsu-kaisen-s3-the-culling-game
+2026-03-19 23:25:55,010 - INFO - [339/526] https://coba.oploverz.ltd/series/isekai-ojisan
+2026-03-19 23:25:55,011 - INFO - Scraping detail: https://coba.oploverz.ltd/series/isekai-ojisan
+2026-03-19 23:26:08,944 - INFO - [340/526] https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s2-demon-slayer-s2
+2026-03-19 23:26:08,944 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimetsu-no-yaiba-s2-demon-slayer-s2
+2026-03-19 23:26:20,902 - INFO - [341/526] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-4-golden-wind
+2026-03-19 23:26:20,903 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-4-golden-wind
+2026-03-19 23:26:54,478 - INFO - [342/526] https://coba.oploverz.ltd/series/dragon-ball-son-goku-kecil
+2026-03-19 23:26:54,479 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dragon-ball-son-goku-kecil
+2026-03-19 23:28:54,319 - INFO - [343/526] https://coba.oploverz.ltd/series/nageki-no-bourei-wa-intai-shitai
+2026-03-19 23:28:54,320 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nageki-no-bourei-wa-intai-shitai
+2026-03-19 23:29:06,640 - INFO - [344/526] https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-season-2
+2026-03-19 23:29:06,641 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-season-2
+2026-03-19 23:29:21,043 - INFO - [345/526] https://coba.oploverz.ltd/series/kimi-ni-todoke-from-me-to-you-s3
+2026-03-19 23:29:21,044 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimi-ni-todoke-from-me-to-you-s3
+2026-03-19 23:29:29,162 - INFO - [346/526] https://coba.oploverz.ltd/series/sakamoto-days
+2026-03-19 23:29:29,163 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sakamoto-days
+2026-03-19 23:29:50,129 - INFO - [347/526] https://coba.oploverz.ltd/series/tower-of-god-s2
+2026-03-19 23:29:50,129 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tower-of-god-s2
+2026-03-19 23:30:13,264 - INFO - [348/526] https://coba.oploverz.ltd/series/digimon-adventure-02
+2026-03-19 23:30:13,265 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-02
+2026-03-19 23:30:56,670 - INFO - [349/526] https://coba.oploverz.ltd/series/megalo-box
+2026-03-19 23:30:56,671 - INFO - Scraping detail: https://coba.oploverz.ltd/series/megalo-box
+2026-03-19 23:31:09,483 - INFO - [350/526] https://coba.oploverz.ltd/series/code-geass-roze-of-the-recapture
+2026-03-19 23:31:09,483 - INFO - Scraping detail: https://coba.oploverz.ltd/series/code-geass-roze-of-the-recapture
+2026-03-19 23:31:22,214 - INFO - [351/526] https://coba.oploverz.ltd/series/goblin-slayer-s1
+2026-03-19 23:31:22,215 - INFO - Scraping detail: https://coba.oploverz.ltd/series/goblin-slayer-s1
+2026-03-19 23:31:35,428 - INFO - [352/526] https://coba.oploverz.ltd/series/kimi-ni-todoke-from-me-to-you-s2
+2026-03-19 23:31:35,428 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimi-ni-todoke-from-me-to-you-s2
+2026-03-19 23:31:48,900 - INFO - [353/526] https://coba.oploverz.ltd/series/campfire-cooking-in-another-world-with-my-absurd-skill-s2
+2026-03-19 23:31:48,901 - INFO - Scraping detail: https://coba.oploverz.ltd/series/campfire-cooking-in-another-world-with-my-absurd-skill-s2
+2026-03-19 23:32:01,148 - INFO - [354/526] https://coba.oploverz.ltd/series/digimon-xros-wars-s3-the-young-hunters-who-leapt-through-time
+2026-03-19 23:32:01,149 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-xros-wars-s3-the-young-hunters-who-leapt-through-time
+2026-03-19 23:32:04,648 - WARNING - Anime Digimon Xros Wars S3 The Young Hunters Who Leapt Through Time tidak memiliki episode, tetap disimpan
+2026-03-19 23:32:06,115 - INFO - [355/526] https://coba.oploverz.ltd/series/fairy-tail-100-years-quest
+2026-03-19 23:32:06,115 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fairy-tail-100-years-quest
+2026-03-19 23:32:27,012 - INFO - [356/526] https://coba.oploverz.ltd/series/prince-of-stride-alternative
+2026-03-19 23:32:27,013 - INFO - Scraping detail: https://coba.oploverz.ltd/series/prince-of-stride-alternative
+2026-03-19 23:32:39,220 - INFO - [357/526] https://coba.oploverz.ltd/series/tokyo-ghoulre-s1
+2026-03-19 23:32:39,221 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-ghoulre-s1
+2026-03-19 23:32:52,553 - INFO - [358/526] https://coba.oploverz.ltd/series/oshi-no-ko-s2
+2026-03-19 23:32:52,553 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oshi-no-ko-s2
+2026-03-19 23:33:05,843 - INFO - [359/526] https://coba.oploverz.ltd/series/hibike-euphonium
+2026-03-19 23:33:05,844 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hibike-euphonium
+2026-03-19 23:33:19,022 - INFO - [360/526] https://coba.oploverz.ltd/series/avatar-the-legend-of-aang
+2026-03-19 23:33:19,023 - INFO - Scraping detail: https://coba.oploverz.ltd/series/avatar-the-legend-of-aang
+2026-03-19 23:34:09,820 - INFO - [361/526] https://coba.oploverz.ltd/series/gintama-s7-shirogane-no-tamashii-hen
+2026-03-19 23:34:09,842 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s7-shirogane-no-tamashii-hen
+2026-03-19 23:34:34,156 - INFO - [362/526] https://coba.oploverz.ltd/series/monsters-ippyaku-sanjou-hiryuu-jigoku
+2026-03-19 23:34:34,157 - INFO - Scraping detail: https://coba.oploverz.ltd/series/monsters-ippyaku-sanjou-hiryuu-jigoku
+2026-03-19 23:34:38,901 - INFO - [363/526] https://coba.oploverz.ltd/series/nisekoi-season-2
+2026-03-19 23:34:38,902 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nisekoi-season-2
+2026-03-19 23:34:51,623 - INFO - [364/526] https://coba.oploverz.ltd/series/jujutsu-kaisen
+2026-03-19 23:34:51,623 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jujutsu-kaisen
+2026-03-19 23:35:13,583 - INFO - [365/526] https://coba.oploverz.ltd/series/ore-monogatari
+2026-03-19 23:35:13,584 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ore-monogatari
+2026-03-19 23:35:33,857 - INFO - [366/526] https://coba.oploverz.ltd/series/isekai-de-cheat-skill-wo-te-ni-shita-ore-wa-genjitsu-sekai-wo-mo-musou-suru-level-up-wa-jinsei-wo-kaeta
+2026-03-19 23:35:33,858 - INFO - Scraping detail: https://coba.oploverz.ltd/series/isekai-de-cheat-skill-wo-te-ni-shita-ore-wa-genjitsu-sekai-wo-mo-musou-suru-level-up-wa-jinsei-wo-kaeta
+2026-03-19 23:35:48,001 - INFO - [367/526] https://coba.oploverz.ltd/series/inuyasha-s1
+2026-03-19 23:35:48,002 - INFO - Scraping detail: https://coba.oploverz.ltd/series/inuyasha-s1
+2026-03-19 23:37:53,209 - INFO - [368/526] https://coba.oploverz.ltd/series/avatar-the-legend-of-korra
+2026-03-19 23:37:53,209 - INFO - Scraping detail: https://coba.oploverz.ltd/series/avatar-the-legend-of-korra
+2026-03-19 23:38:30,574 - INFO - [369/526] https://coba.oploverz.ltd/series/mob-psycho-100-season-2
+2026-03-19 23:38:30,575 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mob-psycho-100-season-2
+2026-03-19 23:38:44,351 - INFO - [370/526] https://coba.oploverz.ltd/series/jujutsu-kaisen-s2
+2026-03-19 23:38:44,352 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jujutsu-kaisen-s2
+2026-03-19 23:39:05,230 - INFO - [371/526] https://coba.oploverz.ltd/series/kuroko-no-basket-season-1
+2026-03-19 23:39:05,230 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kuroko-no-basket-season-1
+2026-03-19 23:39:26,942 - INFO - [372/526] https://coba.oploverz.ltd/series/haikyuu-season-3
+2026-03-19 23:39:26,943 - INFO - Scraping detail: https://coba.oploverz.ltd/series/haikyuu-season-3
+2026-03-19 23:39:37,883 - INFO - [373/526] https://coba.oploverz.ltd/series/diamond-no-ace-season-3
+2026-03-19 23:39:37,884 - INFO - Scraping detail: https://coba.oploverz.ltd/series/diamond-no-ace-season-3
+2026-03-19 23:40:20,679 - INFO - [374/526] https://coba.oploverz.ltd/series/to-be-hero-x
+2026-03-19 23:40:20,680 - INFO - Scraping detail: https://coba.oploverz.ltd/series/to-be-hero-x
+2026-03-19 23:40:43,666 - INFO - [375/526] https://coba.oploverz.ltd/series/world-trigger-season-2
+2026-03-19 23:40:43,668 - INFO - Scraping detail: https://coba.oploverz.ltd/series/world-trigger-season-2
+2026-03-19 23:40:58,231 - INFO - [376/526] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-3
+2026-03-19 23:40:58,232 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-3
+2026-03-19 23:41:10,713 - INFO - [377/526] https://coba.oploverz.ltd/series/oregairu-season-2
+2026-03-19 23:41:10,713 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oregairu-season-2
+2026-03-19 23:41:23,597 - INFO - [378/526] https://coba.oploverz.ltd/series/sakamichi-no-apollon
+2026-03-19 23:41:23,598 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sakamichi-no-apollon
+2026-03-19 23:41:36,174 - INFO - [379/526] https://coba.oploverz.ltd/series/overlord-season-2
+2026-03-19 23:41:36,175 - INFO - Scraping detail: https://coba.oploverz.ltd/series/overlord-season-2
+2026-03-19 23:41:49,096 - INFO - [380/526] https://coba.oploverz.ltd/series/one-piece-on-smartphone
+2026-03-19 23:41:49,097 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece-on-smartphone
+2026-03-19 23:41:54,275 - INFO - [381/526] https://coba.oploverz.ltd/series/the-unlimited-hyobu-kyosuke
+2026-03-19 23:41:54,277 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-unlimited-hyobu-kyosuke
+2026-03-19 23:42:06,369 - INFO - [382/526] https://coba.oploverz.ltd/series/date-a-live-season-5
+2026-03-19 23:42:06,371 - INFO - Scraping detail: https://coba.oploverz.ltd/series/date-a-live-season-5
+2026-03-19 23:42:21,186 - INFO - [383/526] https://coba.oploverz.ltd/series/working
+2026-03-19 23:42:21,187 - INFO - Scraping detail: https://coba.oploverz.ltd/series/working
+2026-03-19 23:42:34,100 - INFO - [384/526] https://coba.oploverz.ltd/series/s3-nisemonogatari
+2026-03-19 23:42:34,100 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s3-nisemonogatari
+2026-03-19 23:42:44,955 - INFO - [385/526] https://coba.oploverz.ltd/series/detective-conan-movie-27-the-million-dollar-pentagram
+2026-03-19 23:42:44,956 - INFO - Scraping detail: https://coba.oploverz.ltd/series/detective-conan-movie-27-the-million-dollar-pentagram
+2026-03-19 23:42:49,409 - INFO - [386/526] https://coba.oploverz.ltd/series/hataraku-maou-sama-s1
+2026-03-19 23:42:49,410 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hataraku-maou-sama-s1
+2026-03-19 23:43:02,741 - INFO - [387/526] https://coba.oploverz.ltd/series/tokyo-ghoul-s2
+2026-03-19 23:43:02,742 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-ghoul-s2
+2026-03-19 23:43:15,652 - INFO - [388/526] https://coba.oploverz.ltd/series/mobile-suit-gundam-iron-blooded-orphans-season-2
+2026-03-19 23:43:15,652 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mobile-suit-gundam-iron-blooded-orphans-season-2
+2026-03-19 23:43:36,916 - INFO - [389/526] https://coba.oploverz.ltd/series/youjo-senki-s1
+2026-03-19 23:43:36,917 - INFO - Scraping detail: https://coba.oploverz.ltd/series/youjo-senki-s1
+2026-03-19 23:43:48,379 - INFO - [390/526] https://coba.oploverz.ltd/series/yowamushi-pedal-season-1
+2026-03-19 23:43:48,379 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yowamushi-pedal-season-1
+2026-03-19 23:44:22,207 - INFO - [391/526] https://coba.oploverz.ltd/series/blood-lad
+2026-03-19 23:44:22,208 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blood-lad
+2026-03-19 23:44:32,616 - INFO - [392/526] https://coba.oploverz.ltd/series/high-school-dxd-s3
+2026-03-19 23:44:32,617 - INFO - Scraping detail: https://coba.oploverz.ltd/series/high-school-dxd-s3
+2026-03-19 23:44:46,342 - INFO - [393/526] https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s1
+2026-03-19 23:44:46,343 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s1
+2026-03-19 23:45:09,832 - INFO - [394/526] https://coba.oploverz.ltd/series/log-horizon-season-3
+2026-03-19 23:45:09,833 - INFO - Scraping detail: https://coba.oploverz.ltd/series/log-horizon-season-3
+2026-03-19 23:45:22,077 - INFO - [395/526] https://coba.oploverz.ltd/series/oshi-no-ko
+2026-03-19 23:45:22,078 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oshi-no-ko
+2026-03-19 23:45:33,284 - INFO - [396/526] https://coba.oploverz.ltd/series/clannad-s2-after-story
+2026-03-19 23:45:33,285 - INFO - Scraping detail: https://coba.oploverz.ltd/series/clannad-s2-after-story
+2026-03-19 23:45:55,891 - INFO - [397/526] https://coba.oploverz.ltd/series/tsuki-ga-michibiku-isekai-douchuu-s2
+2026-03-19 23:45:55,892 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tsuki-ga-michibiku-isekai-douchuu-s2
+2026-03-19 23:46:17,477 - INFO - [398/526] https://coba.oploverz.ltd/series/record-of-ragnarok-s1
+2026-03-19 23:46:17,479 - INFO - Scraping detail: https://coba.oploverz.ltd/series/record-of-ragnarok-s1
+2026-03-19 23:46:31,827 - INFO - [399/526] https://coba.oploverz.ltd/series/one-piece
+2026-03-19 23:46:31,828 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece
+2026-03-20 00:00:53,819 - INFO - [400/526] https://coba.oploverz.ltd/series/s4-monogatari-series-second-season
+2026-03-20 00:00:53,820 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s4-monogatari-series-second-season
+2026-03-20 00:01:15,606 - INFO - [401/526] https://coba.oploverz.ltd/series/fatestrange-fake
+2026-03-20 00:01:15,607 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatestrange-fake
+2026-03-20 00:01:26,839 - INFO - [402/526] https://coba.oploverz.ltd/series/kono-subarashii-sekai-ni-shukufuku-wo-season-2
+2026-03-20 00:01:26,840 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kono-subarashii-sekai-ni-shukufuku-wo-season-2
+2026-03-20 00:01:38,923 - INFO - [403/526] https://coba.oploverz.ltd/series/one-piece-live-action-s2
+2026-03-20 00:01:38,925 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece-live-action-s2
+2026-03-20 00:01:47,858 - INFO - [404/526] https://coba.oploverz.ltd/series/fullmetal-alchemist-brotherhood
+2026-03-20 00:01:47,858 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fullmetal-alchemist-brotherhood
+2026-03-20 00:02:39,936 - INFO - [405/526] https://coba.oploverz.ltd/series/suicide-squad-isekai
+2026-03-20 00:02:39,937 - INFO - Scraping detail: https://coba.oploverz.ltd/series/suicide-squad-isekai
+2026-03-20 00:02:50,666 - INFO - [406/526] https://coba.oploverz.ltd/series/dr-stone-season-2
+2026-03-20 00:02:50,666 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dr-stone-season-2
+2026-03-20 00:03:02,694 - INFO - [407/526] https://coba.oploverz.ltd/series/infinite-dendrogram
+2026-03-20 00:03:02,695 - INFO - Scraping detail: https://coba.oploverz.ltd/series/infinite-dendrogram
+2026-03-20 00:03:16,513 - INFO - [408/526] https://coba.oploverz.ltd/series/re-zero-kara-hajimeru-isekai-seikatsu-season-3
+2026-03-20 00:03:16,513 - INFO - Scraping detail: https://coba.oploverz.ltd/series/re-zero-kara-hajimeru-isekai-seikatsu-season-3
+2026-03-20 00:03:32,233 - INFO - [409/526] https://coba.oploverz.ltd/series/free
+2026-03-20 00:03:32,234 - INFO - Scraping detail: https://coba.oploverz.ltd/series/free
+2026-03-20 00:03:44,572 - INFO - [410/526] https://coba.oploverz.ltd/series/wind-breaker
+2026-03-20 00:03:44,573 - INFO - Scraping detail: https://coba.oploverz.ltd/series/wind-breaker
+2026-03-20 00:03:56,366 - INFO - [411/526] https://coba.oploverz.ltd/series/ao-no-exorcist-s4-beyond-the-snow-saga
+2026-03-20 00:03:56,366 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-no-exorcist-s4-beyond-the-snow-saga
+2026-03-20 00:04:09,465 - INFO - [412/526] https://coba.oploverz.ltd/series/clannad-s1
+2026-03-20 00:04:09,466 - INFO - Scraping detail: https://coba.oploverz.ltd/series/clannad-s1
+2026-03-20 00:04:33,146 - INFO - [413/526] https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s3
+2026-03-20 00:04:33,147 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s3
+2026-03-20 00:04:56,049 - INFO - [414/526] https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei
+2026-03-20 00:04:56,050 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei
+2026-03-20 00:05:18,332 - INFO - [415/526] https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken-s3
+2026-03-20 00:05:18,333 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tensei-shitara-slime-datta-ken-s3
+2026-03-20 00:05:39,803 - INFO - [416/526] https://coba.oploverz.ltd/series/fatekaleid-liner-1-prismaillya
+2026-03-20 00:05:39,804 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatekaleid-liner-1-prismaillya
+2026-03-20 00:05:50,326 - INFO - [417/526] https://coba.oploverz.ltd/series/noragami-s1
+2026-03-20 00:05:50,327 - INFO - Scraping detail: https://coba.oploverz.ltd/series/noragami-s1
+2026-03-20 00:06:01,427 - INFO - [418/526] https://coba.oploverz.ltd/series/fatekaleid-liner-4-prismaillya-3rei
+2026-03-20 00:06:01,428 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatekaleid-liner-4-prismaillya-3rei
+2026-03-20 00:06:14,374 - INFO - [419/526] https://coba.oploverz.ltd/series/fategrand-order-moonlightlostroom
+2026-03-20 00:06:14,375 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fategrand-order-moonlightlostroom
+2026-03-20 00:06:19,554 - INFO - [420/526] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-5
+2026-03-20 00:06:19,555 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-5
+2026-03-20 00:06:29,752 - INFO - [421/526] https://coba.oploverz.ltd/series/tsuki-ga-michibiku-isekai-douchuu
+2026-03-20 00:06:29,753 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tsuki-ga-michibiku-isekai-douchuu
+2026-03-20 00:06:41,970 - INFO - [422/526] https://coba.oploverz.ltd/series/golden-kamuy-s3
+2026-03-20 00:06:41,970 - INFO - Scraping detail: https://coba.oploverz.ltd/series/golden-kamuy-s3
+2026-03-20 00:06:54,993 - INFO - [423/526] https://coba.oploverz.ltd/series/fatekaleid-liner-2-prismaillya-2wei
+2026-03-20 00:06:54,994 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatekaleid-liner-2-prismaillya-2wei
+2026-03-20 00:07:05,747 - INFO - [424/526] https://coba.oploverz.ltd/series/black-bullet
+2026-03-20 00:07:05,748 - INFO - Scraping detail: https://coba.oploverz.ltd/series/black-bullet
+2026-03-20 00:07:18,859 - INFO - [425/526] https://coba.oploverz.ltd/series/digimon-xros-wars-s1
+2026-03-20 00:07:18,860 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-xros-wars-s1
+2026-03-20 00:07:21,038 - WARNING - Anime Digimon Xros Wars S1 tidak memiliki episode, tetap disimpan
+2026-03-20 00:07:22,189 - INFO - [426/526] https://coba.oploverz.ltd/series/all-out
+2026-03-20 00:07:22,190 - INFO - Scraping detail: https://coba.oploverz.ltd/series/all-out
+2026-03-20 00:07:46,201 - INFO - [427/526] https://coba.oploverz.ltd/series/fruits-basket-remake-s3-the-final
+2026-03-20 00:07:46,202 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fruits-basket-remake-s3-the-final
+2026-03-20 00:08:00,384 - INFO - [428/526] https://coba.oploverz.ltd/series/maou-gakuin-no-futekigousha
+2026-03-20 00:08:00,385 - INFO - Scraping detail: https://coba.oploverz.ltd/series/maou-gakuin-no-futekigousha
+2026-03-20 00:08:14,757 - INFO - [429/526] https://coba.oploverz.ltd/series/kekkaishi
+2026-03-20 00:08:14,758 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kekkaishi
+2026-03-20 00:08:56,044 - INFO - [430/526] https://coba.oploverz.ltd/series/fruits-basket-remake-s2
+2026-03-20 00:08:56,045 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fruits-basket-remake-s2
+2026-03-20 00:09:19,053 - INFO - [431/526] https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s2
+2026-03-20 00:09:19,053 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s2
+2026-03-20 00:09:31,453 - INFO - [432/526] https://coba.oploverz.ltd/series/air-gear
+2026-03-20 00:09:31,454 - INFO - Scraping detail: https://coba.oploverz.ltd/series/air-gear
+2026-03-20 00:09:54,984 - INFO - [433/526] https://coba.oploverz.ltd/series/my-status-as-an-assassin-obviously-exceeds-the-heros
+2026-03-20 00:09:54,985 - INFO - Scraping detail: https://coba.oploverz.ltd/series/my-status-as-an-assassin-obviously-exceeds-the-heros
+2026-03-20 00:10:08,161 - INFO - [434/526] https://coba.oploverz.ltd/series/owari-no-seraph
+2026-03-20 00:10:08,162 - INFO - Scraping detail: https://coba.oploverz.ltd/series/owari-no-seraph
+2026-03-20 00:10:19,797 - INFO - [435/526] https://coba.oploverz.ltd/series/kiseijuu-sei-no-kakuritsu
+2026-03-20 00:10:19,798 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kiseijuu-sei-no-kakuritsu
+2026-03-20 00:10:41,917 - INFO - [436/526] https://coba.oploverz.ltd/series/joker-game
+2026-03-20 00:10:41,918 - INFO - Scraping detail: https://coba.oploverz.ltd/series/joker-game
+2026-03-20 00:10:54,345 - INFO - [437/526] https://coba.oploverz.ltd/series/fatestay-night-2006
+2026-03-20 00:10:54,346 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatestay-night-2006
+2026-03-20 00:11:15,720 - INFO - [438/526] https://coba.oploverz.ltd/series/yu-gi-oh-6-vrains
+2026-03-20 00:11:15,721 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yu-gi-oh-6-vrains
+2026-03-20 00:12:51,167 - INFO - [439/526] https://coba.oploverz.ltd/series/kokkoku
+2026-03-20 00:12:51,168 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kokkoku
+2026-03-20 00:13:03,763 - INFO - [440/526] https://coba.oploverz.ltd/series/gokukoku-no-brynhildr
+2026-03-20 00:13:03,764 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gokukoku-no-brynhildr
+2026-03-20 00:13:16,325 - INFO - [441/526] https://coba.oploverz.ltd/series/handa-kun
+2026-03-20 00:13:16,325 - INFO - Scraping detail: https://coba.oploverz.ltd/series/handa-kun
+2026-03-20 00:13:29,031 - INFO - [442/526] https://coba.oploverz.ltd/series/drifters
+2026-03-20 00:13:29,032 - INFO - Scraping detail: https://coba.oploverz.ltd/series/drifters
+2026-03-20 00:13:41,505 - INFO - [443/526] https://coba.oploverz.ltd/series/hanebado
+2026-03-20 00:13:41,506 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hanebado
+2026-03-20 00:13:54,966 - INFO - [444/526] https://coba.oploverz.ltd/series/bubuki-buranki
+2026-03-20 00:13:54,966 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bubuki-buranki
+2026-03-20 00:14:07,481 - INFO - [445/526] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-5
+2026-03-20 00:14:07,482 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-5
+2026-03-20 00:14:21,865 - INFO - [446/526] https://coba.oploverz.ltd/series/s5-tsukimonogatari
+2026-03-20 00:14:21,866 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s5-tsukimonogatari
+2026-03-20 00:14:29,630 - INFO - [447/526] https://coba.oploverz.ltd/series/nanatsu-no-taizai
+2026-03-20 00:14:29,631 - INFO - Scraping detail: https://coba.oploverz.ltd/series/nanatsu-no-taizai
+2026-03-20 00:14:51,573 - INFO - [448/526] https://coba.oploverz.ltd/series/another
+2026-03-20 00:14:51,573 - INFO - Scraping detail: https://coba.oploverz.ltd/series/another
+2026-03-20 00:15:03,768 - INFO - [449/526] https://coba.oploverz.ltd/series/spy-x-family
+2026-03-20 00:15:03,769 - INFO - Scraping detail: https://coba.oploverz.ltd/series/spy-x-family
+2026-03-20 00:15:26,016 - INFO - [450/526] https://coba.oploverz.ltd/series/undead-unluck
+2026-03-20 00:15:26,017 - INFO - Scraping detail: https://coba.oploverz.ltd/series/undead-unluck
+2026-03-20 00:15:47,833 - INFO - [451/526] https://coba.oploverz.ltd/series/sword-art-online-alicization
+2026-03-20 00:15:47,834 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sword-art-online-alicization
+2026-03-20 00:16:26,460 - INFO - [452/526] https://coba.oploverz.ltd/series/takt-opdestiny
+2026-03-20 00:16:26,461 - INFO - Scraping detail: https://coba.oploverz.ltd/series/takt-opdestiny
+2026-03-20 00:16:38,599 - INFO - [453/526] https://coba.oploverz.ltd/series/tokyo-revengers-s2-seiya-kessen-hen
+2026-03-20 00:16:38,600 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-revengers-s2-seiya-kessen-hen
+2026-03-20 00:16:51,939 - INFO - [454/526] https://coba.oploverz.ltd/series/maou-gakuin-no-futekigousha-s2
+2026-03-20 00:16:51,940 - INFO - Scraping detail: https://coba.oploverz.ltd/series/maou-gakuin-no-futekigousha-s2
+2026-03-20 00:17:14,549 - INFO - [455/526] https://coba.oploverz.ltd/series/uq-holder-mahou-sensei-negima-2
+2026-03-20 00:17:14,550 - INFO - Scraping detail: https://coba.oploverz.ltd/series/uq-holder-mahou-sensei-negima-2
+2026-03-20 00:17:27,675 - INFO - [456/526] https://coba.oploverz.ltd/series/gintama-s4-gintama
+2026-03-20 00:17:27,676 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s4-gintama
+2026-03-20 00:18:11,710 - INFO - [457/526] https://coba.oploverz.ltd/series/isekai-cheat-magician
+2026-03-20 00:18:11,710 - INFO - Scraping detail: https://coba.oploverz.ltd/series/isekai-cheat-magician
+2026-03-20 00:18:23,471 - INFO - [458/526] https://coba.oploverz.ltd/series/world-trigger
+2026-03-20 00:18:23,472 - INFO - Scraping detail: https://coba.oploverz.ltd/series/world-trigger
+2026-03-20 00:19:21,307 - INFO - [459/526] https://coba.oploverz.ltd/series/mashle
+2026-03-20 00:19:21,308 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mashle
+2026-03-20 00:19:34,325 - INFO - [460/526] https://coba.oploverz.ltd/series/rezero-kara-hajimeru-isekai-seikatsu
+2026-03-20 00:19:34,326 - INFO - Scraping detail: https://coba.oploverz.ltd/series/rezero-kara-hajimeru-isekai-seikatsu
+2026-03-20 00:19:56,258 - INFO - [461/526] https://coba.oploverz.ltd/series/one-piece-live-action-s1
+2026-03-20 00:19:56,259 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece-live-action-s1
+2026-03-20 00:20:06,063 - INFO - [462/526] https://coba.oploverz.ltd/series/mushoku-tensei-isekai-ittara-honki-dasu-s1
+2026-03-20 00:20:06,064 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mushoku-tensei-isekai-ittara-honki-dasu-s1
+2026-03-20 00:20:26,094 - INFO - [463/526] https://coba.oploverz.ltd/series/sword-art-online
+2026-03-20 00:20:26,095 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sword-art-online
+2026-03-20 00:20:48,344 - INFO - [464/526] https://coba.oploverz.ltd/series/high-school-dxd-s2
+2026-03-20 00:20:48,344 - INFO - Scraping detail: https://coba.oploverz.ltd/series/high-school-dxd-s2
+2026-03-20 00:21:01,530 - INFO - [465/526] https://coba.oploverz.ltd/series/hachi-nan-tte-sore-wa-nai-deshou
+2026-03-20 00:21:01,532 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hachi-nan-tte-sore-wa-nai-deshou
+2026-03-20 00:21:14,142 - INFO - [466/526] https://coba.oploverz.ltd/series/boku-no-hero-academia-season-3
+2026-03-20 00:21:14,143 - INFO - Scraping detail: https://coba.oploverz.ltd/series/boku-no-hero-academia-season-3
+2026-03-20 00:21:35,201 - INFO - [467/526] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-1
+2026-03-20 00:21:35,202 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-1
+2026-03-20 00:21:47,711 - INFO - [468/526] https://coba.oploverz.ltd/series/ghosts-at-school
+2026-03-20 00:21:47,712 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ghosts-at-school
+2026-03-20 00:22:06,020 - INFO - [469/526] https://coba.oploverz.ltd/series/kuroko-no-basket-season-2
+2026-03-20 00:22:06,020 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kuroko-no-basket-season-2
+2026-03-20 00:22:29,748 - INFO - [470/526] https://coba.oploverz.ltd/series/mobile-suit-gundam-iron-blooded-orphans
+2026-03-20 00:22:29,748 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mobile-suit-gundam-iron-blooded-orphans
+2026-03-20 00:22:53,026 - INFO - [471/526] https://coba.oploverz.ltd/series/chuunibyou-demo-koi-ga-shitai-s2
+2026-03-20 00:22:53,026 - INFO - Scraping detail: https://coba.oploverz.ltd/series/chuunibyou-demo-koi-ga-shitai-s2
+2026-03-20 00:23:05,664 - INFO - [472/526] https://coba.oploverz.ltd/series/jigokuraku-s2
+2026-03-20 00:23:05,665 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jigokuraku-s2
+2026-03-20 00:23:15,770 - INFO - [473/526] https://coba.oploverz.ltd/series/gundam-build-fighters
+2026-03-20 00:23:15,771 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gundam-build-fighters
+2026-03-20 00:23:37,518 - INFO - [474/526] https://coba.oploverz.ltd/series/initial-d-fifth-stage
+2026-03-20 00:23:37,519 - INFO - Scraping detail: https://coba.oploverz.ltd/series/initial-d-fifth-stage
+2026-03-20 00:23:51,410 - INFO - [475/526] https://coba.oploverz.ltd/series/digimon-adventure-tri-4-soushitsu
+2026-03-20 00:23:51,410 - INFO - Scraping detail: https://coba.oploverz.ltd/series/digimon-adventure-tri-4-soushitsu
+2026-03-20 00:23:57,988 - INFO - [476/526] https://coba.oploverz.ltd/series/ajin-season-2
+2026-03-20 00:23:57,988 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ajin-season-2
+2026-03-20 00:24:16,235 - INFO - [477/526] https://coba.oploverz.ltd/series/orange
+2026-03-20 00:24:16,236 - INFO - Scraping detail: https://coba.oploverz.ltd/series/orange
+2026-03-20 00:24:29,651 - INFO - [478/526] https://coba.oploverz.ltd/series/soul-eater-not
+2026-03-20 00:24:29,652 - INFO - Scraping detail: https://coba.oploverz.ltd/series/soul-eater-not
+2026-03-20 00:24:42,145 - INFO - [479/526] https://coba.oploverz.ltd/series/ninja-kamui
+2026-03-20 00:24:42,145 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ninja-kamui
+2026-03-20 00:24:56,175 - INFO - [480/526] https://coba.oploverz.ltd/series/gintama-s5-gintama
+2026-03-20 00:24:56,176 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s5-gintama
+2026-03-20 00:25:08,706 - INFO - [481/526] https://coba.oploverz.ltd/series/steinsgate
+2026-03-20 00:25:08,707 - INFO - Scraping detail: https://coba.oploverz.ltd/series/steinsgate
+2026-03-20 00:25:29,936 - INFO - [482/526] https://coba.oploverz.ltd/series/shingeki-no-kyojin-season-2-attack-on-titan-s2
+2026-03-20 00:25:29,936 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shingeki-no-kyojin-season-2-attack-on-titan-s2
+2026-03-20 00:25:41,631 - INFO - [483/526] https://coba.oploverz.ltd/series/one-punch-man-special
+2026-03-20 00:25:41,631 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-punch-man-special
+2026-03-20 00:25:49,190 - INFO - [484/526] https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-4-the-first-kiss-that-never-ends
+2026-03-20 00:25:49,191 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-4-the-first-kiss-that-never-ends
+2026-03-20 00:25:55,418 - INFO - [485/526] https://coba.oploverz.ltd/series/one-punch-man-season-3
+2026-03-20 00:25:55,419 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-punch-man-season-3
+2026-03-20 00:26:07,529 - INFO - [486/526] https://coba.oploverz.ltd/series/shokugeki-no-souma-season-4
+2026-03-20 00:26:07,529 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shokugeki-no-souma-season-4
+2026-03-20 00:26:19,856 - INFO - [487/526] https://coba.oploverz.ltd/series/kyoukai-no-kanata
+2026-03-20 00:26:19,857 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kyoukai-no-kanata
+2026-03-20 00:26:32,302 - INFO - [488/526] https://coba.oploverz.ltd/series/kimetsu-no-yaiba-mugen-ressha-hen-demon-slayer-mugen-train
+2026-03-20 00:26:32,303 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimetsu-no-yaiba-mugen-ressha-hen-demon-slayer-mugen-train
+2026-03-20 00:26:40,985 - INFO - [489/526] https://coba.oploverz.ltd/series/frieren-beyond-journeys-end-s1
+2026-03-20 00:26:40,986 - INFO - Scraping detail: https://coba.oploverz.ltd/series/frieren-beyond-journeys-end-s1
+2026-03-20 00:27:06,291 - INFO - [490/526] https://coba.oploverz.ltd/series/kimi-ni-todoke-from-me-to-you-s1
+2026-03-20 00:27:06,291 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimi-ni-todoke-from-me-to-you-s1
+2026-03-20 00:27:29,908 - INFO - [491/526] https://coba.oploverz.ltd/series/fategrand-order-first-order
+2026-03-20 00:27:29,909 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fategrand-order-first-order
+2026-03-20 00:27:33,777 - INFO - [492/526] https://coba.oploverz.ltd/series/my-dress-up-darling-s2
+2026-03-20 00:27:33,778 - INFO - Scraping detail: https://coba.oploverz.ltd/series/my-dress-up-darling-s2
+2026-03-20 00:27:47,506 - INFO - [493/526] https://coba.oploverz.ltd/series/gintama-s6-porori-hen
+2026-03-20 00:27:47,507 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gintama-s6-porori-hen
+2026-03-20 00:28:01,021 - INFO - [494/526] https://coba.oploverz.ltd/series/spy-x-family-s2
+2026-03-20 00:28:01,022 - INFO - Scraping detail: https://coba.oploverz.ltd/series/spy-x-family-s2
+2026-03-20 00:28:13,141 - INFO - [495/526] https://coba.oploverz.ltd/series/domestic-na-kanojo
+2026-03-20 00:28:13,142 - INFO - Scraping detail: https://coba.oploverz.ltd/series/domestic-na-kanojo
+2026-03-20 00:28:25,153 - INFO - [496/526] https://coba.oploverz.ltd/series/s6-owarimonogatari
+2026-03-20 00:28:25,154 - INFO - Scraping detail: https://coba.oploverz.ltd/series/s6-owarimonogatari
+2026-03-20 00:28:43,599 - INFO - [497/526] https://coba.oploverz.ltd/series/sentenced-to-be-a-hero
+2026-03-20 00:28:43,599 - INFO - Scraping detail: https://coba.oploverz.ltd/series/sentenced-to-be-a-hero
+2026-03-20 00:28:55,357 - INFO - [498/526] https://coba.oploverz.ltd/series/inuyasha-s2-the-final-act
+2026-03-20 00:28:55,358 - INFO - Scraping detail: https://coba.oploverz.ltd/series/inuyasha-s2-the-final-act
+2026-03-20 00:29:19,078 - INFO - [499/526] https://coba.oploverz.ltd/series/fategrand-order-babylonia
+2026-03-20 00:29:19,079 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fategrand-order-babylonia
+2026-03-20 00:29:39,689 - INFO - [500/526] https://coba.oploverz.ltd/series/kimi-no-iru-machi
+2026-03-20 00:29:39,690 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kimi-no-iru-machi
+2026-03-20 00:29:41,783 - WARNING - Anime Kimi No Iru Machi tidak memiliki episode, tetap disimpan
+2026-03-20 00:29:43,043 - INFO - [501/526] https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-2
+2026-03-20 00:29:43,044 - INFO - Scraping detail: https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-2
+2026-03-20 00:30:05,291 - INFO - [502/526] https://coba.oploverz.ltd/series/shaman-king-2021
+2026-03-20 00:30:05,292 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shaman-king-2021
+2026-03-20 00:30:46,960 - INFO - [503/526] https://coba.oploverz.ltd/series/vigilante-boku-no-hero-academia-illegals-s2
+2026-03-20 00:30:46,961 - INFO - Scraping detail: https://coba.oploverz.ltd/series/vigilante-boku-no-hero-academia-illegals-s2
+2026-03-20 00:30:58,029 - INFO - [504/526] https://coba.oploverz.ltd/series/jormungand-season-2
+2026-03-20 00:30:58,030 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jormungand-season-2
+2026-03-20 00:31:08,574 - INFO - [505/526] https://coba.oploverz.ltd/series/ao-no-exorcist-s5-the-blue-night-saga
+2026-03-20 00:31:08,575 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-no-exorcist-s5-the-blue-night-saga
+2026-03-20 00:31:21,595 - INFO - [506/526] https://coba.oploverz.ltd/series/tougen-anki
+2026-03-20 00:31:21,595 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tougen-anki
+2026-03-20 00:31:42,772 - INFO - [507/526] https://coba.oploverz.ltd/series/danganronpa-the-animation
+2026-03-20 00:31:42,774 - INFO - Scraping detail: https://coba.oploverz.ltd/series/danganronpa-the-animation
+2026-03-20 00:31:55,321 - INFO - [508/526] https://coba.oploverz.ltd/series/arifureta-shokugyou-de-sekai-saikyou-s2
+2026-03-20 00:31:55,322 - INFO - Scraping detail: https://coba.oploverz.ltd/series/arifureta-shokugyou-de-sekai-saikyou-s2
+2026-03-20 00:32:06,754 - INFO - [509/526] https://coba.oploverz.ltd/series/high-school-dxd-s1
+2026-03-20 00:32:06,755 - INFO - Scraping detail: https://coba.oploverz.ltd/series/high-school-dxd-s1
+2026-03-20 00:32:19,352 - INFO - [510/526] https://coba.oploverz.ltd/series/jigoku-sensei-nube-remake-2025
+2026-03-20 00:32:19,353 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jigoku-sensei-nube-remake-2025
+2026-03-20 00:32:39,239 - INFO - [511/526] https://coba.oploverz.ltd/series/captain-tsubasa-2018-s2-junior-youth-hen-1
+2026-03-20 00:32:39,240 - INFO - Scraping detail: https://coba.oploverz.ltd/series/captain-tsubasa-2018-s2-junior-youth-hen-1
+2026-03-20 00:33:12,129 - INFO - [512/526] https://coba.oploverz.ltd/series/tokyo-ghoulre-s2
+2026-03-20 00:33:12,129 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-ghoulre-s2
+2026-03-20 00:33:25,016 - INFO - [513/526] https://coba.oploverz.ltd/series/zetsuen-no-tempest
+2026-03-20 00:33:25,017 - INFO - Scraping detail: https://coba.oploverz.ltd/series/zetsuen-no-tempest
+2026-03-20 00:33:46,205 - INFO - [514/526] https://coba.oploverz.ltd/series/gangsta
+2026-03-20 00:33:46,206 - INFO - Scraping detail: https://coba.oploverz.ltd/series/gangsta
+2026-03-20 00:33:58,093 - INFO - [515/526] https://coba.oploverz.ltd/series/initial-d-first-stage
+2026-03-20 00:33:58,093 - INFO - Scraping detail: https://coba.oploverz.ltd/series/initial-d-first-stage
+2026-03-20 00:34:20,508 - INFO - [516/526] https://coba.oploverz.ltd/series/yuusha-ni-narenakatta-ore-wa-shibushibu-shuushoku-wo-ketsui-shimashita
+2026-03-20 00:34:20,509 - INFO - Scraping detail: https://coba.oploverz.ltd/series/yuusha-ni-narenakatta-ore-wa-shibushibu-shuushoku-wo-ketsui-shimashita
+2026-03-20 00:34:33,186 - INFO - [517/526] https://coba.oploverz.ltd/series/guilty-crown
+2026-03-20 00:34:33,186 - INFO - Scraping detail: https://coba.oploverz.ltd/series/guilty-crown
+2026-03-20 00:34:52,973 - INFO - [518/526] https://coba.oploverz.ltd/series/oshi-no-ko-s3
+2026-03-20 00:34:52,974 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oshi-no-ko-s3
+2026-03-20 00:35:03,541 - INFO - [519/526] https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-3-kanketsu-hen
+2026-03-20 00:35:03,542 - INFO - Scraping detail: https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-3-kanketsu-hen
+2026-03-20 00:35:07,822 - INFO - [520/526] https://coba.oploverz.ltd/series/tokyo-revengers-s3-tenjiku-hen
+2026-03-20 00:35:07,823 - INFO - Scraping detail: https://coba.oploverz.ltd/series/tokyo-revengers-s3-tenjiku-hen
+2026-03-20 00:35:21,681 - INFO - [521/526] https://coba.oploverz.ltd/series/kono-subarashii-sekai-ni-shukufuku-wo-season-3
+2026-03-20 00:35:21,681 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kono-subarashii-sekai-ni-shukufuku-wo-season-3
+2026-03-20 00:35:33,561 - INFO - [522/526] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-2
+2026-03-20 00:35:33,562 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-2
+2026-03-20 00:35:45,292 - INFO - [523/526] https://coba.oploverz.ltd/series/haikyuu
+2026-03-20 00:35:45,293 - INFO - Scraping detail: https://coba.oploverz.ltd/series/haikyuu
+2026-03-20 00:36:07,625 - INFO - [524/526] https://coba.oploverz.ltd/series/3d-kanojo-real-girl-s2
+2026-03-20 00:36:07,626 - INFO - Scraping detail: https://coba.oploverz.ltd/series/3d-kanojo-real-girl-s2
+2026-03-20 00:36:20,403 - INFO - [525/526] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-4
+2026-03-20 00:36:20,404 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-4
+2026-03-20 00:36:34,740 - INFO - [526/526] https://coba.oploverz.ltd/series/dr-stone-season-4-science-future
+2026-03-20 00:36:34,740 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dr-stone-season-4-science-future
+2026-03-20 00:36:56,526 - INFO - Selesai! 526 anime tersimpan di public/data/anime_master.json
+2026-03-20 07:23:11,106 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-20 07:23:11,185 - INFO - Backup dibuat
+2026-03-20 07:23:11,185 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-20 07:23:14,898 - INFO - Ditemukan 527 anime unik
+2026-03-20 07:23:14,899 - INFO - Total anime di website: 527
+2026-03-20 07:23:14,899 - INFO - [1/527] https://coba.oploverz.ltd/series/fatekaleid-liner-4-prismaillya-3rei
+2026-03-20 07:23:14,899 - INFO - Scraping detail: https://coba.oploverz.ltd/series/fatekaleid-liner-4-prismaillya-3rei

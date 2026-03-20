@@ -2,7 +2,7 @@ import json
 import os
 import time
 
-DATA_FILE = os.path.join(os.path.dirname(__file__), '..', 'public', 'data', 'anime_master.json')
+DATA_FILE = os.path.join(os.getcwd(), 'public', 'data', 'anime_master.json')
 CACHE = None
 CACHE_MTIME = 0
 EPISODE_MAP = {}
