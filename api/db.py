@@ -1,8 +1,8 @@
 import json
-import os
-import time
+from pathlib import Path
 
-DATA_FILE = os.path.join(os.getcwd(), 'public', 'data', 'anime_master.json')
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_FILE = BASE_DIR / 'public' / 'data' / 'anime_master.json'
 CACHE = None
 CACHE_MTIME = 0
 EPISODE_MAP = {}
@@ -10,13 +10,13 @@ EPISODE_MAP = {}
 def load_data():
     global CACHE, CACHE_MTIME, EPISODE_MAP
     try:
-        mtime = os.path.getmtime(DATA_FILE)
+        mtime = DATA_FILE.stat().st_mtime
     except OSError:
         return []
     if CACHE and mtime == CACHE_MTIME:
         return CACHE
     try:
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+        with DATA_FILE.open('r', encoding='utf-8') as f:
             data = json.load(f).get('data', [])
         CACHE = data
         CACHE_MTIME = mtime
@@ -33,4 +33,6 @@ def load_data():
         return []
 
 def get_episode_data(url):
+    if not EPISODE_MAP:
+        load_data()
     return EPISODE_MAP.get(url)

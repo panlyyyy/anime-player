@@ -1,5 +1,10 @@
 import json
-from db import get_episode_data
+
+try:
+    from .db import get_episode_data
+except ImportError:
+    from db import get_episode_data
+
 
 def handler(request):
     headers = {
@@ -8,7 +13,7 @@ def handler(request):
     }
     if request.method == 'OPTIONS':
         return {'statusCode': 200, 'headers': headers, 'body': ''}
-    
+
     try:
         params = request.query_params or {}
         url = params.get('url')
@@ -30,12 +35,11 @@ def handler(request):
                     'url': url
                 })
             }
-        else:
-            return {
-                'statusCode': 404,
-                'headers': headers,
-                'body': json.dumps({'success': False, 'error': 'Episode not found'})
-            }
+        return {
+            'statusCode': 404,
+            'headers': headers,
+            'body': json.dumps({'success': False, 'error': 'Episode not found'})
+        }
     except Exception as e:
         return {
             'statusCode': 500,
