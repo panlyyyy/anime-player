@@ -2,6 +2,7 @@ let currentAnime = null;
 let currentEpisodes = [];
 let currentEpisode = null;
 let videoElement = null;
+let iframeElement = null;
 let settings = { speed: 1.0 };
 
 function closePlayer() {
@@ -10,6 +11,9 @@ function closePlayer() {
         videoElement.removeAttribute('src');
         videoElement.load();
     }
+    if (iframeElement) {
+        iframeElement.src = '';
+    }
     document.getElementById('playerOverlay').style.display = 'none';
     document.body.style.overflow = 'auto';
 }
@@ -17,6 +21,7 @@ function closePlayer() {
 document.addEventListener('DOMContentLoaded', () => {
     videoElement = document.getElementById('videoPlayer');
     if (!videoElement) return;
+    iframeElement = document.getElementById('videoIframe');
 
     settings = Storage.getSettings();
     videoElement.playbackRate = settings.speed;
@@ -74,6 +79,9 @@ async function loadEpisode(episode) {
         videoElement.removeAttribute('src');
         videoElement.load();
     }
+    if (iframeElement) {
+        iframeElement.src = '';
+    }
 
     currentEpisode = episode;
 
@@ -93,25 +101,49 @@ async function loadEpisode(episode) {
     UI.showLoading(true, 'Memuat video...');
     try {
         const res = await API.getVideoSources(episode.url);
-        if (!res.success || !res.sources || Object.keys(res.sources).length === 0) {
-            throw new Error('Tidak ada sumber video');
+        if (!res.success) {
+            throw new Error(res.error || 'Tidak ada sumber');
         }
 
-        const sources = res.sources;
-        const defaultQuality = res.default || Object.keys(sources)[0];
-        const videoUrl = sources[defaultQuality];
+        const defaultQuality = res.default || '360p';
 
-        videoElement.src = videoUrl;
-        videoElement.load();
+        const sources = res.sources || {};
+        const streams = res.streams || {};
 
-        videoElement.play().catch(e => console.warn('Autoplay gagal:', e));
+        const pickFromMap = (map, preferKey) => {
+            if (!map || typeof map !== 'object') return null;
+            if (preferKey && map[preferKey]) return map[preferKey];
+            const keys = Object.keys(map);
+            if (keys.length === 0) return null;
+            return map[keys[0]] || null;
+        };
+
+        const videoUrl = pickFromMap(sources, defaultQuality);
+        const streamUrl = pickFromMap(streams, defaultQuality);
+
+        if (videoUrl && videoElement) {
+            // Mainkan pakai HTML5 video untuk direct mp4/m3u8
+            if (iframeElement) iframeElement.style.display = 'none';
+            videoElement.style.display = '';
+            videoElement.src = videoUrl;
+            videoElement.load();
+            videoElement.play().catch(e => console.warn('Autoplay gagal:', e));
+
+            const savedTime = Storage.getProgress(episode.url);
+            if (savedTime) {
+                videoElement.currentTime = savedTime;
+            }
+        } else if (streamUrl && iframeElement) {
+            // Kalau bukan mp4/m3u8 langsung, gunakan player embed lewat iframe
+            if (videoElement) videoElement.style.display = 'none';
+            iframeElement.style.display = '';
+            iframeElement.src = streamUrl;
+        } else {
+            throw new Error('Tidak ada sumber video/stream yang valid');
+        }
 
         Storage.addWatchedEpisode(currentAnime.slug, episode.number);
 
-        const savedTime = Storage.getProgress(episode.url);
-        if (savedTime) {
-            videoElement.currentTime = savedTime;
-        }
     } catch (err) {
         console.error(err);
         UI.showNotification('Gagal memuat video. Coba episode lain.', 3000, 'error');

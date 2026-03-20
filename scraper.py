@@ -9,6 +9,8 @@ import shutil
 import argparse
 import logging
 from datetime import datetime
+from urllib.parse import urljoin
+from typing import Optional
 
 BASE_URL = "https://coba.oploverz.ltd"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
@@ -42,43 +44,147 @@ def get_soup(url, retries=3):
                 time.sleep(2 ** i)
     return None
 
-def is_video_url(url):
-    return bool(re.search(r'\.(mp4|m3u8)', url, re.IGNORECASE))
+IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+VIDEO_EXTENSIONS = {'.mp4', '.m3u8', '.mkv', '.webm'}
+STREAM_HINTS = {'4meplayer', 'video.g', 'oplo2.4meplayer.pro'}
+
+def looks_like_image_url(url: str) -> bool:
+    if not url:
+        return False
+    lower = url.lower().split('?')[0]
+    return any(lower.endswith(ext) for ext in IMAGE_EXTENSIONS)
+
+def looks_like_direct_video_url(url: str) -> bool:
+    if not url:
+        return False
+    lower = url.lower().split('?')[0]
+    return any(lower.endswith(ext) for ext in VIDEO_EXTENSIONS) or bool(
+        re.search(r'\.(mp4|m3u8)(\b|$)', lower, re.IGNORECASE)
+    )
+
+def validate_video_url(url: str) -> bool:
+    """
+    Validasi sederhana untuk menghindari videoElement.src diisi HTML/image.
+    Mengandalkan HEAD + content-type 'video/*' kalau tidak jelas dari ekstensi.
+    """
+    if not url or looks_like_image_url(url):
+        return False
+
+    lower = url.lower()
+    if any(h in lower for h in STREAM_HINTS):
+        # ini biasanya link ke player/stream page, bukan file video langsung
+        return False
+
+    # Jika sudah jelas .mp4/.m3u8, terima cepat tanpa HEAD.
+    if looks_like_direct_video_url(url):
+        return True
+
+    try:
+        res = requests.head(url, headers=HEADERS, timeout=10, allow_redirects=True)
+        ctype = (res.headers.get('content-type') or '').lower()
+        return 'video/' in ctype
+    except Exception:
+        return False
+
+def guess_quality(text_or_url: str) -> Optional[str]:
+    if not text_or_url:
+        return None
+    t = text_or_url.lower()
+    if '2160' in t or '4k' in t:
+        return '4k'
+    if '1080' in t:
+        return '1080p'
+    if '720' in t:
+        return '720p'
+    if '480' in t:
+        return '480p'
+    if '360' in t:
+        return '360p'
+    if '240' in t:
+        return '240p'
+    return None
+
+def best_default_quality(videos: dict, streams: dict) -> Optional[str]:
+    priority = ['1080p', '720p', '480p', '360p', '240p', '4k']
+    for q in priority:
+        if videos.get(q):
+            return q
+    for q in priority:
+        if streams.get(q):
+            return q
+    return None
 
 def extract_episode_sources(episode_url):
-    """Fungsi ini akan dipanggil oleh API, bukan saat scraping"""
-    sources = {}
+    """
+    Fungsi ini akan dipanggil oleh API.
+
+    Return:
+      {
+        "videos": { "480p": <mp4/m3u8 url>, ... },
+        "streams": { "480p": <player/stream url>, ... },
+        "default": "480p"
+      }
+    """
+    videos = {}
+    streams = {}
     soup = get_soup(episode_url)
     if not soup:
         return None
 
-    download_links = soup.select('.download-eps a, .download-links a, a[href*=".mp4"], a[href*=".m3u8"]')
-    
-    for link in download_links:
-        text = link.text.lower()
-        href = link.get('href', '')
-        if not href:
+    for a in soup.select('a[href]'):
+        href = (a.get('href') or '').strip()
+        if not href or href.startswith('javascript:'):
             continue
-        if not is_video_url(href):
-            continue
-        if '360' in text:
-            sources['360p'] = href
-        elif '480' in text:
-            sources['480p'] = href
-        elif '720' in text:
-            sources['720p'] = href
-        elif '1080' in text:
-            sources['1080p'] = href
-        elif '240' in text:
-            sources['240p'] = href
 
-    return sources if sources else None
+        href = urljoin(episode_url, href)
+        if looks_like_image_url(href):
+            continue
+
+        text = a.get_text(' ', strip=True)
+        quality = guess_quality(f'{text} {href}')
+        lower_href = href.lower()
+
+        # Stream/player (tidak bisa langsung di-load oleh <video>)
+        if any(hint in lower_href for hint in STREAM_HINTS) or 'video.g' in lower_href:
+            if not quality and not streams:
+                quality = '360p'  # fallback minimal
+            if quality:
+                streams[quality] = href
+            continue
+
+        # Direct video
+        is_m3u8_or_mp4 = 'm3u8' in lower_href or 'mp4' in lower_href
+        is_container_video = any(ext in lower_href for ext in ['.mkv', '.webm'])
+        if not (is_m3u8_or_mp4 or is_container_video):
+            continue
+
+        if not quality:
+            # Kalau label resolusi tidak ada, ambil sebagai fallback minimal
+            if not videos:
+                quality = '360p'
+            else:
+                # mencegah kita asal ambil tanpa mengetahui resolusi
+                continue
+
+        if validate_video_url(href):
+            videos[quality] = href
+
+    default_q = best_default_quality(videos, streams)
+    if not default_q:
+        return None
+
+    return {
+        'videos': videos,
+        'streams': streams,
+        'default': default_q,
+    }
 
 def extract_episodes(soup):
     episodes = []
     containers = soup.select('.episodelist ul li, .list-episode li, .eplister li')
     if not containers:
-        containers = soup.find_all('a', href=True)
+        # jangan ambil semua link random, filter yang memang mengarah ke /episode/
+        containers = soup.select('a[href*="/episode/"]')
     
     seen = set()
     for elem in containers:
@@ -91,11 +197,18 @@ def extract_episodes(soup):
         href = link.get('href', '')
         if '/episode/' not in href:
             continue
-        text = link.get_text()
-        match = re.search(r'(\d+)', text)
-        if not match:
+
+        text = clean(link.get_text())
+        num = None
+        match = re.search(r'(?:episode|eps)\s*[:\-]?\s*(\d+)', text, flags=re.IGNORECASE)
+        if match:
+            num = int(match.group(1))
+        else:
+            match2 = re.search(r'/episode/(\d+)', href)
+            if match2:
+                num = int(match2.group(1))
+        if num is None:
             continue
-        num = int(match.group(1))
         if num in seen:
             continue
         seen.add(num)
@@ -126,12 +239,22 @@ def scrape_anime_detail(url):
     
     slug = url.rstrip('/').split('/')[-1]
 
-    img = soup.select_one('.anime-poster img, .poster img, .thumb img')
-    if not img:
-        img = soup.find('img')
-    image = img.get('src', '') if img else ''
+    # Poster: prefer og:image dulu (lebih stabil), fallback ke elemen poster.
+    og_img = soup.select_one('meta[property="og:image"]')
+    image = ''
+    if og_img and og_img.get('content'):
+        image = og_img.get('content', '').strip()
+    else:
+        img = soup.select_one('.anime-poster img, .poster img, .thumb img')
+        if not img:
+            img = soup.find('img')
+        image = img.get('src', '').strip() if img and img.get('src') else ''
+
     if image and image.startswith('/'):
         image = BASE_URL + image
+    # Validasi ringan: jangan ambil URL yang kelihatan seperti video.
+    if image and looks_like_direct_video_url(image):
+        image = ''
 
     synopsis = ''
     for p in soup.find_all('p'):
@@ -159,6 +282,18 @@ def scrape_anime_detail(url):
         elif 'Genre:' in line:
             genre_text = line.replace('Genre:', '').strip()
             info['genre'] = [g.strip() for g in genre_text.split(',') if g.strip()]
+
+    # Status parsing lebih robust (kadang format tidak sama persis)
+    m = re.search(r'Status:\s*([^\n\r]+)', full_text, flags=re.IGNORECASE)
+    if m:
+        status_raw = clean(m.group(1))
+        status_l = status_raw.lower()
+        if 'ongoing' in status_l or 'on going' in status_l:
+            info['status'] = 'Ongoing'
+        elif 'completed' in status_l or 'selesai' in status_l:
+            info['status'] = 'Completed'
+        else:
+            info['status'] = status_raw
 
     episodes = extract_episodes(soup)
 

@@ -103,6 +103,7 @@ const API = {
                     return {
                         success: true,
                         sources: episode.sources || {},
+                        streams: {},
                         default: episode.default || '360p',
                         url: episodeUrl,
                         fallback: 'static'

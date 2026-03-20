@@ -33,6 +33,13 @@
         <div class="video-container">
             <button class="close-player"><i class="fas fa-times"></i></button>
             <video id="videoPlayer" controls style="width:100%;height:100%;"></video>
+                <iframe
+                    id="videoIframe"
+                    style="width:100%;height:100%;display:none;"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    referrerpolicy="no-referrer">
+                </iframe>
         </div>
         <div class="player-info">
             <h1 id="overlayTitle">Solo Leveling</h1>
@@ -65,7 +72,7 @@
             try {
                 const res = await API.getAnimeList(1, 100);
                 if (res.success) {
-                    const ongoing = res.data.filter(a => a.status?.toLowerCase() === 'ongoing');
+                    const ongoing = res.data.filter(a => (a.status || '').toLowerCase().includes('ongoing'));
                     const container = document.getElementById('ongoingList');
                     if (ongoing.length === 0) {
                         container.innerHTML = '<div class="empty">Tidak ada anime ongoing</div>';
