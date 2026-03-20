@@ -19,7 +19,10 @@ const API = {
 
         const payload = await res.json();
         if (!res.ok) {
-            throw new Error(payload?.error || `HTTP ${res.status}`);
+            const message = typeof payload?.error === 'string'
+                ? payload.error
+                : JSON.stringify(payload?.error || payload);
+            throw new Error(message || `HTTP ${res.status}`);
         }
 
         return payload;

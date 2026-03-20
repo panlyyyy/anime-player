@@ -2174,3 +2174,13 @@
 2026-03-20 17:16:23,010 - INFO - [527/527] https://coba.oploverz.ltd/series/jormungand
 2026-03-20 17:16:23,011 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jormungand
 2026-03-20 17:16:35,244 - INFO - Selesai! 527 anime tersimpan di public/data/anime_master.json
+2026-03-20 18:24:48,644 - INFO - === MULAI SCRAPING mode: update ===
+2026-03-20 18:24:48,722 - INFO - Backup dibuat
+2026-03-20 18:24:48,727 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-20 18:24:53,750 - INFO - Ditemukan 527 anime unik
+2026-03-20 18:24:53,751 - INFO - Total anime di website: 527
+2026-03-20 18:24:53,881 - INFO - [UPDATE] campfire-cooking-in-another-world-with-my-absurd-skill-s2
+2026-03-20 18:25:05,381 - INFO - [UPDATE] hai-to-gensou-no-grimgar
+2026-03-20 18:25:18,180 - INFO - [UPDATE] zetsuen-no-tempest
+2026-03-20 18:25:39,482 - INFO - [UPDATE] one-piece-special-edited-version
+2026-03-20 18:25:57,902 - INFO - [UPDATE] tate-no-yuusha-no-nariagari-s3
