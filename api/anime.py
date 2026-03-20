@@ -1,6 +1,8 @@
 import json
 import os
 import sys
+from http.server import BaseHTTPRequestHandler
+from urllib.parse import urlparse, parse_qs
 
 # Vercel @vercel/python menjalankan file per-route, jadi folder `api/` tidak
 # selalu dianggap sebagai package. Pakai sys.path biar import `db.py` stabil.
@@ -13,36 +15,52 @@ if ROOT_DIR not in sys.path:
 
 from db import load_data
 
-def handler(request):
-    headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-    }
-    if request.method == 'OPTIONS':
-        return {'statusCode': 200, 'headers': headers, 'body': ''}
 
-    try:
-        data = load_data()
-        params = request.query_params or {}
-        page = int(params.get('page', 1))
-        limit = int(params.get('limit', 50))
-        start = (page - 1) * limit
-        end = start + limit
-        paginated = data[start:end]
-        return {
-            'statusCode': 200,
-            'headers': headers,
-            'body': json.dumps({
+def _parse_query(path: str) -> dict:
+    parsed = urlparse(path)
+    raw = parse_qs(parsed.query)
+    # ambil value pertama untuk setiap key
+    return {k: (v[0] if isinstance(v, list) and v else '') for k, v in raw.items()}
+
+
+class handler(BaseHTTPRequestHandler):
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
+    def do_GET(self):
+        headers_origin = '*'
+        try:
+            data = load_data()
+            params = _parse_query(self.path)
+            page = int(params.get('page', 1) or 1)
+            limit = int(params.get('limit', 50) or 50)
+            start = (page - 1) * limit
+            end = start + limit
+            paginated = data[start:end]
+            payload = {
                 'success': True,
                 'data': paginated,
                 'total': len(data),
                 'page': page,
                 'limit': limit
-            }, ensure_ascii=False)
-        }
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'headers': headers,
-            'body': json.dumps({'success': False, 'error': str(e)})
-        }
+            }
+            body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', headers_origin)
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception as e:
+            body = json.dumps({'success': False, 'error': str(e)}, ensure_ascii=False).encode('utf-8')
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', headers_origin)
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
