@@ -7,6 +7,49 @@ let videoElement = null;
 let iframeElement = null;
 let settings = { speed: 1.0 };
 
+function applyFullscreenMode(isActive) {
+    const overlay = document.getElementById('playerOverlay');
+    if (!overlay) return;
+    overlay.classList.toggle('player-fullscreen-active', !!isActive);
+}
+
+function toggleFullscreen() {
+    if (document.fullscreenElement) {
+        try { document.exitFullscreen(); } catch (e) {}
+        applyFullscreenMode(false);
+        return;
+    }
+
+    // Fallback mode (Fullscreen API tidak ada): toggle pakai class saja.
+    const overlay = document.getElementById('playerOverlay');
+    if (!document.fullscreenElement && overlay && overlay.classList.contains('player-fullscreen-active')) {
+        applyFullscreenMode(false);
+        return;
+    }
+
+    // Prefer Fullscreen on the video element (mobile biasanya paling "langsung" dan bisa landscape).
+    try {
+        if (videoElement && videoElement.requestFullscreen) {
+            const p = videoElement.requestFullscreen();
+            if (p && typeof p.then === 'function') {
+                p.then(() => applyFullscreenMode(true)).catch(() => applyFullscreenMode(true));
+                return;
+            }
+            applyFullscreenMode(true);
+            return;
+        }
+
+        if (videoElement && videoElement.webkitEnterFullscreen) {
+            videoElement.webkitEnterFullscreen();
+            applyFullscreenMode(true);
+            return;
+        }
+    } catch (e) {}
+
+    // Fallback kalau Fullscreen API tidak tersedia.
+    applyFullscreenMode(true);
+}
+
 function closePlayer() {
     if (videoElement) {
         videoElement.pause();
@@ -18,6 +61,10 @@ function closePlayer() {
     }
     document.getElementById('playerOverlay').style.display = 'none';
     document.body.style.overflow = 'auto';
+    applyFullscreenMode(false);
+    if (document.fullscreenElement) {
+        try { document.exitFullscreen(); } catch (e) {}
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,6 +79,47 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) {
         closeBtn.addEventListener('click', closePlayer);
     }
+
+    // Fullscreen UX: tombol custom + dblclick.
+    const videoContainer = document.querySelector('.video-container');
+    if (videoContainer && !document.querySelector('.fullscreen-player-btn')) {
+        const fsBtn = document.createElement('button');
+        fsBtn.className = 'fullscreen-player-btn';
+        fsBtn.type = 'button';
+        fsBtn.setAttribute('aria-label', 'Fullscreen');
+        fsBtn.innerHTML = '<i class="fas fa-expand"></i>';
+        Object.assign(fsBtn.style, {
+            position: 'absolute',
+            top: '20px',
+            right: '65px',
+            width: '35px',
+            height: '35px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.1)',
+            border: 'none',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backdropFilter: 'blur(5px)',
+            zIndex: 11,
+            cursor: 'pointer'
+        });
+        fsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFullscreen();
+        });
+        videoContainer.appendChild(fsBtn);
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+        applyFullscreenMode(!!document.fullscreenElement);
+    });
+
+    videoElement.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        toggleFullscreen();
+    });
 
     const speedSelect = document.getElementById('overlaySpeedSelect');
     if (speedSelect) {

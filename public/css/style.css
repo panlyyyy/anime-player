@@ -369,17 +369,15 @@ section h2 span {
 }
 
 .episode-scroll {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
     padding: 20px 0;
-    scrollbar-width: none;
+    overflow-x: hidden;
 }
 
-.episode-scroll::-webkit-scrollbar { display: none; }
-
 .ep-card {
-    min-width: 140px;
+    min-width: 0;
     background: var(--bg-surface);
     padding: 15px;
     border-radius: 16px;
@@ -392,6 +390,16 @@ section h2 span {
 .ep-card.active {
     border-color: var(--accent);
     background: rgba(255, 62, 62, 0.1);
+}
+
+/* Fullscreen UX: sembunyikan panel info biar fokus ke video */
+.player-fullscreen-active .player-info {
+    display: none;
+}
+
+.player-fullscreen-active .video-container {
+    aspect-ratio: auto;
+    height: 100%;
 }
 
 .category-scroll {

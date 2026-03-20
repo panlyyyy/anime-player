@@ -243,6 +243,35 @@ def extract_episode_sources(episode_url):
                         videos[q] = url
                 else:
                     streams[q] = url
+
+            # Fallback: beberapa halaman `streamUrl` tidak selalu punya field `source`.
+            # Kalau hasil streams masih kosong, coba ekstrak object { ... } dan ambil `url` apa adanya.
+            if not streams and segment:
+                try:
+                    objects = re.findall(r'\{[^{}]*\}', segment)
+                    for obj in objects:
+                        u_m = re.search(r'url\s*:\s*"([^"]+)"', obj, flags=re.IGNORECASE)
+                        if not u_m:
+                            continue
+                        u = (u_m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
+                        if not u:
+                            continue
+
+                        s_m = re.search(r'source\s*:\s*"([^"]+)"', obj, flags=re.IGNORECASE)
+                        src = (s_m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip() if s_m else ''
+
+                        q = guess_quality(src) or guess_quality(u) or '360p'
+
+                        if u.startswith('/'):
+                            u = urljoin(episode_url, u)
+
+                        if looks_like_direct_video_url(u):
+                            if validate_video_url(u):
+                                videos[q] = u
+                        else:
+                            streams[q] = u
+                except Exception as e:
+                    logging.warning(f"Fallback parse streamUrl failed: {e}")
         except Exception as e:
             logging.warning(f"Gagal ekstrak streamUrl dari script: {e}")
 
