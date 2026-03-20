@@ -11,20 +11,39 @@ import logging
 from datetime import datetime
 from urllib.parse import urljoin
 from typing import Optional
+from pathlib import Path
 
 BASE_URL = "https://coba.oploverz.ltd"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
-os.makedirs("logs", exist_ok=True)
-logging.basicConfig(
-    filename="logs/scraper.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    encoding="utf-8"
-)
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-logging.getLogger().addHandler(console)
+def configure_logging():
+    logger = logging.getLogger()
+    if logger.handlers:
+        return logger
+
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(formatter)
+    logger.addHandler(console)
+
+    log_dir = Path("logs")
+    try:
+        log_dir.mkdir(exist_ok=True)
+        file_handler = logging.FileHandler(log_dir / "scraper.log", encoding="utf-8")
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    except OSError:
+        # Environment seperti Vercel bisa read-only. Console logging tetap cukup.
+        pass
+
+    return logger
+
+
+LOGGER = configure_logging()
 
 COUNT_FILE = "logs/last_total.txt"
 EXPECTED_MIN = 500

@@ -9,41 +9,24 @@ if API_DIR not in sys.path:
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
+from http_utils import JsonHandler
 from db import load_data
 
-def handler(request):
-    headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-    }
-    if request.method == 'OPTIONS':
-        return {'statusCode': 200, 'headers': headers, 'body': ''}
+class handler(JsonHandler):
+    def do_GET(self):
+        try:
+            params = self.get_query_params()
+            slug = params.get('slug')
+            if not slug:
+                self.send_json({'success': False, 'error': 'slug required'}, status=400)
+                return
 
-    try:
-        params = request.query_params or {}
-        slug = params.get('slug')
-        if not slug:
-            return {
-                'statusCode': 400,
-                'headers': headers,
-                'body': json.dumps({'success': False, 'error': 'slug required'})
-            }
-        data = load_data()
-        anime = next((a for a in data if a['slug'] == slug), None)
-        if not anime:
-            return {
-                'statusCode': 404,
-                'headers': headers,
-                'body': json.dumps({'success': False, 'error': 'Not found'})
-            }
-        return {
-            'statusCode': 200,
-            'headers': headers,
-            'body': json.dumps({'success': True, 'data': anime}, ensure_ascii=False)
-        }
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'headers': headers,
-            'body': json.dumps({'success': False, 'error': str(e)})
-        }
+            data = load_data()
+            anime = next((a for a in data if a['slug'] == slug), None)
+            if not anime:
+                self.send_json({'success': False, 'error': 'Not found'}, status=404)
+                return
+
+            self.send_json({'success': True, 'data': anime})
+        except Exception as e:
+            self.send_json({'success': False, 'error': str(e)}, status=500)
