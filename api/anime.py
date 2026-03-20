@@ -1,5 +1,9 @@
 import json
-from db import load_data
+
+try:
+    from .db import load_data
+except ImportError:
+    from db import load_data
 
 def handler(request):
     headers = {
@@ -8,7 +12,7 @@ def handler(request):
     }
     if request.method == 'OPTIONS':
         return {'statusCode': 200, 'headers': headers, 'body': ''}
-    
+
     try:
         data = load_data()
         params = request.query_params or {}
