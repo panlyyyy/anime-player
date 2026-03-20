@@ -73,7 +73,11 @@
             try {
                 const res = await API.getAnimeList(1, 100);
                 if (res.success) {
-                    const ongoing = res.data.filter(a => (a.status || '').toLowerCase().includes('ongoing'));
+                    // Beberapa data status menggunakan bahasa Indonesia (mis. "Berlangsung").
+                    const ongoing = res.data.filter(a => {
+                        const s = (a.status || '').toLowerCase();
+                        return s.includes('ongoing') || s.includes('berlangsung') || s.includes('tayang');
+                    });
                     const container = document.getElementById('ongoingList');
                     if (ongoing.length === 0) {
                         container.innerHTML = '<div class="empty">Tidak ada anime ongoing</div>';
