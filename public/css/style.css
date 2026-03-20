@@ -1,9 +1,10 @@
 :root {
-    --accent: #ff3e3e;
-    --accent-glow: rgba(255, 62, 62, 0.4);
+    /* Netflix-ish theme */
+    --accent: #e50914;
+    --accent-glow: rgba(229, 9, 20, 0.35);
     --bg-darker: #000000;
-    --bg-main: #0a0a0a;
-    --bg-surface: #161617;
+    --bg-main: #050505;
+    --bg-surface: #121212;
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.6);
     --glass: rgba(15, 15, 15, 0.7);
@@ -22,6 +23,8 @@
 body {
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg-darker);
+    background-image: radial-gradient(1200px 600px at 20% -10%, rgba(229, 9, 20, 0.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 0%, rgba(229, 9, 20, 0.12), transparent 55%);
     color: var(--text-primary);
     overflow-x: hidden;
 }
@@ -30,7 +33,8 @@ body {
     max-width: 430px;
     margin: 0 auto;
     min-height: 100vh;
-    background: var(--bg-main);
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
     position: relative;
     padding-bottom: 100px;
 }
@@ -59,7 +63,7 @@ header.scrolled {
     font-size: 22px;
     font-weight: 800;
     letter-spacing: -1px;
-    background: linear-gradient(to right, #fff, #888);
+    background: linear-gradient(to right, #fff, #cfcfcf);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

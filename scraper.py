@@ -184,21 +184,42 @@ def extract_episode_sources(episode_url):
     # Kalau extractor berbasis `<a>` gagal, coba ambil dari script hydrated data.
     if (not streams) or len(streams) < 4:
         try:
-            script_chunks = []
-            for s in soup.find_all('script'):
-                if not s:
-                    continue
-                txt = s.get_text(strip=True)
-                if txt and 'streamUrl' in txt:
-                    script_chunks.append(txt)
-            joined = '\n'.join(script_chunks)
+            html_str = str(soup)
 
             # Ambil pair: { source: "...360p...", url: "https://..." }
             pair_re = re.compile(
                 r'(?:"source"|source)\s*:\s*"([^"]+)"\s*,\s*(?:"url"|url)\s*:\s*"([^"]+)"',
                 flags=re.IGNORECASE
             )
-            for m in pair_re.finditer(joined):
+
+            # Penting: jangan parse semua script sekaligus, karena bisa mencampur stream
+            # antar-episode dan ujungnya kualitas yang sama akan "tertimpa" dengan token
+            # episode lain (akibatnya semua eps bisa memutar media yang sama).
+            # Jadi kita ambil hanya 1 segmen `streamUrl:[ ... ]` terdekat di halaman.
+            segment = None
+            patterns = [
+                # Contoh umum dari halaman:
+                # streamUrl:[{source:"Nonton Online 720p",url:"https://..."}],content:null,...
+                r'streamUrl\s*:\s*\[\s*(?P<inside>[\s\S]*?)\s*\]\s*,\s*content',
+                # Variasi lain (kadang ada releasedAt sebelum content)
+                r'streamUrl\s*:\s*\[\s*(?P<inside>[\s\S]*?)\s*\]\s*,\s*releasedAt',
+            ]
+            for pat in patterns:
+                m = re.search(pat, html_str, flags=re.IGNORECASE)
+                if m:
+                    segment = m.group('inside')
+                    break
+
+            if not segment:
+                # Fallback: parse dari kumpulan script yang mengandung streamUrl,
+                # tapi hanya ambil segmen setelah kemunculan pertama "streamUrl:".
+                first = html_str.lower().find('streamurl')
+                if first != -1:
+                    segment = html_str[first:first + 500000]  # batas aman
+                else:
+                    segment = html_str
+
+            for m in pair_re.finditer(segment):
                 source = (m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
                 url = (m.group(2) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
                 if not url:
