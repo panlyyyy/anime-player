@@ -3437,3 +3437,14 @@
 2026-03-21 16:58:05,641 - INFO - Scraping detail: https://coba.oploverz.ltd/series/alya-sometimes-hides-her-feelings-in-russian
 2026-03-21 16:58:16,969 - INFO - [8/527] https://coba.oploverz.ltd/series/86-eighty-six-part-2
 2026-03-21 16:58:16,972 - INFO - Scraping detail: https://coba.oploverz.ltd/series/86-eighty-six-part-2
+2026-03-21 17:06:13,366 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-21 17:06:13,441 - INFO - Backup dibuat
+2026-03-21 17:06:13,442 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-21 17:06:18,378 - INFO - Ditemukan 527 anime unik
+2026-03-21 17:06:18,378 - INFO - Total anime di website: 527
+2026-03-21 17:06:18,378 - INFO - [1/527] https://coba.oploverz.ltd/series/blue-box
+2026-03-21 17:06:18,379 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blue-box
+2026-03-21 17:06:39,309 - INFO - [2/527] https://coba.oploverz.ltd/series/oshi-no-ko-s2
+2026-03-21 17:06:39,310 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oshi-no-ko-s2
+2026-03-21 17:06:51,950 - INFO - [3/527] https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s2
+2026-03-21 17:06:51,950 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s2
