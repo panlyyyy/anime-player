@@ -383,6 +383,22 @@ window.openPlayer = function(anime, episode = null) {
     document.getElementById('overlayTitle').textContent = anime.title || '';
     document.getElementById('overlayDescription').textContent = anime.synopsis || 'Sinopsis tidak tersedia.';
 
+    const detailEl = document.getElementById('overlayAnimeDetail');
+    if (detailEl) {
+        const parts = [];
+        if (anime.japanese_title) parts.push(`<span class="overlay-jp-title">${String(anime.japanese_title).replace(/</g, '&lt;')}</span>`);
+        const meta = [];
+        if (anime.type) meta.push(anime.type);
+        if (anime.studio) meta.push(anime.studio);
+        if (anime.release_date) meta.push(anime.release_date);
+        if (anime.status) meta.push(anime.status);
+        if (anime.score) meta.push(`★ ${anime.score}`);
+        if (anime.duration) meta.push(anime.duration);
+        if (meta.length) parts.push(`<span class="overlay-meta">${meta.join(' • ')}</span>`);
+        if (anime.genre && anime.genre.length) parts.push(`<span class="overlay-genres">${anime.genre.map(g => `<span class="overlay-genre-tag">${String(g).replace(/</g, '&lt;')}</span>`).join('')}</span>`);
+        detailEl.innerHTML = parts.length ? parts.join('') : '';
+    }
+
     if (!episode && currentEpisodes.length > 0) {
         episode = currentEpisodes[0];
     }

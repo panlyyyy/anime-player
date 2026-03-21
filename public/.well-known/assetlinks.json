@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.vercel.anime_player_omega.twa",
+    "sha256_cert_fingerprints": ["9F:E7:CF:89:D4:DD:D8:39:B9:4A:1A:BB:E0:DB:C2:B9:BA:DA:76:A1:EA:1A:ED:52:1A:DC:AB:08:45:45:99:1F"]
+  }
+}]

@@ -955,6 +955,80 @@ body.ns-theme .ns-search-field button:hover {
     filter: brightness(1.08);
 }
 
+/* Filter section */
+body.ns-theme .ns-filters {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+}
+
+body.ns-theme .ns-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+body.ns-theme .ns-filter-label {
+    font-size: 0.8125rem;
+    color: var(--ns-muted);
+    white-space: nowrap;
+}
+
+body.ns-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+body.ns-theme .ns-filter-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--ns-border);
+    background: rgba(24, 24, 27, 0.6);
+    color: var(--ns-muted);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+body.ns-theme .ns-filter-chip:hover {
+    color: #fff;
+    border-color: var(--ns-indigo);
+}
+
+body.ns-theme .ns-filter-chip.active {
+    background: var(--ns-indigo);
+    border-color: var(--ns-indigo);
+    color: #fff;
+}
+
+body.ns-theme .ns-filter-select {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--ns-border);
+    background: rgba(24, 24, 27, 0.8);
+    color: #fff;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    outline: none;
+}
+
+body.ns-theme .anime-genre-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    margin: 2px 4px 2px 0;
+    border-radius: 4px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    font-size: 0.7rem;
+}
+
+body.ns-theme .anime-genres {
+    margin-top: 4px;
+}
+
 body.ns-theme .anime-grid {
     max-width: var(--ns-max);
     margin: 0 auto;
@@ -989,6 +1063,40 @@ body.ns-theme .anime-card:hover {
 
 body.ns-theme .anime-meta.resume-line {
     color: #a5b4fc;
+}
+
+/* Overlay anime detail (full info) */
+body.ns-theme .overlay-anime-detail {
+    margin: 8px 0 12px;
+    font-size: 0.875rem;
+    color: var(--ns-muted);
+    line-height: 1.5;
+}
+
+body.ns-theme .overlay-jp-title {
+    display: block;
+    font-size: 0.95rem;
+    color: #a5b4fc;
+    margin-bottom: 4px;
+}
+
+body.ns-theme .overlay-meta {
+    display: block;
+    margin-bottom: 6px;
+}
+
+body.ns-theme .overlay-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+body.ns-theme .overlay-genre-tag {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    font-size: 0.75rem;
 }
 
 /* --- Player overlay --- */

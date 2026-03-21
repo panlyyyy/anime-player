@@ -138,17 +138,24 @@ const UI = {
 
     renderGridCard(anime, options = {}) {
         const showResume = options.showResume !== false && (anime.lastEpisodeNumber != null || (anime.lastProgressSeconds || 0) > 0);
+        const showMeta = options.showMeta === true;
         const resumeLine = showResume
             ? `<div class="anime-meta resume-line">Eps ${anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?'} • ${Storage.formatTime(anime.lastProgressSeconds || 0)}</div>`
             : '';
+        const metaLine = showMeta ? (() => {
+            const parts = [];
+            if (anime.episodes?.length) parts.push(`${anime.episodes.length} eps`);
+            if (anime.score) parts.push(`★ ${anime.score}`);
+            if (anime.status) parts.push(anime.status);
+            const genreTags = (anime.genre || []).slice(0, 2).map(g => `<span class="anime-genre-tag">${String(g).replace(/</g, '&lt;')}</span>`).join('');
+            return `<div class="anime-meta">${parts.join(' • ')}</div>${genreTags ? `<div class="anime-genres">${genreTags}</div>` : ''}`;
+        })() : `<div class="anime-meta"><span>${anime.episodes?.length || '?'} eps</span></div>`;
         return `
             <div class="anime-card" data-slug="${anime.slug}">
                 <img src="${anime.image || 'https://via.placeholder.com/300x450'}" alt="${anime.title.replace(/"/g, '&quot;')}" loading="lazy">
                 <div class="anime-info">
                     <h3>${anime.title.replace(/"/g, '&quot;')}</h3>
-                    <div class="anime-meta">
-                        <span>${anime.episodes?.length || '?'} eps</span>
-                    </div>
+                    ${metaLine}
                     ${resumeLine}
                 </div>
             </div>

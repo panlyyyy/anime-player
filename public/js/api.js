@@ -48,9 +48,24 @@ const API = {
         return this.dataCache;
     },
 
-    async getAnimeList(page = 1, limit = 50) {
+    async getFilters() {
         try {
-            const payload = await this.fetch('/api/anime', { page, limit });
+            const payload = await this.fetch('/api/filters');
+            if (payload?.success && payload?.data) return payload.data;
+        } catch (e) {
+            console.warn('API filters gagal, pakai default');
+        }
+        return { genres: [], statuses: ['Ongoing', 'Completed'], types: ['Serial TV', 'Movie', 'OVA'] };
+    },
+
+    async getAnimeList(page = 1, limit = 50, filters = {}) {
+        try {
+            const params = { page, limit };
+            if (filters.genre) params.genre = filters.genre;
+            if (filters.status) params.status = filters.status;
+            if (filters.type) params.type = filters.type;
+            if (filters.q) params.q = filters.q;
+            const payload = await this.fetch('/api/anime', params);
 
             // Skenario tertentu bisa bikin endpoint sukses tapi isi data kosong (contoh:
             // file anime_master.json tidak ikut ke runtime serverless).
@@ -61,40 +76,32 @@ const API = {
                 payload.data.length === 0 &&
                 Number(payload?.total || 0) === 0
             ) {
-                const data = await this.loadStaticData();
-                const safePage = Number(page) || 1;
-                const safeLimit = Number(limit) || 50;
-                const start = (safePage - 1) * safeLimit;
-                const end = start + safeLimit;
-
-                return {
-                    success: true,
-                    data: data.slice(start, end),
-                    total: data.length,
-                    page: safePage,
-                    limit: safeLimit,
-                    fallback: 'static'
-                };
+                return this._fallbackAnimeList(page, limit, filters);
             }
 
             return payload;
         } catch (error) {
             console.warn('API anime gagal, fallback ke data statis:', error);
-            const data = await this.loadStaticData();
+            return this._fallbackAnimeList(page, limit, filters);
+        }
+    },
+
+    _fallbackAnimeList(page, limit, filters = {}) {
+        return this.loadStaticData().then(data => {
+            let filtered = data;
+            if (filters.genre) filtered = filtered.filter(a => (a.genre || []).includes(filters.genre));
+            if (filters.status) filtered = filtered.filter(a => (a.status || '').trim() === filters.status);
+            if (filters.type) filtered = filtered.filter(a => (a.type || '').trim() === filters.type);
+            if (filters.q) {
+                const q = String(filters.q || '').trim().toLowerCase();
+                filtered = filtered.filter(a => (a.title_lower || a.title || '').toLowerCase().includes(q));
+            }
             const safePage = Number(page) || 1;
             const safeLimit = Number(limit) || 50;
             const start = (safePage - 1) * safeLimit;
             const end = start + safeLimit;
-
-            return {
-                success: true,
-                data: data.slice(start, end),
-                total: data.length,
-                page: safePage,
-                limit: safeLimit,
-                fallback: 'static'
-            };
-        }
+            return { success: true, data: filtered.slice(start, end), total: filtered.length, page: safePage, limit: safeLimit, fallback: 'static' };
+        });
     },
 
     async getDetail(slug) {
@@ -148,60 +155,38 @@ const API = {
         }
     },
 
-    async search(query) {
+    async search(query, filters = {}) {
         try {
-            const payload = await this.fetch('/api/search', { q: query });
+            const params = { q: query || '' };
+            if (filters.genre) params.genre = filters.genre;
+            if (filters.status) params.status = filters.status;
+            if (filters.type) params.type = filters.type;
+            const payload = await this.fetch('/api/search', params);
 
-            // Hindari skenario: backend sukses tapi data kosong
             if (
                 payload?.success === true &&
                 Array.isArray(payload?.data) &&
                 payload.data.length === 0 &&
                 Number(payload?.total || 0) === 0
             ) {
-                const keyword = String(query || '').trim().toLowerCase();
-                if (!keyword) {
-                    return {
-                        success: true,
-                        data: [],
-                        total: 0,
-                        fallback: 'static'
-                    };
-                }
-
-                const data = await this.loadStaticData();
-                const results = data.filter(item => (item.title_lower || item.title || '').toLowerCase().includes(keyword));
-
-                return {
-                    success: true,
-                    data: results,
-                    total: results.length,
-                    fallback: 'static'
-                };
+                return this._fallbackSearch(query, filters);
             }
 
             return payload;
         } catch (error) {
             console.warn('API search gagal, fallback ke data statis:', error);
-            const keyword = String(query || '').trim().toLowerCase();
-            if (!keyword) {
-                return {
-                    success: true,
-                    data: [],
-                    total: 0,
-                    fallback: 'static'
-                };
-            }
-
-            const data = await this.loadStaticData();
-            const results = data.filter(item => (item.title_lower || item.title || '').toLowerCase().includes(keyword));
-
-            return {
-                success: true,
-                data: results,
-                total: results.length,
-                fallback: 'static'
-            };
+            return this._fallbackSearch(query, filters);
         }
+    },
+
+    _fallbackSearch(query, filters = {}) {
+        const keyword = String(query || '').trim().toLowerCase();
+        return this.loadStaticData().then(data => {
+            let results = keyword ? data.filter(item => (item.title_lower || item.title || '').toLowerCase().includes(keyword)) : data;
+            if (filters.genre) results = results.filter(a => (a.genre || []).includes(filters.genre));
+            if (filters.status) results = results.filter(a => (a.status || '').trim() === filters.status);
+            if (filters.type) results = results.filter(a => (a.type || '').trim() === filters.type);
+            return { success: true, data: results, total: results.length, fallback: 'static' };
+        });
     }
 };

@@ -41,10 +41,27 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-Length", "0")
         self.end_headers()
 
+    def _filter_data(self, data: list, qs: dict) -> list:
+        genre = (qs.get("genre") or [""])[0].strip()
+        status = (qs.get("status") or [""])[0].strip()
+        type_ = (qs.get("type") or [""])[0].strip()
+        q = (qs.get("q") or [""])[0].strip().lower()
+        for a in data:
+            if genre and genre not in (a.get("genre") or []):
+                continue
+            if status and (a.get("status") or "").strip() != status:
+                continue
+            if type_ and (a.get("type") or "").strip() != type_:
+                continue
+            if q and q not in (a.get("title_lower") or a.get("title", "")).lower():
+                continue
+            yield a
+
     def do_GET(self) -> None:
         try:
             data = load_data()
             qs = self._query_params()
+            filtered = list(self._filter_data(data, qs))
             page_raw = (qs.get("page") or ["1"])[0]
             limit_raw = (qs.get("limit") or ["50"])[0]
             page = int(page_raw)
@@ -54,14 +71,14 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
             start = (page - 1) * limit
             end = start + limit
-            paginated = data[start:end]
+            paginated = filtered[start:end]
 
             self._send_json(
                 200,
                 {
                     "success": True,
                     "data": paginated,
-                    "total": len(data),
+                    "total": len(filtered),
                     "page": page,
                     "limit": limit,
                 },

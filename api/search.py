@@ -39,15 +39,27 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-Length", "0")
         self.end_headers()
 
+    def _filter_data(self, data: list, qs: dict) -> list:
+        q = (qs.get("q") or [""])[0].strip().lower()
+        genre = (qs.get("genre") or [""])[0].strip()
+        status = (qs.get("status") or [""])[0].strip()
+        type_ = (qs.get("type") or [""])[0].strip()
+        for a in data:
+            if q and q not in (a.get("title_lower") or a.get("title", "") or "").lower():
+                continue
+            if genre and genre not in (a.get("genre") or []):
+                continue
+            if status and (a.get("status") or "").strip() != status:
+                continue
+            if type_ and (a.get("type") or "").strip() != type_:
+                continue
+            yield a
+
     def do_GET(self) -> None:
         try:
-            qs = self._query_params()
-            q = (qs.get("q") or [""])[0].strip().lower()
-            if not q:
-                return self._send_json(200, {"success": True, "data": []})
-
             data = load_data()
-            results = [a for a in data if q in a.get("title_lower", "")]
+            qs = self._query_params()
+            results = list(self._filter_data(data, qs))
             return self._send_json(
                 200,
                 {"success": True, "data": results, "total": len(results)},

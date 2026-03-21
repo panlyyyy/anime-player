@@ -48,6 +48,26 @@
                     <input type="text" id="searchInput" placeholder="Ketik judul anime..." autocomplete="off" aria-label="Kotak pencarian">
                     <button type="button" id="searchBtn" aria-label="Cari"><i class="fas fa-search"></i></button>
                 </div>
+                <div class="ns-filters" id="filterSection">
+                    <div class="ns-filter-group">
+                        <span class="ns-filter-label">Genre:</span>
+                        <div class="ns-filter-chips" id="genreFilters"></div>
+                    </div>
+                    <div class="ns-filter-group">
+                        <span class="ns-filter-label">Status:</span>
+                        <select id="statusFilter" class="ns-filter-select">
+                            <option value="">Semua</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="ns-filter-group">
+                        <span class="ns-filter-label">Tipe:</span>
+                        <select id="typeFilter" class="ns-filter-select">
+                            <option value="">Semua</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div id="searchResults" class="anime-grid"></div>
         </main>
@@ -75,6 +95,7 @@
         </div>
         <div class="player-info">
             <h1 id="overlayTitle">Solo Leveling</h1>
+            <div id="overlayAnimeDetail" class="overlay-anime-detail"></div>
             <div class="tags" style="justify-content: flex-start; margin-bottom: 10px;">
                 <span class="tag" id="currentEpisodeTag">Episode 08</span>
                 <span class="tag" id="currentQualityTag">1080p</span>
@@ -105,9 +126,43 @@
             const searchInput = document.getElementById('searchInput');
             const searchBtn = document.getElementById('searchBtn');
             const resultsContainer = document.getElementById('searchResults');
+            const genreFilters = document.getElementById('genreFilters');
+            const statusFilter = document.getElementById('statusFilter');
+            const typeFilter = document.getElementById('typeFilter');
+
+            let filtersData = { genres: [], statuses: [], types: [] };
+            let activeGenre = '';
+
+            function getFilters() {
+                return {
+                    genre: activeGenre || undefined,
+                    status: statusFilter.value || undefined,
+                    type: typeFilter.value || undefined,
+                    q: searchInput.value.trim() || undefined
+                };
+            }
+
+            async function loadFilters() {
+                filtersData = await API.getFilters();
+                genreFilters.innerHTML = '<button type="button" class="ns-filter-chip active" data-genre="">Semua</button>' +
+                    (filtersData.genres || []).map(g => `<button type="button" class="ns-filter-chip" data-genre="${(g || '').replace(/"/g, '&quot;')}">${(g || '').replace(/</g, '&lt;')}</button>`).join('');
+                genreFilters.querySelectorAll('.ns-filter-chip').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        genreFilters.querySelectorAll('.ns-filter-chip').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        activeGenre = btn.dataset.genre || '';
+                        performLoad();
+                    });
+                });
+                const types = filtersData.types || [];
+                typeFilter.innerHTML = '<option value="">Semua</option>' + types.map(t => `<option value="${(t || '').replace(/"/g, '&quot;')}">${(t || '').replace(/</g, '&lt;')}</option>`).join('');
+                statusFilter.innerHTML = '<option value="">Semua</option>' + (filtersData.statuses || ['Ongoing', 'Completed']).map(s => `<option value="${(s || '').replace(/"/g, '&quot;')}">${(s || '').replace(/</g, '&lt;')}</option>`).join('');
+                statusFilter.addEventListener('change', performLoad);
+                typeFilter.addEventListener('change', performLoad);
+            }
 
             function renderList(list) {
-                resultsContainer.innerHTML = list.map(anime => UI.renderGridCard(anime)).join('');
+                resultsContainer.innerHTML = list.map(anime => UI.renderGridCard(anime, { showMeta: true })).join('');
                 resultsContainer.querySelectorAll('.anime-card').forEach(card => {
                     card.addEventListener('click', async () => {
                         const slug = card.dataset.slug;
@@ -122,15 +177,17 @@
                 });
             }
 
-            async function performSearch() {
+            async function performLoad() {
                 const query = searchInput.value.trim();
-                if (!query) {
-                    resultsContainer.innerHTML = '<div class="empty">Masukkan kata kunci pencarian</div>';
-                    return;
-                }
+                const filters = getFilters();
                 UI.showLoading(true);
                 try {
-                    const res = await API.search(query);
+                    let res;
+                    if (query) {
+                        res = await API.search(query, filters);
+                    } else {
+                        res = await API.getAnimeList(1, 80, filters);
+                    }
                     if (res.success) {
                         if (res.data.length === 0) {
                             resultsContainer.innerHTML = '<div class="empty">Tidak ditemukan</div>';
@@ -145,33 +202,22 @@
                 }
             }
 
-            const initialQ = (new URLSearchParams(window.location.search).get('q') || '').trim();
-            if (initialQ) {
-                searchInput.value = initialQ;
-                performSearch();
-            } else {
-                (async () => {
-                    UI.showLoading(true);
-                    try {
-                        const res = await API.getAnimeList(1, 50);
-                        if (res.success) {
-                            renderList(res.data);
-                        } else {
-                            resultsContainer.innerHTML = '<div class="empty">Tidak ada data</div>';
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        resultsContainer.innerHTML = '<div class="empty">Gagal memuat data</div>';
-                    } finally {
-                        UI.showLoading(false);
-                    }
-                })();
+            async function performSearch() {
+                performLoad();
             }
+
+            const initialQ = (new URLSearchParams(window.location.search).get('q') || '').trim();
+            if (initialQ) searchInput.value = initialQ;
+
+            (async () => {
+                await loadFilters();
+                performLoad();
+            })();
 
             let debounceTimer;
             searchInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(performSearch, 500);
+                debounceTimer = setTimeout(performLoad, 500);
             });
             searchBtn.addEventListener('click', performSearch);
             searchInput.addEventListener('keypress', (e) => {
