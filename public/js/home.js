@@ -117,6 +117,8 @@ function renderFeatured(anime) {
     });
 }
 
+let currentGenre = 'Semua';
+
 function renderGenrePills() {
     const genres = new Set();
     allAnime.forEach(a => a.genre?.forEach(g => genres.add(g)));
@@ -126,13 +128,15 @@ function renderGenrePills() {
     if (!container) return;
 
     container.innerHTML = genreList.map(g =>
-        `<div class="pill ${g === 'Semua' ? 'active' : ''}" data-genre="${g.replace(/"/g, '&quot;')}">${g.replace(/"/g, '&quot;')}</div>`
+        `<div class="pill ${g === currentGenre ? 'active' : ''}" data-genre="${g.replace(/"/g, '&quot;')}">${g.replace(/"/g, '&quot;')}</div>`
     ).join('');
 
     container.querySelectorAll('.pill').forEach(pill => {
         pill.addEventListener('click', () => {
+            currentGenre = pill.dataset.genre || 'Semua';
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
+            renderRecommendations();
         });
     });
 }
@@ -180,12 +184,19 @@ async function openContinueFromHistory(hItem) {
 }
 
 function renderRecommendations() {
-    const shuffled = [...allAnime].sort(() => 0.5 - Math.random());
+    let filtered = currentGenre === 'Semua'
+        ? allAnime
+        : allAnime.filter((a) => (a.genre || []).includes(currentGenre));
+    const shuffled = [...filtered].sort(() => 0.5 - Math.random());
     const recommendations = shuffled.slice(0, 10);
 
     const container = document.getElementById('recommendList');
     if (!container) return;
 
+    if (recommendations.length === 0) {
+        container.innerHTML = `<div class="empty" style="padding:24px;color:var(--ns-muted);">Tidak ada anime untuk genre ini</div>`;
+        return;
+    }
     container.innerHTML = recommendations.map(anime => UI.renderHorizontalCard(anime, 'recommend')).join('');
 
     container.querySelectorAll('.anime-card-wide').forEach(card => {

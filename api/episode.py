@@ -3,7 +3,7 @@ import os
 import sys
 import time
 import http.server
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse, unquote
 
 # Stabilkan import di runtime serverless (Vercel) yang tidak selalu menganggap
 # folder `api/` sebagai package.
@@ -49,7 +49,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         try:
             qs = self._query_params()
-            url = (qs.get("url") or [None])[0]
+            raw = (qs.get("url") or [None])[0]
+            url = unquote(raw) if raw else None
             if not url:
                 return self._send_json(
                     400, {"success": False, "error": "url required"}
@@ -82,6 +83,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 return self._send_json(200, payload)
 
             media = extract_episode_sources(url)
+            if not media:
+                # Retry sekali (kadang situs source lambat/timeout)
+                media = extract_episode_sources(url)
             if not media:
                 return self._send_json(
                     404, {"success": False, "error": "Episode not found"}

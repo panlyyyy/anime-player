@@ -224,9 +224,8 @@ def extract_episode_sources(episode_url):
                 url = (m.group(2) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
                 if not url:
                     continue
-                q = guess_quality(source) or guess_quality(url)
-                if not q:
-                    continue
+                # Banyak episode pakai source seperti "google-v2", "viu" tanpa resolusi — tetap simpan
+                q = guess_quality(source) or guess_quality(url) or '360p'
 
                 # Pastikan absolute URL
                 if url.startswith('/'):
@@ -285,7 +284,9 @@ def extract_episode_sources(episode_url):
         'default': default_q,
     }
 
-def extract_episodes(soup):
+def extract_episodes(soup, page_url=None):
+    """page_url: URL halaman series untuk urljoin saat href relatif."""
+    base = (page_url or '').rstrip('/') or BASE_URL
     episodes = []
     containers = soup.select('.episodelist ul li, .list-episode li, .eplister li')
     if not containers:
@@ -319,7 +320,7 @@ def extract_episodes(soup):
             continue
         seen.add(num)
         if not href.startswith('http'):
-            href = BASE_URL + href if href.startswith('/') else href
+            href = urljoin(base + '/', href)
 
         # Jangan ambil sumber video di sini, biarkan API yang mengambil
         episodes.append({
@@ -401,7 +402,7 @@ def scrape_anime_detail(url):
         else:
             info['status'] = status_raw
 
-    episodes = extract_episodes(soup)
+    episodes = extract_episodes(soup, url)
 
     if not episodes:
         logging.warning(f"Anime {title} tidak memiliki episode, tetap disimpan")
@@ -537,7 +538,7 @@ def main():
             if not soup:
                 continue
             
-            new_eps = extract_episodes(soup)
+            new_eps = extract_episodes(soup, url)
             old_eps_numbers = {ep['number'] for ep in anime.get('episodes', [])}
             added = 0
             for ep in new_eps:

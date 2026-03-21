@@ -1,3 +1,10 @@
+/** PWA: daftar service worker untuk install di HP */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+}
+
 /** Navbar background on scroll (NimeStream-style top nav) */
 document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('mainHeader');
