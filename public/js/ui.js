@@ -55,13 +55,22 @@ const UI = {
         if (type === 'continue') {
             const watchedEps = Storage.getWatchedEpisodes(anime.slug).length;
             const totalEps = anime.episodes?.length || 0;
-            const progressPercent = totalEps > 0 ? (watchedEps / totalEps) * 100 : 0;
+            const t = Number(anime.lastProgressSeconds) || 0;
+            const d = Number(anime.lastDurationSeconds) || 0;
+            let progressPercent = 0;
+            if (d > 0 && t >= 0) {
+                progressPercent = Math.min(100, (t / d) * 100);
+            } else if (totalEps > 0) {
+                progressPercent = (watchedEps / totalEps) * 100;
+            }
+            const epLabel = anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?';
+            const timeLabel = t > 0 ? Storage.formatTime(t) : '0:00';
             return `
                 <div class="anime-card-wide" data-slug="${anime.slug}">
                     <img src="${anime.image || 'https://via.placeholder.com/300x169'}" class="card-thumb" loading="lazy">
                     <div class="progress-bar"><div class="progress-fill" style="width: ${progressPercent}%;"></div></div>
                     <div class="card-title">${anime.title.replace(/"/g, '&quot;')}</div>
-                    <div class="card-sub">Eps ${watchedEps} dari ${totalEps}</div>
+                    <div class="card-sub">Eps ${epLabel} • ${timeLabel}</div>
                 </div>
             `;
         } else {
@@ -75,7 +84,11 @@ const UI = {
         }
     },
 
-    renderGridCard(anime) {
+    renderGridCard(anime, options = {}) {
+        const showResume = options.showResume !== false && (anime.lastEpisodeNumber != null || (anime.lastProgressSeconds || 0) > 0);
+        const resumeLine = showResume
+            ? `<div class="anime-meta resume-line">Eps ${anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?'} • ${Storage.formatTime(anime.lastProgressSeconds || 0)}</div>`
+            : '';
         return `
             <div class="anime-card" data-slug="${anime.slug}">
                 <img src="${anime.image || 'https://via.placeholder.com/300x450'}" alt="${anime.title.replace(/"/g, '&quot;')}" loading="lazy">
@@ -84,6 +97,7 @@ const UI = {
                     <div class="anime-meta">
                         <span>${anime.episodes?.length || '?'} eps</span>
                     </div>
+                    ${resumeLine}
                 </div>
             </div>
         `;

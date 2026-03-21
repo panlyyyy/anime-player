@@ -1,4 +1,6 @@
 let allAnime = [];
+let heroCarouselTimer = null;
+let heroCandidates = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
@@ -22,9 +24,7 @@ async function loadData() {
 
         allAnime = res.data;
 
-        if (allAnime.length > 0) {
-            renderFeatured(allAnime[0]);
-        }
+        startHeroCarousel();
 
         renderGenrePills();
         renderContinueWatching();
@@ -38,36 +38,69 @@ async function loadData() {
     }
 }
 
+function startHeroCarousel() {
+    if (heroCarouselTimer) {
+        clearInterval(heroCarouselTimer);
+        heroCarouselTimer = null;
+    }
+    heroCandidates = allAnime.slice(0, Math.min(5, allAnime.length));
+    if (heroCandidates.length === 0) return;
+    let idx = 0;
+    renderFeatured(heroCandidates[idx]);
+    if (heroCandidates.length <= 1) return;
+    heroCarouselTimer = setInterval(() => {
+        idx = (idx + 1) % heroCandidates.length;
+        renderFeatured(heroCandidates[idx]);
+    }, 6500);
+}
+
 function renderFeatured(anime) {
     const featured = document.querySelector('.featured');
-    if (!featured) return;
+    if (!featured || !anime) return;
+
+    const dots = heroCandidates.length > 1
+        ? `<div class="hero-dots">${heroCandidates.map((a) =>
+            `<button type="button" class="hero-dot ${a.slug === anime.slug ? 'active' : ''}" data-slug="${a.slug}" aria-label="Hero ${a.title.replace(/"/g, '')}"></button>`
+        ).join('')}</div>`
+        : '';
 
     featured.innerHTML = `
         <img src="${anime.image || 'https://images.unsplash.com/photo-1541562232579-512a21360020'}" class="featured-img" data-slug="${anime.slug}" alt="${anime.title.replace(/"/g, '&quot;')}">
+        <div class="featured-gradient"></div>
         <div class="featured-content">
-            <h1 class="hero-title" style="font-size: 42px; font-weight: 900; margin-bottom: 5px;">${anime.title.replace(/"/g, '&quot;')}</h1>
+            <h1 class="hero-title">${anime.title.replace(/"/g, '&quot;')}</h1>
             <div class="tags">
-                ${anime.genre?.slice(0, 3).map(g => `<span class="tag">${g.replace(/"/g, '&quot;')}</span>`).join('')}
+                ${anime.genre?.slice(0, 3).map(g => `<span class="tag">${g.replace(/"/g, '&quot;')}</span>`).join('') || '<span class="tag">Anime</span>'}
                 <span class="tag">Eps ${anime.episodes?.length || '?'}</span>
             </div>
             <div class="action-group">
-                <button class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton Sekarang</button>
+                <button class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton</button>
                 <button class="btn btn-secondary fav-btn" data-slug="${anime.slug}"><i class="fas fa-plus"></i> Daftar Saya</button>
             </div>
         </div>
+        ${dots}
     `;
 
     featured.querySelector('.watch-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const slug = e.currentTarget.dataset.slug;
-        const anime = allAnime.find(a => a.slug === slug);
-        if (anime) openPlayer(anime);
+        const a = allAnime.find((x) => x.slug === slug) || heroCandidates.find((x) => x.slug === slug);
+        if (a) openPlayer(a);
     });
 
     featured.querySelector('.fav-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const slug = e.currentTarget.dataset.slug;
         toggleFavorite(slug);
+    });
+
+    featured.querySelectorAll('.hero-dot').forEach((dot) => {
+        dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const slug = dot.dataset.slug;
+            const a = heroCandidates.find((x) => x.slug === slug);
+            if (a) renderFeatured(a);
+        });
     });
 }
 
@@ -107,10 +140,30 @@ function renderContinueWatching() {
     container.querySelectorAll('.anime-card-wide').forEach(card => {
         card.addEventListener('click', () => {
             const slug = card.dataset.slug;
-            const anime = allAnime.find(a => a.slug === slug);
-            if (anime) openPlayer(anime);
+            const hItem = continueAnime.find((h) => h.slug === slug);
+            if (hItem) openContinueFromHistory(hItem);
         });
     });
+}
+
+async function openContinueFromHistory(hItem) {
+    if (!hItem?.slug) return;
+    let anime = allAnime.find((a) => a.slug === hItem.slug);
+    if (!anime) {
+        UI.showLoading(true);
+        try {
+            const res = await API.getDetail(hItem.slug);
+            if (!res.success) throw new Error('no data');
+            anime = res.data;
+        } catch (e) {
+            UI.showNotification('Gagal memuat anime dari riwayat', 2500, 'error');
+            return;
+        } finally {
+            UI.showLoading(false);
+        }
+    }
+    const ep = Storage.findResumeEpisode(anime, hItem);
+    openPlayer(anime, ep);
 }
 
 function renderRecommendations() {

@@ -4,32 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PANLYYY - Anime</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="app-shell">
-        <header id="mainHeader">
-            <div class="logo">PANLYYY</div>
-            <div class="profile-btn"></div>
+    <div class="app-shell panlyyy-shell">
+        <header id="mainHeader" class="panlyyy-topnav">
+            <div class="nav-brand">
+                <span class="nav-play-icon"><i class="fas fa-play"></i></span>
+                <div class="logo">PANLYYY</div>
+            </div>
+            <div class="nav-actions">
+                <a href="/search.html" class="nav-icon-btn" aria-label="Cari"><i class="fas fa-search"></i></a>
+                <div class="profile-btn" aria-hidden="true"></div>
+            </div>
         </header>
 
         <!-- Hero Section -->
-        <div class="featured"></div>
+        <div class="featured panlyyy-hero"></div>
 
         <!-- Categories -->
-        <div class="category-scroll"></div>
+        <div class="category-scroll hide-scrollbar"></div>
 
         <!-- Lanjutkan Menonton -->
-        <section id="continueSection">
-            <h2>Lanjutkan Menonton <span>Lihat Semua</span></h2>
-            <div class="horizontal-list" id="continueList"></div>
+        <section id="continueSection" class="content-section">
+            <h2 class="section-title">Lanjutkan Menonton <span class="section-more">Lihat Semua</span></h2>
+            <div class="horizontal-list hide-scrollbar" id="continueList"></div>
         </section>
 
         <!-- Rekomendasi Untukmu -->
-        <section id="recommendSection">
-            <h2>Rekomendasi Untukmu <span>Lihat Semua</span></h2>
-            <div class="horizontal-list" id="recommendList"></div>
+        <section id="recommendSection" class="content-section">
+            <h2 class="section-title">Rekomendasi Untukmu <span class="section-more">Lihat Semua</span></h2>
+            <div class="horizontal-list hide-scrollbar" id="recommendList"></div>
         </section>
 
         <!-- Navigation Dock -->
@@ -45,7 +54,7 @@
     <div id="playerOverlay">
         <div class="video-container">
             <button class="close-player"><i class="fas fa-times"></i></button>
-            <video id="videoPlayer" controls style="width:100%;height:100%;"></video>
+            <video id="videoPlayer" controls playsinline webkit-playsinline style="width:100%;height:100%;"></video>
                 <iframe
                     id="videoIframe"
                     style="width:100%;height:100%;display:none;"

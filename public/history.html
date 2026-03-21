@@ -33,7 +33,7 @@
     <div id="playerOverlay">
         <div class="video-container">
             <button class="close-player"><i class="fas fa-times"></i></button>
-            <video id="videoPlayer" controls style="width:100%;height:100%;"></video>
+            <video id="videoPlayer" controls playsinline webkit-playsinline style="width:100%;height:100%;"></video>
                 <iframe
                     id="videoIframe"
                     style="width:100%;height:100%;display:none;"
@@ -90,10 +90,13 @@
             container.querySelectorAll('.anime-card').forEach(card => {
                 card.addEventListener('click', async () => {
                     const slug = card.dataset.slug;
+                    const hEntry = Storage.getHistoryEntry(slug);
                     UI.showLoading(true);
                     try {
                         const res = await API.getDetail(slug);
-                        if (res.success) openPlayer(res.data);
+                        if (!res.success) return;
+                        const ep = Storage.findResumeEpisode(res.data, hEntry);
+                        openPlayer(res.data, ep || undefined);
                     } finally {
                         UI.showLoading(false);
                     }

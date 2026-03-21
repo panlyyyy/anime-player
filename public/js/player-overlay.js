@@ -13,9 +13,62 @@ function applyFullscreenMode(isActive) {
     overlay.classList.toggle('player-fullscreen-active', !!isActive);
 }
 
+/** Coba kunci orientasi landscape (Android Chrome + fullscreen; iOS sering tidak support). */
+function tryLockLandscape() {
+    try {
+        const o = screen.orientation;
+        if (o && typeof o.lock === 'function') {
+            o.lock('landscape')
+                .catch(() => o.lock('landscape-primary').catch(() => {}));
+        }
+    } catch (e) {}
+}
+
+function tryUnlockOrientation() {
+    try {
+        const o = screen.orientation;
+        if (o && typeof o.unlock === 'function') {
+            o.unlock();
+        }
+    } catch (e) {}
+}
+
+/** @returns {boolean} true jika fullscreen API dipakai */
+function tryVideoElementFullscreen() {
+    try {
+        if (videoElement && videoElement.requestFullscreen) {
+            const p = videoElement.requestFullscreen();
+            if (p && typeof p.then === 'function') {
+                p.then(() => {
+                    applyFullscreenMode(true);
+                    tryLockLandscape();
+                }).catch(() => applyFullscreenMode(true));
+                return true;
+            }
+            applyFullscreenMode(true);
+            tryLockLandscape();
+            return true;
+        }
+
+        if (videoElement && videoElement.webkitEnterFullscreen) {
+            videoElement.webkitEnterFullscreen();
+            applyFullscreenMode(true);
+            tryLockLandscape();
+            return true;
+        }
+    } catch (e) {}
+    return false;
+}
+
 function toggleFullscreen() {
-    if (document.fullscreenElement) {
-        try { document.exitFullscreen(); } catch (e) {}
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+        try {
+            document.exitFullscreen();
+        } catch (e) {}
+        try {
+            document.webkitExitFullscreen?.();
+        } catch (e2) {}
+        tryUnlockOrientation();
         applyFullscreenMode(false);
         return;
     }
@@ -23,31 +76,38 @@ function toggleFullscreen() {
     // Fallback mode (Fullscreen API tidak ada): toggle pakai class saja.
     const overlay = document.getElementById('playerOverlay');
     if (!document.fullscreenElement && overlay && overlay.classList.contains('player-fullscreen-active')) {
+        tryUnlockOrientation();
         applyFullscreenMode(false);
         return;
     }
 
-    // Prefer Fullscreen on the video element (mobile biasanya paling "langsung" dan bisa landscape).
+    // Di HP: fullscreen ke kontainer video + kunci landscape (Chrome Android). iOS sering tidak support lock.
+    const container = document.querySelector('#playerOverlay .video-container');
+    const preferContainer =
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(max-width: 900px)').matches;
+
     try {
-        if (videoElement && videoElement.requestFullscreen) {
-            const p = videoElement.requestFullscreen();
+        if (preferContainer && container && container.requestFullscreen) {
+            const p = container.requestFullscreen({ navigationUI: 'hide' });
             if (p && typeof p.then === 'function') {
-                p.then(() => applyFullscreenMode(true)).catch(() => applyFullscreenMode(true));
+                p.then(() => {
+                    applyFullscreenMode(true);
+                    tryLockLandscape();
+                }).catch(() => {
+                    if (!tryVideoElementFullscreen()) applyFullscreenMode(true);
+                });
                 return;
             }
             applyFullscreenMode(true);
-            return;
-        }
-
-        if (videoElement && videoElement.webkitEnterFullscreen) {
-            videoElement.webkitEnterFullscreen();
-            applyFullscreenMode(true);
+            tryLockLandscape();
             return;
         }
     } catch (e) {}
 
-    // Fallback kalau Fullscreen API tidak tersedia.
-    applyFullscreenMode(true);
+    if (!tryVideoElementFullscreen()) {
+        applyFullscreenMode(true);
+    }
 }
 
 function closePlayer() {
@@ -62,8 +122,12 @@ function closePlayer() {
     document.getElementById('playerOverlay').style.display = 'none';
     document.body.style.overflow = 'auto';
     applyFullscreenMode(false);
+    tryUnlockOrientation();
     if (document.fullscreenElement) {
         try { document.exitFullscreen(); } catch (e) {}
+    }
+    if (document.webkitFullscreenElement) {
+        try { document.webkitExitFullscreen?.(); } catch (e) {}
     }
 }
 
@@ -113,7 +177,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('fullscreenchange', () => {
-        applyFullscreenMode(!!document.fullscreenElement);
+        const fs = !!document.fullscreenElement;
+        applyFullscreenMode(fs);
+        if (fs) {
+            tryLockLandscape();
+        } else {
+            tryUnlockOrientation();
+        }
+    });
+
+    document.addEventListener('webkitfullscreenchange', () => {
+        const fs = !!document.webkitFullscreenElement;
+        if (fs) {
+            applyFullscreenMode(true);
+            tryLockLandscape();
+        } else {
+            applyFullscreenMode(false);
+            tryUnlockOrientation();
+        }
     });
 
     videoElement.addEventListener('dblclick', (e) => {
@@ -133,10 +214,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    let lastHistorySync = 0;
+    function syncWatchProgressToHistory() {
+        if (!currentAnime || !currentEpisode || !videoElement) return;
+        // Hanya untuk <video> langsung (bukan iframe embed)
+        if (videoElement.style.display === 'none') return;
+        const t = videoElement.currentTime;
+        const d = videoElement.duration;
+        Storage.setProgress(currentEpisode.url, t);
+        Storage.updateHistoryWatchProgress(currentAnime.slug, {
+            lastEpisodeNumber: currentEpisode.number,
+            lastEpisodeUrl: currentEpisode.url,
+            lastProgressSeconds: t,
+            lastDurationSeconds: Number.isFinite(d) && d > 0 ? d : undefined,
+        });
+    }
+
     videoElement.addEventListener('timeupdate', () => {
         if (currentEpisode) {
             Storage.setProgress(currentEpisode.url, videoElement.currentTime);
         }
+        const now = Date.now();
+        if (now - lastHistorySync > 2000) {
+            lastHistorySync = now;
+            syncWatchProgressToHistory();
+        }
+    });
+
+    videoElement.addEventListener('pause', () => {
+        lastHistorySync = 0;
+        syncWatchProgressToHistory();
+    });
+
+    videoElement.addEventListener('seeked', () => {
+        syncWatchProgressToHistory();
     });
 });
 
@@ -303,12 +414,59 @@ async function loadEpisode(episode) {
 
         playCurrentEpisodeMediaByQuality(initialQuality);
 
-        // Restore progress hanya untuk direct video (HTML5 <video>)
-        if ((res.sources || {}) && (res.sources[initialQuality] || null) && videoElement) {
-            const savedTime = Storage.getProgress(episode.url);
-            if (savedTime) {
-                videoElement.currentTime = savedTime;
+        // Restore progress hanya untuk direct video (HTML5 <video>).
+        // Jangan panggil updateHistoryWatchProgress dengan currentTime=0 di sini — itu menimpa menit tersimpan.
+        if ((res.sources || {}) && (res.sources[initialQuality] || null) && videoElement && videoElement.style.display !== 'none') {
+            const fromKey = Storage.getProgress(episode.url);
+            const he = Storage.getHistoryEntry(currentAnime.slug);
+            const fromHistory =
+                he && he.lastEpisodeUrl === episode.url && Number(he.lastProgressSeconds) > 0
+                    ? Number(he.lastProgressSeconds)
+                    : 0;
+            const resumeAt = fromKey > 0 ? fromKey : fromHistory;
+
+            const applyResume = () => {
+                if (resumeAt <= 0) return;
+                try {
+                    const dur = videoElement.duration;
+                    if (Number.isFinite(dur) && dur > 0 && resumeAt >= dur - 3) return;
+                    videoElement.currentTime = resumeAt;
+                } catch (e) {}
+            };
+
+            const syncDurationAndProgress = () => {
+                const d = videoElement.duration;
+                Storage.updateHistoryWatchProgress(currentAnime.slug, {
+                    lastEpisodeNumber: episode.number,
+                    lastEpisodeUrl: episode.url,
+                    lastProgressSeconds: videoElement.currentTime,
+                    lastDurationSeconds: Number.isFinite(d) && d > 0 ? d : undefined,
+                });
+            };
+
+            let metaHandled = false;
+            const onLoadedMeta = () => {
+                if (metaHandled) return;
+                metaHandled = true;
+                applyResume();
+                window.setTimeout(() => {
+                    syncDurationAndProgress();
+                    Storage.setProgress(episode.url, videoElement.currentTime);
+                }, 50);
+            };
+
+            videoElement.addEventListener('loadedmetadata', onLoadedMeta, { once: true });
+            if (videoElement.readyState >= 1) {
+                onLoadedMeta();
             }
+        } else {
+            // iframe / embed: tidak bisa sync detik; reset progress supaya tidak menampilkan waktu episode lama
+            Storage.updateHistoryWatchProgress(currentAnime.slug, {
+                lastEpisodeNumber: episode.number,
+                lastEpisodeUrl: episode.url,
+                lastProgressSeconds: 0,
+                lastDurationSeconds: 0,
+            });
         }
 
         Storage.addWatchedEpisode(currentAnime.slug, episode.number);

@@ -1,13 +1,14 @@
 :root {
-    /* Netflix-ish theme */
+    /* Netflix-ish + zinc (inspired by mockup) */
     --accent: #e50914;
+    --accent-2: #6366f1;
     --accent-glow: rgba(229, 9, 20, 0.35);
     --bg-darker: #000000;
-    --bg-main: #050505;
-    --bg-surface: #121212;
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.6);
-    --glass: rgba(15, 15, 15, 0.7);
+    --bg-main: #09090b;
+    --bg-surface: #18181b;
+    --text-primary: #fafafa;
+    --text-secondary: rgba(250, 250, 250, 0.55);
+    --glass: rgba(9, 9, 11, 0.82);
     --radius-lg: 24px;
     --radius-md: 16px;
     --ease: cubic-bezier(0.2, 0, 0.2, 1);
@@ -21,7 +22,7 @@
 }
 
 body {
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg-darker);
     background-image: radial-gradient(1200px 600px at 20% -10%, rgba(229, 9, 20, 0.25), transparent 60%),
         radial-gradient(900px 500px at 90% 0%, rgba(229, 9, 20, 0.12), transparent 55%);
@@ -402,6 +403,37 @@ section h2 span {
     height: 100%;
 }
 
+/* Fullscreen API pada kontainer video (mobile) */
+.video-container:fullscreen {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    aspect-ratio: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+}
+.video-container:-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    aspect-ratio: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+}
+.video-container:fullscreen #videoPlayer,
+.video-container:fullscreen #videoIframe,
+.video-container:-webkit-full-screen #videoPlayer,
+.video-container:-webkit-full-screen #videoIframe {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    object-fit: contain;
+}
+
 .category-scroll {
     display: flex;
     gap: 10px;
@@ -496,4 +528,172 @@ section h2 span {
 
 .clear-btn:hover {
     background: #d32f2f;
+}
+
+/* ========== PANLYYY layout (mockup-inspired, vanilla) ========== */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes panlyyyFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.panlyyy-shell {
+    max-width: 100%;
+}
+
+@media (min-width: 768px) {
+    .panlyyy-shell {
+        max-width: min(1200px, 100%);
+    }
+    header {
+        max-width: min(1200px, 100%);
+    }
+    .featured.panlyyy-hero {
+        height: min(78vh, 720px);
+    }
+    .featured-content {
+        text-align: left;
+        padding: 0 48px 56px;
+        max-width: 640px;
+    }
+    .tags { justify-content: flex-start; }
+    .action-group { justify-content: flex-start; }
+}
+
+.panlyyy-topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-play-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-2), #4f46e5);
+    color: #fff;
+    font-size: 12px;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-icon-btn {
+    color: var(--text-secondary);
+    font-size: 18px;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 999px;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.nav-icon-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.06);
+}
+
+.featured.panlyyy-hero {
+    height: 62vh;
+    min-height: 420px;
+}
+
+.featured-gradient {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.55) 45%, transparent 100%),
+        linear-gradient(180deg, rgba(9,9,11,0.55) 0%, transparent 35%, rgba(9,9,11,0.98) 100%);
+}
+
+.featured-img {
+    animation: panlyyyFadeIn 0.45s var(--ease) forwards;
+}
+
+.hero-title {
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+    text-shadow: 0 12px 40px rgba(0,0,0,0.65);
+}
+
+.hero-dots {
+    position: absolute;
+    right: 20px;
+    bottom: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+}
+
+.hero-dot {
+    width: 28px;
+    height: 4px;
+    border-radius: 999px;
+    border: none;
+    padding: 0;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: width 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.hero-dot.active {
+    width: 40px;
+    background: var(--accent-2);
+}
+
+.content-section {
+    padding-left: 16px;
+    padding-right: 0;
+}
+
+.section-title {
+    font-size: 17px;
+    font-weight: 700;
+    padding-right: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: -0.02em;
+}
+
+.section-more {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-2);
+    cursor: pointer;
+}
+
+.anime-meta.resume-line {
+    margin-top: 4px;
+    color: var(--accent-2);
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #fff;
+    color: #09090b;
+}
+
+.btn-secondary {
+    border: 1px solid rgba(255,255,255,0.12);
 }
