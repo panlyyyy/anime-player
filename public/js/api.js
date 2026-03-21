@@ -28,6 +28,17 @@ const API = {
         return payload;
     },
 
+    async getSearchSuggestions(query, limit = 8) {
+        const q = String(query || '').trim().toLowerCase();
+        if (!q || q.length < 2) return [];
+        const data = await this.loadStaticData();
+        const matches = data
+            .filter(a => (a.title_lower || a.title || '').toLowerCase().includes(q))
+            .slice(0, limit)
+            .map(a => ({ title: a.title, slug: a.slug, image: a.image }));
+        return matches;
+    },
+
     async loadStaticData() {
         if (this.dataCache) {
             return this.dataCache;

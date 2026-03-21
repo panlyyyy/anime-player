@@ -30,12 +30,18 @@ async function loadData() {
     }
 }
 
+const FEATURED_HERO_SLUGS = ['jigokuraku-s2', 'jujutsu-kaisen-s3-the-culling-game', 'one-piece', 'gintama-s5-gintama'];
+
 function startHeroCarousel() {
     if (heroCarouselTimer) {
         clearInterval(heroCarouselTimer);
         heroCarouselTimer = null;
     }
-    heroCandidates = allAnime.slice(0, Math.min(5, allAnime.length));
+    const withEps = allAnime.filter(a => (a.episodes?.length || 0) > 0);
+    const byScore = [...withEps].sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0));
+    // Prioritaskan featured dari DB yang ada di allAnime
+    const featured = FEATURED_HERO_SLUGS.map(s => withEps.find(a => a.slug === s)).filter(Boolean);
+    heroCandidates = featured.length > 0 ? featured : (byScore.length > 0 ? byScore : allAnime).slice(0, Math.min(5, allAnime.length));
     if (heroCandidates.length === 0) return;
     let idx = 0;
     renderFeatured(heroCandidates[idx]);
@@ -60,8 +66,8 @@ function renderFeatured(anime) {
     const synopsisRaw = anime.synopsis || anime.description || '';
     const synopsis = safe(synopsisRaw);
     const epCount = anime.episodes?.length ?? '?';
-    const year = anime.year || (anime.updatedAt && String(anime.updatedAt).slice(0, 4)) || '—';
-    const rating = anime.rating != null ? anime.rating : '4.8';
+    const year = anime.release_date ? (anime.release_date.match(/\d{4}/) || [])[0] : (anime.year || '—');
+    const rating = anime.score != null ? anime.score : (anime.rating != null ? anime.rating : '—');
     const genreLine = (anime.genre?.slice(0, 4) || []).map((g) => safe(g)).filter(Boolean).join(' • ');
 
     featured.innerHTML = `

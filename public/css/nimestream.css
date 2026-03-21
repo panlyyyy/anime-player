@@ -955,6 +955,55 @@ body.ns-theme .ns-search-field button:hover {
     filter: brightness(1.08);
 }
 
+body.ns-theme .ns-search-with-suggest {
+    position: relative;
+}
+
+body.ns-theme .search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    z-index: 100;
+    display: none;
+}
+
+body.ns-theme .search-suggestions.open {
+    display: block;
+}
+
+body.ns-theme .suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+body.ns-theme .suggestion-item:hover {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+body.ns-theme .suggestion-item.suggestion-empty {
+    cursor: default;
+    color: var(--ns-muted);
+}
+
+body.ns-theme .suggestion-img {
+    width: 36px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
 /* Filter section */
 body.ns-theme .ns-filters {
     margin-top: 16px;

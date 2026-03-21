@@ -44,9 +44,10 @@
             <div class="ns-page-head">
                 <h1 class="ns-page-title">Eksplorasi</h1>
                 <p class="ns-page-sub">Cari judul anime atau jelajahi daftar.</p>
-                <div class="ns-search-field">
-                    <input type="text" id="searchInput" placeholder="Ketik judul anime..." autocomplete="off" aria-label="Kotak pencarian">
+                <div class="ns-search-field ns-search-with-suggest">
+                    <input type="text" id="searchInput" placeholder="Ketik judul anime..." autocomplete="off" aria-label="Kotak pencarian" aria-autocomplete="list" aria-controls="searchSuggestions">
                     <button type="button" id="searchBtn" aria-label="Cari"><i class="fas fa-search"></i></button>
+                    <div id="searchSuggestions" class="search-suggestions" role="listbox" aria-label="Saran pencarian"></div>
                 </div>
                 <div class="ns-filters" id="filterSection">
                     <div class="ns-filter-group">
@@ -215,10 +216,56 @@
             })();
 
             let debounceTimer;
+            let suggestionDebounce;
+            const suggestionsEl = document.getElementById('searchSuggestions');
+
+            async function showSuggestions() {
+                const q = searchInput.value.trim();
+                if (q.length < 2) {
+                    suggestionsEl.innerHTML = '';
+                    suggestionsEl.classList.remove('open');
+                    return;
+                }
+                try {
+                    const list = await API.getSearchSuggestions(q, 8);
+                    if (list.length === 0) {
+                        suggestionsEl.innerHTML = '<div class="suggestion-item suggestion-empty">Tidak ada saran</div>';
+                    } else {
+                        suggestionsEl.innerHTML = list.map(a =>
+                            `<div class="suggestion-item" data-slug="${a.slug}" data-title="${(a.title || '').replace(/"/g, '&quot;')}" role="option">
+                                <img src="${a.image || 'https://via.placeholder.com/40x60'}" alt="" class="suggestion-img" loading="lazy">
+                                <span>${(a.title || '').replace(/</g, '&lt;')}</span>
+                            </div>`
+                        ).join('');
+                        suggestionsEl.querySelectorAll('.suggestion-item[data-slug]').forEach(el => {
+                            el.addEventListener('click', () => {
+                                const slug = el.dataset.slug;
+                                suggestionsEl.classList.remove('open');
+                                UI.showLoading(true);
+                                API.getDetail(slug).then(res => {
+                                    if (res.success) openPlayer(res.data);
+                                }).finally(() => UI.showLoading(false));
+                            });
+                        });
+                    }
+                    suggestionsEl.classList.add('open');
+                } catch (e) {
+                    suggestionsEl.classList.remove('open');
+                }
+            }
+
+            function hideSuggestions() {
+                setTimeout(() => suggestionsEl.classList.remove('open'), 150);
+            }
+
             searchInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(performLoad, 500);
+                clearTimeout(suggestionDebounce);
+                suggestionDebounce = setTimeout(showSuggestions, 200);
             });
+            searchInput.addEventListener('focus', () => { if (searchInput.value.trim().length >= 2) showSuggestions(); });
+            searchInput.addEventListener('blur', hideSuggestions);
             searchBtn.addEventListener('click', performSearch);
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') performSearch();

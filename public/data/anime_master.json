@@ -9,19 +9,13 @@
       "studio": "Bandai Namco Pictures",
       "release_date": "08 January 2017",
       "status": "Completed",
-      "genre": [],
+      "genre": ["Action", "Comedy", "Sci-Fi", "Parody", "Samurai", "Historical", "Shounen"],
       "type": "Serial TV",
       "score": "8.99",
       "duration": "24 min. per ep.",
       "japanese_title": "Gintama Season 5, Gintama (2017), 銀魂。",
       "title_lower": "gintama s5 gintama",
       "episodes": [
-        {
-          "number": 1,
-          "url": "https://coba.oploverz.ltd/series/gintama-s5-gintama/episode/1",
-          "sources": {},
-          "default": "360p"
-        },
         {
           "number": 317,
           "url": "https://coba.oploverz.ltd/series/gintama-s5-gintama/episode/317",

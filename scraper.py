@@ -46,7 +46,7 @@ def get_soup(url, retries=3):
 
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
 VIDEO_EXTENSIONS = {'.mp4', '.m3u8', '.mkv', '.webm'}
-STREAM_HINTS = {'4meplayer', 'video.g', 'oplo2.4meplayer.pro'}
+STREAM_HINTS = {'4meplayer', 'video.g', 'oplo2.4meplayer.pro', 'blogger.com', 'drive.google', 'player.', 'embed.', 'stream.', 'vidcdn', 'gdrive'}
 # Host yang hanya memberi halaman download, bukan stream — jangan masukkan ke videos
 DOWNLOAD_PAGE_HOSTS = {'mediafire.com', 'zippyshare.com', 'solidfiles.com', 'mega.nz', 'drive.google.com', 'google drive'}
 
@@ -151,6 +151,10 @@ def extract_episode_sources(episode_url):
     videos = {}
     streams = {}
     soup = get_soup(episode_url)
+    # Fallback: coba anime.oploverz.ac jika coba.oploverz.ltd gagal
+    if not soup and 'coba.oploverz.ltd' in episode_url:
+        alt_url = episode_url.replace('coba.oploverz.ltd', 'anime.oploverz.ac')
+        soup = get_soup(alt_url)
     if not soup:
         return None
 
@@ -349,6 +353,29 @@ def extract_episodes(soup, page_url=None):
         time.sleep(random.uniform(0.5, 1))
 
     episodes.sort(key=lambda x: x['number'])
+
+    # Gap-fill: hanya isi gap kecil (<=30 eps) untuk hindari episode palsu (mis. Gintama 1-316)
+    if len(episodes) >= 2:
+        nums = [e['number'] for e in episodes]
+        min_ep, max_ep = min(nums), max(nums)
+        expected = max_ep - min_ep + 1
+        gap_size = expected - len(episodes)
+        if expected > len(episodes) and expected <= 1200 and gap_size <= 30:
+            full_url = page_url or base
+            m = re.search(r'/series/([^/]+)', full_url)
+            series_slug = m.group(1) if m else full_url.rstrip('/').split('/')[-1]
+            base_ep_url = f"{BASE_URL}/series/{series_slug}/episode/"
+            existing = set(nums)
+            for n in range(min_ep, max_ep + 1):
+                if n not in existing:
+                    episodes.append({
+                        "number": n,
+                        "url": base_ep_url + str(n),
+                        "sources": {},
+                        "default": '360p',
+                    })
+            episodes.sort(key=lambda x: x['number'])
+
     return episodes
 
 def scrape_anime_detail(url):
@@ -419,7 +446,8 @@ def scrape_anime_detail(url):
             else:
                 info['status'] = status_raw
         elif 'Genre:' in line:
-            genre_text = line.replace('Genre:', '').strip()
+            # Potong di "Skor:" atau "Durasi:" bila ada (format: Genre: A, B Skor: 8)
+            genre_text = re.sub(r'\s*(?:Skor|Durasi|Tipe|Studio|Status):.*', '', line.replace('Genre:', '').strip())
             info['genre'] = [g.strip() for g in genre_text.split(',') if g.strip()]
         elif 'Tipe:' in line:
             info['type'] = line.replace('Tipe:', '').strip()
@@ -441,8 +469,8 @@ def scrape_anime_detail(url):
         else:
             info['status'] = status_raw
 
-    # Fallback: parse dari elemen list/span yang umum di Oploverz
-    info_items = soup.select('.anime-info li, .info-list li, [class*="info"] li, .detail-info span')
+    # Fallback: parse dari elemen list (Oploverz pakai li dalam grid)
+    info_items = soup.select('li, .anime-info li, .info-list li, [class*="info"] li, .detail-info span')
     for elem in info_items:
         text = elem.get_text(strip=True)
         if not text:
@@ -457,9 +485,10 @@ def scrape_anime_detail(url):
             if not info['status'] or info['status'] == 'Unknown':
                 s = text.replace('Status:', '').strip().lower()
                 info['status'] = 'Ongoing' if 'ongoing' in s or 'on going' in s else ('Completed' if 'selesai' in s or 'completed' in s or 'tamat' in s else text.replace('Status:', '').strip())
-        elif text.startswith('Genre:'):
+        elif 'Genre:' in text:
             if not info['genre']:
-                info['genre'] = [g.strip() for g in text.replace('Genre:', '').strip().split(',') if g.strip()]
+                genre_text = re.sub(r'\s*(?:Skor|Durasi|Tipe|Studio|Status):.*', '', text.replace('Genre:', '').strip())
+                info['genre'] = [g.strip() for g in genre_text.split(',') if g.strip()]
         elif text.startswith('Skor:'):
             if not info['score']:
                 sm = re.search(r'(\d+\.?\d*)\s*/\s*10', text)
@@ -469,6 +498,19 @@ def scrape_anime_detail(url):
                 info['duration'] = text.replace('Durasi:', '').replace('Duration:', '').strip()
         elif re.match(r'^\d+\s*min\.', text) and not info['duration']:
             info['duration'] = text
+
+    # Fallback genre dari SvelteKit JSON: genres:[{id:90,name:"Action",slug:"action"},...]
+    if not info['genre']:
+        html_str = str(soup)
+        gm = re.search(r'genres:\s*\[([^\]]*)\]', html_str, re.IGNORECASE)
+        if gm:
+            block = gm.group(1)
+            for nm in re.findall(r'name\s*:\s*"([^"]+)"', block, re.IGNORECASE):
+                name = nm.strip()
+                if name and len(name) < 50 and name not in info['genre']:
+                    if name not in ('Ongoing', 'Completed', 'TV', 'Movie', 'OVA', 'ONA', 'Special', 'Live Action'):
+                        info['genre'].append(name)
+            info['genre'] = info['genre'][:8]
 
     episodes = extract_episodes(soup, url)
 

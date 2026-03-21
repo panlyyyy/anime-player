@@ -84,9 +84,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
             media = extract_episode_sources(url)
             if not media:
-                # Retry sekali (kadang situs source lambat/timeout)
-                media = extract_episode_sources(url)
-            if not media:
+                media = extract_episode_sources(url)  # Retry sekali (timeout)
+            # Fallback domain: coba.oploverz.ltd -> anime.oploverz.ac (banyak episode hanya ada di .ac)
+            if (not media or (not media.get("videos") and not media.get("streams"))) and "coba.oploverz.ltd" in url:
+                alt_url = url.replace("coba.oploverz.ltd", "anime.oploverz.ac")
+                media = extract_episode_sources(alt_url)
+            if not media or (not media.get("videos") and not media.get("streams")):
                 return self._send_json(
                     404, {"success": False, "error": "Episode not found"}
                 )

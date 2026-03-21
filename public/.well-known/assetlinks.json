@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "app.vercel.anime_player_omega.twa",
-    "sha256_cert_fingerprints": ["9F:E7:CF:89:D4:DD:D8:39:B9:4A:1A:BB:E0:DB:C2:B9:BA:DA:76:A1:EA:1A:ED:52:1A:DC:AB:08:45:45:99:1F"]
+    "sha256_cert_fingerprints": ["D2:B6:B9:C5:D2:39:64:94:6D:34:6A:76:68:49:DD:9D:29:09:09:3D:01:5D:FC:24:9D:7E:F8:B7:E2:ED:5F:80"]
   }
 }]
