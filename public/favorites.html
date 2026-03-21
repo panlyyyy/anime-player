@@ -22,7 +22,7 @@
                 <nav class="ns-desktop-nav" aria-label="Menu utama">
                     <a href="/">Beranda</a>
                     <a href="/search.html">Eksplorasi</a>
-                    <a href="/ongoing.html">Jadwal Rilis</a>
+                    <a href="/ongoing.html">Ongoing</a>
                     <a href="/favorites.html" class="active">Daftar Saya</a>
                 </nav>
                 <div class="ns-topnav-right">
@@ -45,9 +45,10 @@
             <div id="favoritesList" class="anime-grid"></div>
         </main>
 
-        <nav class="nav-dock" aria-label="Navigasi bawah">
+        <nav class="nav-dock nav-dock-5" aria-label="Navigasi bawah">
             <a href="/" class="nav-item"><i class="fas fa-home"></i>Beranda</a>
             <a href="/search.html" class="nav-item"><i class="fas fa-compass"></i>Eksplor</a>
+            <a href="/ongoing.html" class="nav-item"><i class="fas fa-clapperboard"></i>Ongoing</a>
             <a href="/favorites.html" class="nav-item active"><i class="fas fa-list"></i>Daftar</a>
             <a href="/history.html" class="nav-item"><i class="fas fa-clock"></i>Riwayat</a>
         </nav>
@@ -93,15 +94,24 @@
     <script src="/js/ui.js"></script>
     <script src="/js/player-overlay.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function renderFavoritesList() {
             const favs = Storage.getFavorites();
             const container = document.getElementById('favoritesList');
             if (favs.length === 0) {
                 container.innerHTML = '<div class="empty">Belum ada favorit</div>';
                 return;
             }
-            container.innerHTML = favs.map(anime => UI.renderGridCard(anime)).join('');
-            container.querySelectorAll('.anime-card').forEach(card => {
+            container.innerHTML = favs.map((anime) => UI.renderFavoriteGridCard(anime)).join('');
+            container.querySelectorAll('.ns-fav-remove').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    Storage.removeFavorite(btn.dataset.slug);
+                    UI.showNotification('Dihapus dari Daftar Saya', 1800, 'success');
+                    renderFavoritesList();
+                });
+            });
+            container.querySelectorAll('.anime-card').forEach((card) => {
                 card.addEventListener('click', async () => {
                     const slug = card.dataset.slug;
                     UI.showLoading(true);
@@ -113,6 +123,10 @@
                     }
                 });
             });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFavoritesList();
         });
     </script>
 </body>

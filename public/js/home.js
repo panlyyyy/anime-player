@@ -83,7 +83,11 @@ function renderFeatured(anime) {
                 </div>
                 <div class="action-group">
                     <button type="button" class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton</button>
-                    <button type="button" class="btn btn-secondary fav-btn" data-slug="${anime.slug}"><i class="fas fa-plus"></i> Daftar Saya</button>
+                    <button type="button" class="btn btn-secondary fav-btn ${Storage.isFavorite(anime.slug) ? 'is-favorite' : ''}" data-slug="${anime.slug}">${
+                        Storage.isFavorite(anime.slug)
+                            ? '<i class="fas fa-heart"></i> Hapus dari daftar'
+                            : '<i class="fas fa-plus"></i> Daftar Saya'
+                    }</button>
                 </div>
             </div>
         </div>
@@ -203,9 +207,23 @@ function setupEventListeners() {
     });
 }
 
-window.toggleFavorite = function(slug) {
-    const anime = allAnime.find(a => a.slug === slug);
+function resolveAnimeForFavorite(slug) {
+    return (
+        allAnime.find((a) => String(a.slug) === String(slug)) ||
+        heroCandidates.find((a) => String(a.slug) === String(slug)) ||
+        Storage.getFavorites().find((f) => String(f.slug) === String(slug)) ||
+        null
+    );
+}
+
+window.toggleFavorite = function (slug) {
+    const anime = resolveAnimeForFavorite(slug);
     if (!anime) return;
     const isNowFavorite = Storage.toggleFavorite(anime);
-    UI.showNotification(isNowFavorite ? '❤️ Ditambahkan ke Favorit' : '💔 Dihapus dari Favorit', 2000, 'success');
+    UI.showNotification(
+        isNowFavorite ? 'Ditambahkan ke Daftar Saya' : 'Dihapus dari Daftar Saya',
+        2000,
+        'success'
+    );
+    UI.applyFavoriteUiState(String(slug));
 };

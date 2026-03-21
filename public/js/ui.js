@@ -96,6 +96,46 @@ const UI = {
         }
     },
 
+    /** Tombol favorit hero + player overlay */
+    applyFavoriteUiState(slug) {
+        if (slug == null || slug === '') return;
+        const s = String(slug);
+        const isFav = Storage.isFavorite(s);
+        document.querySelectorAll('.fav-btn[data-slug]').forEach((btn) => {
+            if (String(btn.dataset.slug) !== s) return;
+            btn.classList.toggle('is-favorite', isFav);
+            btn.innerHTML = isFav
+                ? '<i class="fas fa-heart"></i> Hapus dari daftar'
+                : '<i class="fas fa-plus"></i> Daftar Saya';
+        });
+        const ob = document.getElementById('overlayFavoriteBtn');
+        if (ob && String(ob.dataset.slug || '') === s) {
+            ob.classList.toggle('is-favorite', isFav);
+            ob.innerHTML = isFav
+                ? '<i class="fas fa-heart"></i> Hapus dari daftar'
+                : '<i class="fas fa-plus"></i> Tambah ke daftar';
+        }
+    },
+
+    /** Kartu khusus halaman favorit (tombol hapus) */
+    renderFavoriteGridCard(anime) {
+        const t = anime.title.replace(/"/g, '&quot;');
+        return `
+            <div class="anime-card ns-fav-card" data-slug="${anime.slug}">
+                <button type="button" class="ns-fav-remove" data-slug="${anime.slug}" aria-label="Hapus dari daftar">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="${anime.image || 'https://via.placeholder.com/300x450'}" alt="${t}" loading="lazy">
+                <div class="anime-info">
+                    <h3>${t}</h3>
+                    <div class="anime-meta">
+                        <span>${anime.episodes?.length || '?'} eps</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
     renderGridCard(anime, options = {}) {
         const showResume = options.showResume !== false && (anime.lastEpisodeNumber != null || (anime.lastProgressSeconds || 0) > 0);
         const resumeLine = showResume

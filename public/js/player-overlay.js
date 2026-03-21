@@ -110,6 +110,26 @@ function toggleFullscreen() {
     }
 }
 
+function ensureOverlayFavoriteButton() {
+    if (document.getElementById('overlayFavoriteBtn')) return;
+    const title = document.getElementById('overlayTitle');
+    if (!title || !title.parentElement) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'overlayFavoriteBtn';
+    btn.className = 'player-fav-btn';
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!currentAnime || currentAnime.slug == null) return;
+        Storage.toggleFavorite(currentAnime);
+        const on = Storage.isFavorite(currentAnime.slug);
+        UI.showNotification(on ? 'Ditambahkan ke Daftar Saya' : 'Dihapus dari Daftar Saya', 2000, 'success');
+        UI.applyFavoriteUiState(String(currentAnime.slug));
+    });
+    title.parentElement.insertBefore(btn, title.nextSibling);
+}
+
 function closePlayer() {
     if (videoElement) {
         videoElement.pause();
@@ -143,6 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) {
         closeBtn.addEventListener('click', closePlayer);
     }
+
+    ensureOverlayFavoriteButton();
 
     // Fullscreen UX: tombol custom + dblclick.
     const videoContainer = document.querySelector('.video-container');
@@ -367,6 +389,11 @@ window.openPlayer = function(anime, episode = null) {
 
     document.getElementById('playerOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
+
+    ensureOverlayFavoriteButton();
+    const favBtn = document.getElementById('overlayFavoriteBtn');
+    if (favBtn) favBtn.dataset.slug = String(anime.slug || '');
+    UI.applyFavoriteUiState(String(anime.slug || ''));
 };
 
 async function loadEpisode(episode) {

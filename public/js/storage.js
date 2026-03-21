@@ -76,20 +76,35 @@ const Storage = {
         return JSON.parse(localStorage.getItem('favorites') || '[]');
     },
     
+    _normSlug(slug) {
+        return String(slug == null ? '' : slug);
+    },
+
     toggleFavorite(anime) {
+        if (!anime || anime.slug == null || anime.slug === '') return false;
+        const slug = this._normSlug(anime.slug);
         let favs = this.getFavorites();
-        const exists = favs.some(f => f.slug === anime.slug);
+        const exists = favs.some((f) => this._normSlug(f.slug) === slug);
         if (exists) {
-            favs = favs.filter(f => f.slug !== anime.slug);
+            favs = favs.filter((f) => this._normSlug(f.slug) !== slug);
         } else {
-            favs.unshift({ ...anime, favoritedAt: Date.now() });
+            favs.unshift({ ...anime, slug, favoritedAt: Date.now() });
         }
         localStorage.setItem('favorites', JSON.stringify(favs));
         return !exists;
     },
-    
+
+    /** Hapus dari daftar tanpa perlu objek anime lengkap */
+    removeFavorite(slug) {
+        const s = this._normSlug(slug);
+        if (!s) return;
+        const favs = this.getFavorites().filter((f) => this._normSlug(f.slug) !== s);
+        localStorage.setItem('favorites', JSON.stringify(favs));
+    },
+
     isFavorite(slug) {
-        return this.getFavorites().some(f => f.slug === slug);
+        const s = this._normSlug(slug);
+        return this.getFavorites().some((f) => this._normSlug(f.slug) === s);
     },
     
     // ===== WATCHED EPISODES =====

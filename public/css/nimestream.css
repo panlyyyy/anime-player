@@ -551,19 +551,59 @@ body.ns-theme .horizontal-list {
     }
 }
 
-/* --- Cards (poster rail) --- */
-body.ns-theme .anime-card-wide {
-    min-width: 140px;
-    max-width: none;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
+/* --- HP: rail kartu lebih kecil (~3+ poster per layar) --- */
+@media (max-width: 767px) {
+    body.ns-theme .horizontal-list {
+        gap: 8px;
+        padding: 4px 12px 16px;
+    }
+
+    body.ns-theme .anime-card-wide {
+        flex: 0 0 calc((100vw - 36px) / 3.35);
+        min-width: 0;
+        max-width: 112px;
+        scroll-snap-align: start;
+    }
+
+    body.ns-theme .ns-card-poster .card-thumb,
+    body.ns-theme .anime-card-wide.portrait .card-thumb {
+        border-radius: 10px;
+    }
+
+    body.ns-theme .ns-card-play span {
+        width: 40px;
+        height: 40px;
+        font-size: 13px;
+    }
+
+    body.ns-theme .ns-card-title,
+    body.ns-theme .anime-card-wide .card-title {
+        font-size: 0.72rem;
+    }
+
+    body.ns-theme .ns-card-sub,
+    body.ns-theme .anime-card-wide .card-sub {
+        font-size: 0.6rem;
+    }
+
+    body.ns-theme .featured.panlyyy-hero {
+        height: 56vh;
+        min-height: 360px;
+    }
+
+    body.ns-theme .featured-content {
+        padding-bottom: 72px;
+    }
 }
 
+/* Desktop: kartu mengisi grid (HP pakai aturan di @media max-width 767px di atas) */
 @media (min-width: 768px) {
     body.ns-theme .anime-card-wide {
         min-width: 0;
         width: 100%;
+        max-width: none;
         flex: none;
+        scroll-snap-align: unset;
     }
 }
 
@@ -751,6 +791,106 @@ body.ns-theme .nav-item.active {
 body.ns-theme .nav-item.active i {
     color: var(--ns-indigo);
     transform: scale(1.08);
+}
+
+/* Bottom nav 5 item (Beranda / Eksplor / Ongoing / Daftar / Riwayat) */
+body.ns-theme .nav-dock-5 {
+    padding-left: 4px;
+    padding-right: 4px;
+    gap: 0;
+    justify-content: space-between;
+}
+
+body.ns-theme .nav-dock-5 .nav-item {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    font-size: 7px;
+    padding: 6px 1px;
+    letter-spacing: 0;
+}
+
+body.ns-theme .nav-dock-5 .nav-item i {
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+
+@media (min-width: 380px) {
+    body.ns-theme .nav-dock-5 .nav-item {
+        font-size: 8px;
+    }
+    body.ns-theme .nav-dock-5 .nav-item i {
+        font-size: 17px;
+    }
+}
+
+/* Hero — tombol Daftar / Hapus */
+body.ns-theme .featured-content .fav-btn.is-favorite {
+    border-color: rgba(99, 102, 241, 0.45);
+    background: rgba(99, 102, 241, 0.2);
+    color: #e0e7ff;
+}
+
+/* Player overlay — favorit */
+body.ns-theme .player-fav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 8px 0 14px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--ns-border);
+    background: rgba(39, 39, 42, 0.75);
+    color: #fafafa;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+body.ns-theme .player-fav-btn.is-favorite {
+    border-color: rgba(99, 102, 241, 0.55);
+    background: rgba(99, 102, 241, 0.18);
+    color: #e0e7ff;
+}
+
+body.ns-theme .player-fav-btn:active {
+    transform: scale(0.98);
+}
+
+/* Halaman Daftar Saya — hapus */
+body.ns-theme .ns-fav-card {
+    position: relative;
+}
+
+body.ns-theme .ns-fav-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 4;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    transition: background 0.2s, transform 0.15s;
+}
+
+body.ns-theme .ns-fav-remove:hover {
+    background: rgba(239, 68, 68, 0.9);
+}
+
+body.ns-theme .ns-fav-remove:active {
+    transform: scale(0.94);
 }
 
 /* --- Subpages: search / grid --- */
