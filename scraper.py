@@ -227,9 +227,11 @@ def extract_episode_sources(episode_url):
                 # Banyak episode pakai source seperti "google-v2", "viu" tanpa resolusi — tetap simpan
                 q = guess_quality(source) or guess_quality(url) or '360p'
 
-                # Pastikan absolute URL
+                # Pastikan absolute URL; abaikan token/ID mentah (mis. "3561110768215")
                 if url.startswith('/'):
                     url = urljoin(episode_url, url)
+                if not url.startswith('http://') and not url.startswith('https://'):
+                    continue
 
                 lower_url = url.lower()
 
@@ -263,6 +265,8 @@ def extract_episode_sources(episode_url):
 
                         if u.startswith('/'):
                             u = urljoin(episode_url, u)
+                        if not u.startswith('http://') and not u.startswith('https://'):
+                            continue
 
                         if looks_like_direct_video_url(u):
                             if validate_video_url(u):
@@ -366,14 +370,29 @@ def scrape_anime_detail(url):
     synopsis = ''
     for p in soup.find_all('p'):
         text = clean(p.text)
-        if len(text) > 100 and 'Tipe:' not in text and 'Status:' not in text:
+        if len(text) > 100 and 'Tipe:' not in text and 'Status:' not in text and 'Genre:' not in text:
             synopsis = text
             break
 
+    # Japanese title (contoh: 進撃の巨人 Season2)
+    japanese_title = ''
+    jap = soup.select_one('.japanese-title, [class*="japanese"], .subtitle')
+    if jap:
+        japanese_title = clean(jap.get_text())
+    if not japanese_title:
+        for elem in soup.find_all(['span', 'p', 'div']):
+            t = elem.get_text(strip=True)
+            if t and re.search(r'[\u3040-\u30ff\u4e00-\u9fff]', t) and len(t) < 80:
+                japanese_title = clean(t)
+                break
+
     full_text = soup.get_text(separator="\n")
-    info = {'studio': '', 'release_date': '', 'status': 'Unknown', 'genre': []}
+    info = {'studio': '', 'release_date': '', 'status': 'Unknown', 'genre': [],
+            'type': '', 'score': '', 'duration': ''}
     for line in full_text.split('\n'):
         line = line.strip()
+        if not line:
+            continue
         if 'Studio:' in line:
             info['studio'] = line.replace('Studio:', '').strip()
         elif 'Tanggal Rilis:' in line:
@@ -382,25 +401,61 @@ def scrape_anime_detail(url):
             status_raw = line.replace('Status:', '').strip()
             if 'ongoing' in status_raw.lower() or 'on going' in status_raw.lower():
                 info['status'] = 'Ongoing'
-            elif 'completed' in status_raw.lower():
+            elif 'completed' in status_raw.lower() or 'selesai' in status_raw.lower() or 'tamat' in status_raw.lower():
                 info['status'] = 'Completed'
             else:
                 info['status'] = status_raw
         elif 'Genre:' in line:
             genre_text = line.replace('Genre:', '').strip()
             info['genre'] = [g.strip() for g in genre_text.split(',') if g.strip()]
+        elif 'Tipe:' in line:
+            info['type'] = line.replace('Tipe:', '').strip()
+        elif 'Skor:' in line:
+            m = re.search(r'(\d+\.?\d*)\s*/\s*10', line)
+            info['score'] = m.group(1) if m else line.replace('Skor:', '').strip()
+        elif 'Durasi:' in line or 'Duration:' in line.lower():
+            info['duration'] = line.replace('Durasi:', '').replace('Duration:', '').strip()
 
-    # Status parsing lebih robust (kadang format tidak sama persis)
+    # Status parsing lebih robust
     m = re.search(r'Status:\s*([^\n\r]+)', full_text, flags=re.IGNORECASE)
     if m:
         status_raw = clean(m.group(1))
         status_l = status_raw.lower()
         if 'ongoing' in status_l or 'on going' in status_l:
             info['status'] = 'Ongoing'
-        elif 'completed' in status_l or 'selesai' in status_l:
+        elif 'completed' in status_l or 'selesai' in status_l or 'tamat' in status_l:
             info['status'] = 'Completed'
         else:
             info['status'] = status_raw
+
+    # Fallback: parse dari elemen list/span yang umum di Oploverz
+    info_items = soup.select('.anime-info li, .info-list li, [class*="info"] li, .detail-info span')
+    for elem in info_items:
+        text = elem.get_text(strip=True)
+        if not text:
+            continue
+        if text.startswith('Tipe:'):
+            info['type'] = info['type'] or text.replace('Tipe:', '').strip()
+        elif text.startswith('Studio:'):
+            info['studio'] = info['studio'] or text.replace('Studio:', '').strip()
+        elif 'Tanggal Rilis:' in text or 'Tgl Rilis:' in text:
+            info['release_date'] = info['release_date'] or re.sub(r'(?:Tanggal Rilis|Tgl Rilis):\s*', '', text, flags=re.I).strip()
+        elif text.startswith('Status:'):
+            if not info['status'] or info['status'] == 'Unknown':
+                s = text.replace('Status:', '').strip().lower()
+                info['status'] = 'Ongoing' if 'ongoing' in s or 'on going' in s else ('Completed' if 'selesai' in s or 'completed' in s or 'tamat' in s else text.replace('Status:', '').strip())
+        elif text.startswith('Genre:'):
+            if not info['genre']:
+                info['genre'] = [g.strip() for g in text.replace('Genre:', '').strip().split(',') if g.strip()]
+        elif text.startswith('Skor:'):
+            if not info['score']:
+                sm = re.search(r'(\d+\.?\d*)\s*/\s*10', text)
+                info['score'] = sm.group(1) if sm else text.replace('Skor:', '').strip()
+        elif text.startswith('Durasi:') or text.startswith('Duration:'):
+            if not info['duration']:
+                info['duration'] = text.replace('Durasi:', '').replace('Duration:', '').strip()
+        elif re.match(r'^\d+\s*min\.', text) and not info['duration']:
+            info['duration'] = text
 
     episodes = extract_episodes(soup, url)
 
@@ -416,6 +471,10 @@ def scrape_anime_detail(url):
         "release_date": info['release_date'],
         "status": info['status'],
         "genre": info['genre'],
+        "type": info.get('type', ''),
+        "score": info.get('score', ''),
+        "duration": info.get('duration', ''),
+        "japanese_title": japanese_title,
         "title_lower": title.lower(),
         "episodes": episodes,
         "last_updated": datetime.now().isoformat()

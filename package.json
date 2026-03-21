@@ -1,0 +1,25 @@
+{
+  "name": "anime-player",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-icons": "node scripts/generate-pwa-icons.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panlyyyy/anime-player.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/panlyyyy/anime-player/issues"
+  },
+  "homepage": "https://github.com/panlyyyy/anime-player#readme",
+  "devDependencies": {
+    "jimp": "^1.6.0"
+  }
+}

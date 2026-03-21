@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Generate PWA Icon</title></head>
+<body>
+  <p>Klik untuk unduh ikon PWA (logo play seperti di beranda):</p>
+  <canvas id="c" width="512" height="512"></canvas>
+  <br><a id="a192" download="icon-192.png">Unduh 192x192</a> &nbsp; <a id="a512" download="icon-512.png">Unduh 512x512</a>
+  <script>
+    function draw(ctx, s) {
+      const r = s * 0.15;
+      ctx.fillStyle = '#6366f1';
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(s*0.1, s*0.1, s*0.8, s*0.8, r);
+      } else {
+        ctx.rect(s*0.1, s*0.1, s*0.8, s*0.8);
+      }
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.moveTo(s*0.35, s*0.28);
+      ctx.lineTo(s*0.35, s*0.72);
+      ctx.lineTo(s*0.72, s*0.5);
+      ctx.closePath();
+      ctx.fill();
+    }
+    const c = document.getElementById('c');
+    const ctx = c.getContext('2d');
+    draw(ctx, 512);
+    const c192 = document.createElement('canvas');
+    c192.width = c192.height = 192;
+    draw(c192.getContext('2d'), 192);
+    document.getElementById('a192').href = c192.toDataURL('image/png');
+    document.getElementById('a512').href = c.toDataURL('image/png');
+  </script>
+</body></html>

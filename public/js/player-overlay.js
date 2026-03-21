@@ -344,8 +344,13 @@ function playCurrentEpisodeMediaByQuality(quality) {
     const sources = res.sources || {};
     const streams = res.streams || {};
 
-    const videoUrl = pickFromMap(sources, quality);
-    const streamUrl = pickFromMap(streams, quality);
+    let videoUrl = pickFromMap(sources, quality);
+    let streamUrl = pickFromMap(streams, quality);
+
+    // Pastikan hanya URL absolut yang dipakai (hindari 404 dari token/ID seperti "3561110768215")
+    const isValidUrl = (u) => u && typeof u === 'string' && (u.startsWith('http://') || u.startsWith('https://'));
+    if (videoUrl && !isValidUrl(videoUrl)) videoUrl = null;
+    if (streamUrl && !isValidUrl(streamUrl)) streamUrl = null;
 
     if (videoUrl) {
         if (iframeElement) iframeElement.style.display = 'none';
@@ -353,15 +358,16 @@ function playCurrentEpisodeMediaByQuality(quality) {
         videoElement.src = videoUrl;
         videoElement.load();
         videoElement.play().catch(() => {});
-    } else if (streamUrl) {
+    } else if (streamUrl && (streamUrl.startsWith('http://') || streamUrl.startsWith('https://'))) {
         // Guard: jangan sampai kita embed "halaman episode asli" yang penuh UI.
-        // Kalau ini kejadian, biasanya iframe akan tampil sebagai halaman website, bukan player stream.
         if (/\/episode\/\d+/.test(streamUrl) && /\/series\//.test(streamUrl)) {
             throw new Error('StreamUrl terdeteksi mengarah ke halaman episode (bukan media).');
         }
         videoElement.style.display = 'none';
         iframeElement.style.display = '';
         iframeElement.src = streamUrl;
+    } else if (streamUrl) {
+        throw new Error('URL stream tidak valid (bukan absolute URL).');
     } else {
         throw new Error('Tidak ada sumber video/stream yang valid');
     }
