@@ -394,6 +394,7 @@ body.ns-theme .hero-synopsis {
 body.ns-theme .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -401,6 +402,7 @@ body.ns-theme .line-clamp-3 {
 @media (min-width: 768px) {
     body.ns-theme .hero-synopsis.line-clamp-md-none {
         -webkit-line-clamp: unset;
+        line-clamp: unset;
         display: block;
     }
 }
@@ -973,10 +975,33 @@ body.ns-theme .search-suggestions {
     box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     z-index: 100;
     display: none;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 body.ns-theme .search-suggestions.open {
     display: block;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 767px) {
+    body.ns-theme .search-suggestions {
+        max-height: 280px;
+        border-radius: 8px;
+        margin-top: 2px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
 }
 
 body.ns-theme .suggestion-item {
@@ -986,6 +1011,18 @@ body.ns-theme .suggestion-item {
     padding: 10px 14px;
     cursor: pointer;
     transition: background 0.15s;
+    border-bottom: 1px solid rgba(39, 39, 42, 0.3);
+}
+
+body.ns-theme .suggestion-item:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 767px) {
+    body.ns-theme .suggestion-item {
+        padding: 12px 12px;
+        gap: 10px;
+    }
 }
 
 body.ns-theme .suggestion-item:hover {
@@ -1002,7 +1039,26 @@ body.ns-theme .suggestion-img {
     height: 50px;
     object-fit: cover;
     border-radius: 6px;
+    flex-shrink: 0;
 }
+
+body.ns-theme .suggestion-item span {
+        color: #fafafa;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        min-width: 0;
+    }
+
+    @media (max-width: 767px) {
+        body.ns-theme .suggestion-item span {
+            font-size: 0.8125rem;
+        }
+    }
 
 /* Filter section */
 body.ns-theme .ns-filters {
@@ -1179,6 +1235,11 @@ body.ns-theme .overlay-anime-detail {
         overflow-x: auto;
         padding-bottom: 4px;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
+        gap: 8px;
+        margin: 0 -4px;
+        padding: 4px;
     }
 
     body.ns-theme .ns-filter-chips::-webkit-scrollbar {
@@ -1188,6 +1249,36 @@ body.ns-theme .overlay-anime-detail {
     body.ns-theme .ns-filter-chip {
         flex: 0 0 auto;
         white-space: nowrap;
+        scroll-snap-align: start;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 14px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 18px;
+        background: rgba(24, 24, 27, 0.9);
+        border: 1px solid var(--ns-border);
+        color: var(--ns-muted);
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    body.ns-theme .ns-filter-chip:hover {
+        background: rgba(99, 102, 241, 0.15);
+        border-color: var(--ns-indigo);
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    body.ns-theme .ns-filter-chip.active {
+        background: var(--ns-indigo) !important;
+        border-color: var(--ns-indigo) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+        transform: translateY(-1px);
     }
 
     body.ns-theme .ns-filter-select {
@@ -1199,6 +1290,48 @@ body.ns-theme .overlay-anime-detail {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
         padding-bottom: 32px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    body.ns-theme .anime-card {
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(24, 24, 27, 0.6);
+        border: 1px solid rgba(63, 63, 70, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    body.ns-theme .anime-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    body.ns-theme .anime-card img {
+        border-radius: 11px 11px 0 0;
+        transition: transform 0.2s ease;
+    }
+
+    body.ns-theme .anime-card:hover img {
+        transform: scale(1.02);
+    }
+
+    body.ns-theme .anime-info {
+        padding: 8px 10px;
+    }
+
+    body.ns-theme .anime-info h3 {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 2px;
+    }
+
+    body.ns-theme .anime-meta {
+        font-size: 0.6875rem;
+        color: #71717a;
+        gap: 6px;
     }
 
     body.ns-theme .player-info {
