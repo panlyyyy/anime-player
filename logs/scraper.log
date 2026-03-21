@@ -3513,3 +3513,12 @@
 2026-03-21 17:15:59,396 - INFO - Scraping detail: https://coba.oploverz.ltd/series/terra-formars
 2026-03-21 17:16:13,389 - INFO - [16/527] https://coba.oploverz.ltd/series/maou-gakuin-no-futekigousha-s2
 2026-03-21 17:16:13,390 - INFO - Scraping detail: https://coba.oploverz.ltd/series/maou-gakuin-no-futekigousha-s2
+2026-03-21 17:16:26,224 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-21 17:16:26,285 - INFO - Backup dibuat
+2026-03-21 17:16:26,285 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-21 17:16:30,447 - INFO - Ditemukan 527 anime unik
+2026-03-21 17:16:30,447 - INFO - Total anime di website: 527
+2026-03-21 17:16:30,448 - INFO - [1/527] https://coba.oploverz.ltd/series/area-no-kishi
+2026-03-21 17:16:30,448 - INFO - Scraping detail: https://coba.oploverz.ltd/series/area-no-kishi
+2026-03-21 17:17:03,328 - INFO - [2/527] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-1
+2026-03-21 17:17:03,328 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-1
