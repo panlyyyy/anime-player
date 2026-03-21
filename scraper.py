@@ -47,6 +47,8 @@ def get_soup(url, retries=3):
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
 VIDEO_EXTENSIONS = {'.mp4', '.m3u8', '.mkv', '.webm'}
 STREAM_HINTS = {'4meplayer', 'video.g', 'oplo2.4meplayer.pro'}
+# Host yang hanya memberi halaman download, bukan stream — jangan masukkan ke videos
+DOWNLOAD_PAGE_HOSTS = {'mediafire.com', 'zippyshare.com', 'solidfiles.com', 'mega.nz', 'drive.google.com', 'google drive'}
 
 def looks_like_image_url(url: str) -> bool:
     if not url:
@@ -62,6 +64,13 @@ def looks_like_direct_video_url(url: str) -> bool:
         re.search(r'\.(mp4|m3u8)(\b|$)', lower, re.IGNORECASE)
     )
 
+def is_download_page_url(url: str) -> bool:
+    """URL ke host yang hanya menampilkan halaman download, bukan stream langsung."""
+    if not url:
+        return False
+    lower = url.lower()
+    return any(h in lower for h in DOWNLOAD_PAGE_HOSTS)
+
 def validate_video_url(url: str) -> bool:
     """
     Validasi sederhana untuk menghindari videoElement.src diisi HTML/image.
@@ -73,6 +82,10 @@ def validate_video_url(url: str) -> bool:
     lower = url.lower()
     if any(h in lower for h in STREAM_HINTS):
         # ini biasanya link ke player/stream page, bukan file video langsung
+        return False
+
+    # MediaFire dll: halaman download, bukan stream — tolak sebagai direct video
+    if is_download_page_url(url):
         return False
 
     # Jika sudah jelas .mp4/.m3u8, terima cepat tanpa HEAD.

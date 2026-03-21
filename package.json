@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate-icons": "node scripts/generate-pwa-icons.js"
+    "generate-icons": "node scripts/generate-pwa-icons.js",
+    "use-logo": "node scripts/use-logo-as-icon.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/panlyyyy/anime-player#readme",
   "devDependencies": {
-    "jimp": "^1.6.0"
+    "jimp": "^1.6.0",
+    "sharp": "^0.34.5"
   }
 }
