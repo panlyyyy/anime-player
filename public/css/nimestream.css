@@ -1025,10 +1025,11 @@ body.ns-theme .ns-filter-label {
     white-space: nowrap;
 }
 
-body.ns-filter-chips {
+body.ns-theme .ns-filter-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    min-width: 0;
 }
 
 body.ns-theme .ns-filter-chip {
@@ -1062,6 +1063,17 @@ body.ns-theme .ns-filter-select {
     font-size: 0.8125rem;
     cursor: pointer;
     outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image:
+        linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.85) 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 50%, transparent 50%);
+    background-position:
+        calc(100% - 16px) calc(50% - 3px),
+        calc(100% - 11px) calc(50% - 3px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 32px;
 }
 
 body.ns-theme .anime-genre-tag {
@@ -1079,10 +1091,13 @@ body.ns-theme .anime-genres {
 }
 
 body.ns-theme .anime-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: var(--ns-max);
     margin: 0 auto;
     padding: 8px 16px 24px;
     gap: 14px;
+    align-items: start;
 }
 
 @media (min-width: 640px) {
@@ -1099,15 +1114,33 @@ body.ns-theme .anime-grid {
 }
 
 body.ns-theme .anime-card {
+    min-width: 0;
     border-radius: 14px;
     border: 1px solid rgba(63, 63, 70, 0.4);
     background: rgba(24, 24, 27, 0.5);
+    overflow: hidden;
 }
 
 body.ns-theme .anime-card:hover {
     transform: translateY(-4px);
     border-color: rgba(99, 102, 241, 0.35);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+body.ns-theme .anime-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+}
+
+body.ns-theme .anime-info {
+    min-width: 0;
+}
+
+body.ns-theme .anime-meta {
+    flex-wrap: wrap;
 }
 
 body.ns-theme .anime-meta.resume-line {
@@ -1120,6 +1153,57 @@ body.ns-theme .overlay-anime-detail {
     font-size: 0.875rem;
     color: var(--ns-muted);
     line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+    body.ns-theme .ns-search-field {
+        gap: 8px;
+        padding-left: 12px;
+    }
+
+    body.ns-theme .ns-filters {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        align-items: stretch;
+    }
+
+    body.ns-theme .ns-filter-group {
+        display: grid;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    body.ns-theme .ns-filter-chips {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    body.ns-theme .ns-filter-chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    body.ns-theme .ns-filter-chip {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    body.ns-theme .ns-filter-select {
+        width: 100%;
+        min-height: 42px;
+    }
+
+    body.ns-theme .anime-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding-bottom: 32px;
+    }
+
+    body.ns-theme .player-info {
+        padding: 18px 16px 24px;
+    }
 }
 
 body.ns-theme .overlay-jp-title {
