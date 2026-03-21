@@ -3392,3 +3392,48 @@
 2026-03-21 16:50:51,215 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ansatsu-kyoushitsu-season-2
 2026-03-21 16:51:12,548 - INFO - [71/527] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-3
 2026-03-21 16:51:12,548 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-3
+2026-03-21 16:51:25,160 - INFO - [72/527] https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei
+2026-03-21 16:51:25,196 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei
+2026-03-21 16:51:50,833 - INFO - [73/527] https://coba.oploverz.ltd/series/mashle
+2026-03-21 16:51:50,886 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mashle
+2026-03-21 16:52:05,079 - INFO - [74/527] https://coba.oploverz.ltd/series/high-school-dxd-s1
+2026-03-21 16:52:05,080 - INFO - Scraping detail: https://coba.oploverz.ltd/series/high-school-dxd-s1
+2026-03-21 16:52:18,349 - INFO - [75/527] https://coba.oploverz.ltd/series/86-eighty-six-part-2
+2026-03-21 16:52:18,349 - INFO - Scraping detail: https://coba.oploverz.ltd/series/86-eighty-six-part-2
+2026-03-21 16:52:32,061 - INFO - [76/527] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-3
+2026-03-21 16:52:32,110 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-3
+2026-03-21 16:52:46,257 - INFO - [77/527] https://coba.oploverz.ltd/series/code-geass-hangyaku-no-lelouch-r1
+2026-03-21 16:52:46,275 - INFO - Scraping detail: https://coba.oploverz.ltd/series/code-geass-hangyaku-no-lelouch-r1
+2026-03-21 16:53:12,061 - INFO - [78/527] https://coba.oploverz.ltd/series/frieren-beyond-journeys-end-s2
+2026-03-21 16:53:12,063 - INFO - Scraping detail: https://coba.oploverz.ltd/series/frieren-beyond-journeys-end-s2
+2026-03-21 16:53:24,421 - INFO - [79/527] https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s1
+2026-03-21 16:53:24,423 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-majutsu-no-index-s1
+2026-03-21 16:53:46,748 - INFO - [80/527] https://coba.oploverz.ltd/series/blue-lock-s1
+2026-03-21 16:53:47,151 - INFO - Scraping detail: https://coba.oploverz.ltd/series/blue-lock-s1
+2026-03-21 16:54:12,152 - INFO - [81/527] https://coba.oploverz.ltd/series/grand-blue
+2026-03-21 16:54:12,153 - INFO - Scraping detail: https://coba.oploverz.ltd/series/grand-blue
+2026-03-21 16:54:17,827 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-21 16:54:17,924 - INFO - Backup dibuat
+2026-03-21 16:54:17,925 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-21 16:54:24,383 - INFO - Ditemukan 527 anime unik
+2026-03-21 16:54:24,433 - INFO - Total anime di website: 527
+2026-03-21 16:54:24,489 - INFO - [1/527] https://coba.oploverz.ltd/series/wind-breaker-s2
+2026-03-21 16:54:24,495 - INFO - Scraping detail: https://coba.oploverz.ltd/series/wind-breaker-s2
+2026-03-21 16:54:25,621 - INFO - [82/527] https://coba.oploverz.ltd/series/shokugeki-no-souma-season-2
+2026-03-21 16:54:25,622 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shokugeki-no-souma-season-2
+2026-03-21 16:54:37,994 - INFO - [2/527] https://coba.oploverz.ltd/series/hunter-x-hunter-2011
+2026-03-21 16:54:37,996 - INFO - Scraping detail: https://coba.oploverz.ltd/series/hunter-x-hunter-2011
+2026-03-21 16:54:40,176 - INFO - [83/527] https://coba.oploverz.ltd/series/one-piece
+2026-03-21 16:54:40,177 - INFO - Scraping detail: https://coba.oploverz.ltd/series/one-piece
+2026-03-21 16:56:34,197 - INFO - [3/527] https://coba.oploverz.ltd/series/overlord-season-4
+2026-03-21 16:56:34,198 - INFO - Scraping detail: https://coba.oploverz.ltd/series/overlord-season-4
+2026-03-21 16:56:48,063 - INFO - [4/527] https://coba.oploverz.ltd/series/kekkaishi
+2026-03-21 16:56:48,064 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kekkaishi
+2026-03-21 16:57:30,681 - INFO - [5/527] https://coba.oploverz.ltd/series/toaru-kagaku-no-accelerator
+2026-03-21 16:57:30,682 - INFO - Scraping detail: https://coba.oploverz.ltd/series/toaru-kagaku-no-accelerator
+2026-03-21 16:57:43,052 - INFO - [6/527] https://coba.oploverz.ltd/series/shingeki-no-kyojin-attack-on-titan
+2026-03-21 16:57:43,052 - INFO - Scraping detail: https://coba.oploverz.ltd/series/shingeki-no-kyojin-attack-on-titan
+2026-03-21 16:58:05,640 - INFO - [7/527] https://coba.oploverz.ltd/series/alya-sometimes-hides-her-feelings-in-russian
+2026-03-21 16:58:05,641 - INFO - Scraping detail: https://coba.oploverz.ltd/series/alya-sometimes-hides-her-feelings-in-russian
+2026-03-21 16:58:16,969 - INFO - [8/527] https://coba.oploverz.ltd/series/86-eighty-six-part-2
+2026-03-21 16:58:16,972 - INFO - Scraping detail: https://coba.oploverz.ltd/series/86-eighty-six-part-2

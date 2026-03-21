@@ -1065,20 +1065,24 @@ body.ns-theme .ns-filters {
     margin-top: 16px;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px 20px;
 }
 
 body.ns-theme .ns-filter-group {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
+    min-width: 0;
+    flex: 1;
 }
 
 body.ns-theme .ns-filter-label {
     font-size: 0.8125rem;
     color: var(--ns-muted);
     white-space: nowrap;
+    font-weight: 600;
 }
 
 body.ns-theme .ns-filter-chips {
@@ -1086,28 +1090,41 @@ body.ns-theme .ns-filter-chips {
     flex-wrap: wrap;
     gap: 6px;
     min-width: 0;
+    width: 100%;
 }
 
 body.ns-theme .ns-filter-chip {
-    padding: 6px 12px;
-    border-radius: 999px;
+    padding: 8px 14px;
+    border-radius: 18px;
     border: 1px solid var(--ns-border);
-    background: rgba(24, 24, 27, 0.6);
-    color: var(--ns-muted);
+    background: rgba(24, 24, 27, 0.9) !important;
+    color: var(--ns-muted) !important;
     font-size: 0.8125rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    white-space: nowrap;
 }
 
 body.ns-theme .ns-filter-chip:hover {
-    color: #fff;
-    border-color: var(--ns-indigo);
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-color: var(--ns-indigo) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
 body.ns-theme .ns-filter-chip.active {
-    background: var(--ns-indigo);
-    border-color: var(--ns-indigo);
-    color: #fff;
+    background: var(--ns-indigo) !important;
+    border-color: var(--ns-indigo) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    transform: translateY(-1px);
 }
 
 body.ns-theme .ns-filter-select {
@@ -1212,15 +1229,10 @@ body.ns-theme .overlay-anime-detail {
 }
 
 @media (max-width: 767px) {
-    body.ns-theme .ns-search-field {
-        gap: 8px;
-        padding-left: 12px;
-    }
-
     body.ns-theme .ns-filters {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 16px;
         align-items: stretch;
     }
 
@@ -1228,6 +1240,7 @@ body.ns-theme .overlay-anime-detail {
         display: grid;
         gap: 8px;
         min-width: 0;
+        width: 100%;
     }
 
     body.ns-theme .ns-filter-chips {
@@ -1240,6 +1253,7 @@ body.ns-theme .overlay-anime-detail {
         gap: 8px;
         margin: 0 -4px;
         padding: 4px;
+        width: 100%;
     }
 
     body.ns-theme .ns-filter-chips::-webkit-scrollbar {
@@ -1254,31 +1268,31 @@ body.ns-theme .overlay-anime-detail {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 8px 14px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        border-radius: 18px;
-        background: rgba(24, 24, 27, 0.9);
-        border: 1px solid var(--ns-border);
-        color: var(--ns-muted);
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 8px 14px !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        border-radius: 18px !important;
+        background: rgba(24, 24, 27, 0.9) !important;
+        border: 1px solid var(--ns-border) !important;
+        color: var(--ns-muted) !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
     }
 
     body.ns-theme .ns-filter-chip:hover {
-        background: rgba(99, 102, 241, 0.15);
-        border-color: var(--ns-indigo);
-        color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        background: rgba(99, 102, 241, 0.15) !important;
+        border-color: var(--ns-indigo) !important;
+        color: #fff !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2) !important;
     }
 
     body.ns-theme .ns-filter-chip.active {
         background: var(--ns-indigo) !important;
         border-color: var(--ns-indigo) !important;
         color: #fff !important;
-        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
-        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4) !important;
+        transform: translateY(-1px) !important;
     }
 
     body.ns-theme .ns-filter-select {
@@ -1290,27 +1304,33 @@ body.ns-theme .overlay-anime-detail {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
         padding-bottom: 32px;
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
     body.ns-theme .anime-card {
         border-radius: 12px;
         overflow: hidden;
-        background: rgba(24, 24, 27, 0.6);
-        border: 1px solid rgba(63, 63, 70, 0.3);
-        transition: all 0.2s ease;
+        background: rgba(24, 24, 27, 0.8) !important;
+        border: 1px solid rgba(63, 63, 70, 0.4) !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
     }
 
     body.ns-theme .anime-card:hover {
-        transform: translateY(-2px);
-        border-color: rgba(99, 102, 241, 0.3);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px) !important;
+        border-color: rgba(99, 102, 241, 0.4) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
     }
 
     body.ns-theme .anime-card img {
         border-radius: 11px 11px 0 0;
         transition: transform 0.2s ease;
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 2/3 !important;
+        object-fit: cover !important;
+        display: block !important;
     }
 
     body.ns-theme .anime-card:hover img {
@@ -1318,20 +1338,46 @@ body.ns-theme .overlay-anime-detail {
     }
 
     body.ns-theme .anime-info {
-        padding: 8px 10px;
+        padding: 10px 12px !important;
+        background: rgba(24, 24, 27, 0.6) !important;
     }
 
     body.ns-theme .anime-info h3 {
-        font-size: 0.8125rem;
-        font-weight: 600;
-        line-height: 1.2;
-        margin-bottom: 2px;
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        margin-bottom: 4px !important;
+        color: #f4f4f5 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 
     body.ns-theme .anime-meta {
-        font-size: 0.6875rem;
-        color: #71717a;
-        gap: 6px;
+        font-size: 0.6875rem !important;
+        color: #71717a !important;
+        gap: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+    }
+
+    body.ns-theme .anime-genres {
+        margin-top: 4px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 2px !important;
+    }
+
+    body.ns-theme .anime-genre-tag {
+        display: inline-block !important;
+        padding: 2px 6px !important;
+        margin: 0 !important;
+        border-radius: 4px !important;
+        background: rgba(99, 102, 241, 0.2) !important;
+        color: #a5b4fc !important;
+        font-size: 0.7rem !important;
+        font-weight: 500 !important;
     }
 
     body.ns-theme .player-info {
