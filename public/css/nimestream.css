@@ -1093,38 +1093,74 @@ body.ns-theme .ns-filter-chips {
     width: 100%;
 }
 
+/* --- Enhanced Filter Chips for Mobile --- */
 body.ns-theme .ns-filter-chip {
-    padding: 8px 14px;
-    border-radius: 18px;
-    border: 1px solid var(--ns-border);
-    background: rgba(24, 24, 27, 0.9) !important;
-    color: var(--ns-muted) !important;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 36px;
-    white-space: nowrap;
+    padding: 10px 16px !important;
+    border-radius: 20px !important;
+    border: 2px solid var(--ns-border) !important;
+    background: linear-gradient(135deg, rgba(24, 24, 27, 0.95), rgba(39, 39, 42, 0.9)) !important;
+    color: #e4e4e7 !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1) !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    min-width: 60px !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    text-transform: none !important;
+    letter-spacing: 0.01em !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+body.ns-theme .ns-filter-chip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+body.ns-theme .ns-filter-chip:hover::before {
+    opacity: 1;
 }
 
 body.ns-theme .ns-filter-chip:hover {
-    background: rgba(99, 102, 241, 0.15) !important;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.2)) !important;
     border-color: var(--ns-indigo) !important;
-    color: #fff !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    color: #ffffff !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 
+        0 8px 20px rgba(99, 102, 241, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 body.ns-theme .ns-filter-chip.active {
-    background: var(--ns-indigo) !important;
+    background: linear-gradient(135deg, var(--ns-indigo), #7c3aed) !important;
     border-color: var(--ns-indigo) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
-    transform: translateY(-1px);
+    color: #ffffff !important;
+    box-shadow: 
+        0 8px 24px rgba(99, 102, 241, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    font-weight: 800 !important;
+}
+
+body.ns-theme .ns-filter-chip:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    transition: all 0.1s ease !important;
 }
 
 body.ns-theme .ns-filter-select {
@@ -1232,13 +1268,14 @@ body.ns-theme .overlay-anime-detail {
     body.ns-theme .ns-filters {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 20px;
         align-items: stretch;
+        padding: 0 4px;
     }
 
     body.ns-theme .ns-filter-group {
         display: grid;
-        gap: 8px;
+        gap: 12px;
         min-width: 0;
         width: 100%;
     }
@@ -1246,14 +1283,16 @@ body.ns-theme .overlay-anime-detail {
     body.ns-theme .ns-filter-chips {
         flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 4px;
+        padding: 8px 4px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x proximity;
-        gap: 8px;
-        margin: 0 -4px;
-        padding: 4px;
+        scroll-snap-type: x mandatory;
+        gap: 10px;
+        margin: 0;
         width: 100%;
+        background: rgba(15, 15, 17, 0.5);
+        border-radius: 12px;
+        padding: 8px;
     }
 
     body.ns-theme .ns-filter-chips::-webkit-scrollbar {
@@ -1261,123 +1300,183 @@ body.ns-theme .overlay-anime-detail {
     }
 
     body.ns-theme .ns-filter-chip {
-        flex: 0 0 auto;
-        white-space: nowrap;
-        scroll-snap-align: start;
-        min-height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 14px !important;
-        font-size: 0.875rem !important;
-        font-weight: 600 !important;
-        border-radius: 18px !important;
-        background: rgba(24, 24, 27, 0.9) !important;
-        border: 1px solid var(--ns-border) !important;
-        color: var(--ns-muted) !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        scroll-snap-align: start !important;
+        padding: 12px 18px !important;
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        border-radius: 22px !important;
+        background: linear-gradient(135deg, rgba(24, 24, 27, 0.98), rgba(39, 39, 42, 0.95)) !important;
+        border: 2px solid rgba(99, 102, 241, 0.3) !important;
+        color: #f4f4f5 !important;
+        transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1) !important;
+        box-shadow: 
+            0 6px 16px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+        min-height: 44px !important;
+        min-width: 70px !important;
+        text-align: center !important;
     }
 
     body.ns-theme .ns-filter-chip:hover {
-        background: rgba(99, 102, 241, 0.15) !important;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.25)) !important;
         border-color: var(--ns-indigo) !important;
-        color: #fff !important;
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2) !important;
+        color: #ffffff !important;
+        transform: translateY(-3px) scale(1.03) !important;
+        box-shadow: 
+            0 12px 28px rgba(99, 102, 241, 0.4),
+            0 6px 16px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
     }
 
     body.ns-theme .ns-filter-chip.active {
-        background: var(--ns-indigo) !important;
+        background: linear-gradient(135deg, var(--ns-indigo), #8b5cf6) !important;
         border-color: var(--ns-indigo) !important;
-        color: #fff !important;
-        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4) !important;
-        transform: translateY(-1px) !important;
+        color: #ffffff !important;
+        box-shadow: 
+            0 12px 32px rgba(99, 102, 241, 0.5),
+            0 6px 16px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+        transform: translateY(-3px) scale(1.03) !important;
+        font-weight: 800 !important;
+    }
+
+    body.ns-theme .ns-filter-chip:active {
+        transform: translateY(-2px) scale(1.01) !important;
+        transition: all 0.1s ease !important;
     }
 
     body.ns-theme .ns-filter-select {
         width: 100%;
-        min-height: 42px;
+        min-height: 48px;
+        background: linear-gradient(135deg, rgba(24, 24, 27, 0.95), rgba(39, 39, 42, 0.9)) !important;
+        border: 2px solid rgba(99, 102, 241, 0.2) !important;
+        border-radius: 12px !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        padding: 12px 16px !important;
     }
 
     body.ns-theme .anime-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-        padding-bottom: 32px;
-        padding-left: 16px;
-        padding-right: 16px;
+        gap: 16px;
+        padding-bottom: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
     }
 
     body.ns-theme .anime-card {
-        border-radius: 12px;
-        overflow: hidden;
-        background: rgba(24, 24, 27, 0.8) !important;
-        border: 1px solid rgba(63, 63, 70, 0.4) !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        background: linear-gradient(135deg, rgba(24, 24, 27, 0.95), rgba(39, 39, 42, 0.9)) !important;
+        border: 2px solid rgba(99, 102, 241, 0.2) !important;
+        transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1) !important;
+        box-shadow: 
+            0 8px 24px rgba(0, 0, 0, 0.3),
+            0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        position: relative !important;
+        transform: translateZ(0) !important;
+        will-change: transform !important;
+    }
+
+    body.ns-theme .anime-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    body.ns-theme .anime-card:hover::before {
+        opacity: 1;
     }
 
     body.ns-theme .anime-card:hover {
-        transform: translateY(-2px) !important;
-        border-color: rgba(99, 102, 241, 0.4) !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+        transform: translateY(-4px) scale(1.02) !important;
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        box-shadow: 
+            0 16px 40px rgba(99, 102, 241, 0.3),
+            0 8px 24px rgba(0, 0, 0, 0.4) !important;
     }
 
     body.ns-theme .anime-card img {
-        border-radius: 11px 11px 0 0;
-        transition: transform 0.2s ease;
+        border-radius: 14px 14px 0 0 !important;
+        transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1) !important;
         width: 100% !important;
         height: auto !important;
         aspect-ratio: 2/3 !important;
         object-fit: cover !important;
         display: block !important;
+        position: relative !important;
+        z-index: 0 !important;
     }
 
     body.ns-theme .anime-card:hover img {
-        transform: scale(1.02);
+        transform: scale(1.05) !important;
     }
 
     body.ns-theme .anime-info {
-        padding: 10px 12px !important;
-        background: rgba(24, 24, 27, 0.6) !important;
+        padding: 14px 16px !important;
+        background: linear-gradient(135deg, rgba(24, 24, 27, 0.98), rgba(39, 39, 42, 0.95)) !important;
+        position: relative !important;
+        z-index: 2 !important;
     }
 
     body.ns-theme .anime-info h3 {
-        font-size: 0.8125rem !important;
-        font-weight: 600 !important;
-        line-height: 1.2 !important;
-        margin-bottom: 4px !important;
-        color: #f4f4f5 !important;
+        font-size: 0.875rem !important;
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
+        margin-bottom: 6px !important;
+        color: #ffffff !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
     }
 
     body.ns-theme .anime-meta {
-        font-size: 0.6875rem !important;
-        color: #71717a !important;
-        gap: 6px !important;
+        font-size: 0.75rem !important;
+        color: #a1a1aa !important;
+        gap: 8px !important;
         display: flex !important;
         align-items: center !important;
         flex-wrap: wrap !important;
+        font-weight: 600 !important;
     }
 
     body.ns-theme .anime-genres {
-        margin-top: 4px !important;
+        margin-top: 6px !important;
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 2px !important;
+        gap: 3px !important;
     }
 
     body.ns-theme .anime-genre-tag {
         display: inline-block !important;
-        padding: 2px 6px !important;
+        padding: 3px 8px !important;
         margin: 0 !important;
+        border-radius: 6px !important;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.2)) !important;
+        color: #c7d2fe !important;
+        font-size: 0.65rem !important;
+        font-weight: 600 !important;
+        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    body.ns-theme .anime-meta.resume-line {
+        color: #60a5fa !important;
+        font-weight: 700 !important;
+        background: rgba(96, 165, 250, 0.1) !important;
+        padding: 2px 6px !important;
         border-radius: 4px !important;
-        background: rgba(99, 102, 241, 0.2) !important;
-        color: #a5b4fc !important;
-        font-size: 0.7rem !important;
-        font-weight: 500 !important;
+        border: 1px solid rgba(96, 165, 250, 0.2) !important;
     }
 
     body.ns-theme .player-info {
