@@ -66,19 +66,31 @@ const UI = {
             const epLabel = anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?';
             const timeLabel = t > 0 ? Storage.formatTime(t) : '0:00';
             return `
-                <div class="anime-card-wide" data-slug="${anime.slug}">
-                    <img src="${anime.image || 'https://via.placeholder.com/300x169'}" class="card-thumb" loading="lazy">
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${progressPercent}%;"></div></div>
-                    <div class="card-title">${anime.title.replace(/"/g, '&quot;')}</div>
-                    <div class="card-sub">Eps ${epLabel} • ${timeLabel}</div>
+                <div class="anime-card-wide ns-card ns-card-continue portrait" data-slug="${anime.slug}">
+                    <div class="ns-card-poster">
+                        <img src="${anime.image || 'https://via.placeholder.com/300x450'}" class="card-thumb" loading="lazy" alt="">
+                        <div class="ns-card-shade"></div>
+                        <div class="ns-card-play" aria-hidden="true"><span><i class="fas fa-play"></i></span></div>
+                        <div class="ns-card-progress"><div class="ns-card-progress-fill" style="width: ${progressPercent}%;"></div></div>
+                    </div>
+                    <div class="ns-card-body">
+                        <div class="card-title ns-card-title">${anime.title.replace(/"/g, '&quot;')}</div>
+                        <div class="card-sub ns-card-sub">Eps ${epLabel} • ${timeLabel}</div>
+                    </div>
                 </div>
             `;
         } else {
             return `
-                <div class="anime-card-wide portrait" data-slug="${anime.slug}">
-                    <img src="${anime.image || 'https://via.placeholder.com/300x450'}" class="card-thumb" loading="lazy">
-                    <div class="card-title">${anime.title.replace(/"/g, '&quot;')}</div>
-                    <div class="card-sub">${anime.genre?.[0] || 'Anime'} • TV</div>
+                <div class="anime-card-wide portrait ns-card" data-slug="${anime.slug}">
+                    <div class="ns-card-poster">
+                        <img src="${anime.image || 'https://via.placeholder.com/300x450'}" class="card-thumb" loading="lazy" alt="">
+                        <div class="ns-card-shade"></div>
+                        <div class="ns-card-play" aria-hidden="true"><span><i class="fas fa-play"></i></span></div>
+                    </div>
+                    <div class="ns-card-body">
+                        <div class="card-title ns-card-title">${anime.title.replace(/"/g, '&quot;')}</div>
+                        <div class="card-sub ns-card-sub">${anime.genre?.[0] || 'Anime'} • TV</div>
+                    </div>
                 </div>
             `;
         }

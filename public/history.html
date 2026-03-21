@@ -3,44 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>History - PANLYYY</title>
+    <title>Riwayat - PANLYYY</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/nimestream.css">
 </head>
-<body>
-    <div class="app-shell">
-        <header id="mainHeader">
-            <div class="logo">PANLYYY</div>
-            <div class="profile-btn"></div>
+<body class="ns-theme">
+    <div class="app-shell ns-shell">
+        <header id="mainHeader" class="ns-topnav panlyyy-topnav">
+            <div class="ns-topnav-inner">
+                <a href="/" class="ns-brand" aria-label="Beranda">
+                    <span class="nav-play-icon" aria-hidden="true"><i class="fas fa-play"></i></span>
+                    <div class="logo">PAN<span class="logo-accent">LYYY</span></div>
+                </a>
+                <nav class="ns-desktop-nav" aria-label="Menu utama">
+                    <a href="/">Beranda</a>
+                    <a href="/search.html">Eksplorasi</a>
+                    <a href="/ongoing.html">Jadwal Rilis</a>
+                    <a href="/favorites.html">Daftar Saya</a>
+                </nav>
+                <div class="ns-topnav-right">
+                    <form class="ns-search-wrap" action="/search.html" method="get" role="search">
+                        <i class="fas fa-search ns-search-icon" aria-hidden="true"></i>
+                        <input type="search" name="q" placeholder="Cari judul anime..." autocomplete="off" aria-label="Cari anime">
+                    </form>
+                    <a href="/search.html" class="ns-icon-btn ns-mobile-search" aria-label="Cari"><i class="fas fa-search"></i></a>
+                    <button type="button" class="ns-icon-btn ns-bell" aria-label="Notifikasi"><i class="fas fa-bell"></i></button>
+                    <div class="profile-btn" aria-hidden="true"></div>
+                </div>
+            </div>
         </header>
 
-        <div style="padding: 80px 20px 20px;">
-            <h2 style="margin-bottom:20px;">Riwayat Tontonan</h2>
-        </div>
+        <main>
+            <div class="ns-page-head">
+                <h1 class="ns-page-title">Riwayat Tontonan</h1>
+                <p class="ns-page-sub">Lanjutkan dari posisi terakhir kamu.</p>
+            </div>
+            <button type="button" class="clear-btn" id="clearHistoryBtn"><i class="fas fa-trash-alt"></i> Hapus semua riwayat</button>
+            <div id="historyList" class="anime-grid"></div>
+        </main>
 
-        <button class="clear-btn" id="clearHistoryBtn">🗑️ Hapus Semua History</button>
-        <div id="historyList" class="anime-grid"></div>
-
-        <nav class="nav-dock">
-            <a href="/" class="nav-item"><i class="fas fa-home"></i>Home</a>
-            <a href="/search.html" class="nav-item"><i class="fas fa-search"></i>Cari</a>
-            <a href="/ongoing.html" class="nav-item"><i class="fas fa-clapperboard"></i>Tayang</a>
-            <a href="/favorites.html" class="nav-item"><i class="fas fa-heart"></i>Favorit</a>
+        <nav class="nav-dock" aria-label="Navigasi bawah">
+            <a href="/" class="nav-item"><i class="fas fa-home"></i>Beranda</a>
+            <a href="/search.html" class="nav-item"><i class="fas fa-compass"></i>Eksplor</a>
+            <a href="/favorites.html" class="nav-item"><i class="fas fa-list"></i>Daftar</a>
+            <a href="/history.html" class="nav-item active"><i class="fas fa-clock"></i>Riwayat</a>
         </nav>
     </div>
 
-    <!-- Player Overlay (salin dari index.html) -->
     <div id="playerOverlay">
         <div class="video-container">
             <button class="close-player"><i class="fas fa-times"></i></button>
             <video id="videoPlayer" controls playsinline webkit-playsinline style="width:100%;height:100%;"></video>
-                <iframe
-                    id="videoIframe"
-                    style="width:100%;height:100%;display:none;"
-                    frameborder="0"
-                    allow="autoplay; encrypted-media"
-                    referrerpolicy="no-referrer">
-                </iframe>
+            <iframe
+                id="videoIframe"
+                style="width:100%;height:100%;display:none;"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                referrerpolicy="no-referrer">
+            </iframe>
         </div>
         <div class="player-info">
             <h1 id="overlayTitle">Solo Leveling</h1>
@@ -64,6 +88,7 @@
         </div>
     </div>
 
+    <script src="/js/layout-shell.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/storage.js"></script>
     <script src="/js/ui.js"></script>

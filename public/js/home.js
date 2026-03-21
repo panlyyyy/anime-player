@@ -6,14 +6,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
     setupEventListeners();
 
-    window.addEventListener('scroll', () => {
-        const header = document.getElementById('mainHeader');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
 });
 
 async function loadData() {
@@ -64,18 +56,35 @@ function renderFeatured(anime) {
         ).join('')}</div>`
         : '';
 
+    const safe = (s) => String(s ?? '').replace(/</g, '').replace(/"/g, '&quot;');
+    const synopsisRaw = anime.synopsis || anime.description || '';
+    const synopsis = safe(synopsisRaw);
+    const epCount = anime.episodes?.length ?? '?';
+    const year = anime.year || (anime.updatedAt && String(anime.updatedAt).slice(0, 4)) || '—';
+    const rating = anime.rating != null ? anime.rating : '4.8';
+    const genreLine = (anime.genre?.slice(0, 4) || []).map((g) => safe(g)).filter(Boolean).join(' • ');
+
     featured.innerHTML = `
-        <img src="${anime.image || 'https://images.unsplash.com/photo-1541562232579-512a21360020'}" class="featured-img" data-slug="${anime.slug}" alt="${anime.title.replace(/"/g, '&quot;')}">
+        <img src="${anime.image || 'https://images.unsplash.com/photo-1541562232579-512a21360020'}" class="featured-img" data-slug="${anime.slug}" alt="${safe(anime.title)}">
         <div class="featured-gradient"></div>
         <div class="featured-content">
-            <h1 class="hero-title">${anime.title.replace(/"/g, '&quot;')}</h1>
-            <div class="tags">
-                ${anime.genre?.slice(0, 3).map(g => `<span class="tag">${g.replace(/"/g, '&quot;')}</span>`).join('') || '<span class="tag">Anime</span>'}
-                <span class="tag">Eps ${anime.episodes?.length || '?'}</span>
-            </div>
-            <div class="action-group">
-                <button class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton</button>
-                <button class="btn btn-secondary fav-btn" data-slug="${anime.slug}"><i class="fas fa-plus"></i> Daftar Saya</button>
+            <div class="hero-copy">
+                <h1 class="hero-title">${safe(anime.title)}</h1>
+                <div class="hero-meta-row">
+                    <span class="hero-rating"><i class="fas fa-star"></i> ${safe(rating)}</span>
+                    <span class="hero-pill">${safe(year)}</span>
+                    <span class="hero-pill">${epCount} EP</span>
+                    ${genreLine ? `<span class="hero-genres">${genreLine}</span>` : ''}
+                </div>
+                <p class="hero-synopsis line-clamp-3 line-clamp-md-none">${synopsis || 'Sinopsis belum tersedia.'}</p>
+                <div class="tags">
+                    ${anime.genre?.slice(0, 3).map(g => `<span class="tag">${safe(g)}</span>`).join('') || '<span class="tag">Anime</span>'}
+                    <span class="tag">Eps ${epCount}</span>
+                </div>
+                <div class="action-group">
+                    <button type="button" class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton</button>
+                    <button type="button" class="btn btn-secondary fav-btn" data-slug="${anime.slug}"><i class="fas fa-plus"></i> Daftar Saya</button>
+                </div>
             </div>
         </div>
         ${dots}
@@ -185,19 +194,13 @@ function renderRecommendations() {
 }
 
 function setupEventListeners() {
-    const seeAllContinue = document.querySelector('#continueSection h2 span');
-    if (seeAllContinue) {
-        seeAllContinue.addEventListener('click', () => {
-            window.location.href = '/history.html';
-        });
-    }
+    document.querySelector('#continueSection .section-more')?.addEventListener('click', () => {
+        window.location.href = '/history.html';
+    });
 
-    const seeAllRec = document.querySelector('#recommendSection h2 span');
-    if (seeAllRec) {
-        seeAllRec.addEventListener('click', () => {
-            window.location.href = '/search.html';
-        });
-    }
+    document.querySelector('#recommendSection .section-more')?.addEventListener('click', () => {
+        window.location.href = '/search.html';
+    });
 }
 
 window.toggleFavorite = function(slug) {

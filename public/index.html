@@ -6,62 +6,80 @@
     <title>PANLYYY - Anime</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/nimestream.css">
 </head>
-<body>
-    <div class="app-shell panlyyy-shell">
-        <header id="mainHeader" class="panlyyy-topnav">
-            <div class="nav-brand">
-                <span class="nav-play-icon"><i class="fas fa-play"></i></span>
-                <div class="logo">PANLYYY</div>
-            </div>
-            <div class="nav-actions">
-                <a href="/search.html" class="nav-icon-btn" aria-label="Cari"><i class="fas fa-search"></i></a>
-                <div class="profile-btn" aria-hidden="true"></div>
+<body class="ns-theme">
+    <div class="app-shell ns-shell">
+        <header id="mainHeader" class="ns-topnav panlyyy-topnav">
+            <div class="ns-topnav-inner">
+                <a href="/" class="ns-brand" aria-label="Beranda">
+                    <span class="nav-play-icon" aria-hidden="true"><i class="fas fa-play"></i></span>
+                    <div class="logo">PAN<span class="logo-accent">LYYY</span></div>
+                </a>
+
+                <nav class="ns-desktop-nav" aria-label="Menu utama">
+                    <a href="/" class="active">Beranda</a>
+                    <a href="/search.html">Eksplorasi</a>
+                    <a href="/ongoing.html">Jadwal Rilis</a>
+                    <a href="/favorites.html">Daftar Saya</a>
+                </nav>
+
+                <div class="ns-topnav-right">
+                    <form class="ns-search-wrap" action="/search.html" method="get" role="search">
+                        <i class="fas fa-search ns-search-icon" aria-hidden="true"></i>
+                        <input type="search" name="q" placeholder="Cari judul anime..." autocomplete="off" aria-label="Cari anime">
+                    </form>
+                    <a href="/search.html" class="ns-icon-btn ns-mobile-search" aria-label="Cari"><i class="fas fa-search"></i></a>
+                    <button type="button" class="ns-icon-btn ns-bell" aria-label="Notifikasi"><i class="fas fa-bell"></i></button>
+                    <div class="profile-btn" aria-hidden="true"></div>
+                </div>
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <div class="featured panlyyy-hero"></div>
+        <main class="ns-main animate-fade-in">
+            <div class="featured panlyyy-hero"></div>
 
-        <!-- Categories -->
-        <div class="category-scroll hide-scrollbar"></div>
+            <div class="category-scroll hide-scrollbar"></div>
 
-        <!-- Lanjutkan Menonton -->
-        <section id="continueSection" class="content-section">
-            <h2 class="section-title">Lanjutkan Menonton <span class="section-more">Lihat Semua</span></h2>
-            <div class="horizontal-list hide-scrollbar" id="continueList"></div>
-        </section>
+            <section id="continueSection" class="content-section">
+                <h2 class="section-title">
+                    <span class="section-title-left">Lanjutkan Menonton <i class="fas fa-chevron-right" aria-hidden="true"></i></span>
+                    <span class="section-more">Lihat Semua</span>
+                </h2>
+                <div class="horizontal-list hide-scrollbar" id="continueList"></div>
+            </section>
 
-        <!-- Rekomendasi Untukmu -->
-        <section id="recommendSection" class="content-section">
-            <h2 class="section-title">Rekomendasi Untukmu <span class="section-more">Lihat Semua</span></h2>
-            <div class="horizontal-list hide-scrollbar" id="recommendList"></div>
-        </section>
+            <section id="recommendSection" class="content-section">
+                <h2 class="section-title">
+                    <span class="section-title-left">Rekomendasi Untukmu <i class="fas fa-chevron-right" aria-hidden="true"></i></span>
+                    <span class="section-more">Lihat Semua</span>
+                </h2>
+                <div class="horizontal-list hide-scrollbar" id="recommendList"></div>
+            </section>
+        </main>
 
-        <!-- Navigation Dock -->
-        <nav class="nav-dock">
-            <a href="/" class="nav-item active"><i class="fas fa-home"></i>Home</a>
-            <a href="/search.html" class="nav-item"><i class="fas fa-search"></i>Cari</a>
-            <a href="/ongoing.html" class="nav-item"><i class="fas fa-clapperboard"></i>Tayang</a>
-            <a href="/favorites.html" class="nav-item"><i class="fas fa-heart"></i>Favorit</a>
+        <nav class="nav-dock" aria-label="Navigasi bawah">
+            <a href="/" class="nav-item active"><i class="fas fa-home"></i>Beranda</a>
+            <a href="/search.html" class="nav-item"><i class="fas fa-compass"></i>Eksplor</a>
+            <a href="/favorites.html" class="nav-item"><i class="fas fa-list"></i>Daftar</a>
+            <a href="/history.html" class="nav-item"><i class="fas fa-clock"></i>Riwayat</a>
         </nav>
     </div>
 
-    <!-- Fullscreen Player Overlay -->
     <div id="playerOverlay">
         <div class="video-container">
             <button class="close-player"><i class="fas fa-times"></i></button>
             <video id="videoPlayer" controls playsinline webkit-playsinline style="width:100%;height:100%;"></video>
-                <iframe
-                    id="videoIframe"
-                    style="width:100%;height:100%;display:none;"
-                    frameborder="0"
-                    allow="autoplay; encrypted-media"
-                    referrerpolicy="no-referrer">
-                </iframe>
+            <iframe
+                id="videoIframe"
+                style="width:100%;height:100%;display:none;"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                referrerpolicy="no-referrer">
+            </iframe>
         </div>
         <div class="player-info">
             <h1 id="overlayTitle">Solo Leveling</h1>
@@ -85,6 +103,7 @@
         </div>
     </div>
 
+    <script src="/js/layout-shell.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/storage.js"></script>
     <script src="/js/ui.js"></script>
