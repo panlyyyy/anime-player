@@ -3522,3 +3522,45 @@
 2026-03-21 17:16:30,448 - INFO - Scraping detail: https://coba.oploverz.ltd/series/area-no-kishi
 2026-03-21 17:17:03,328 - INFO - [2/527] https://coba.oploverz.ltd/series/jojos-bizarre-adventure-1
 2026-03-21 17:17:03,328 - INFO - Scraping detail: https://coba.oploverz.ltd/series/jojos-bizarre-adventure-1
+2026-03-21 17:17:26,645 - INFO - [3/527] https://coba.oploverz.ltd/series/ao-no-exorcist-s3-shimane-illuminati-hen
+2026-03-21 17:17:26,646 - INFO - Scraping detail: https://coba.oploverz.ltd/series/ao-no-exorcist-s3-shimane-illuminati-hen
+2026-03-21 17:17:39,565 - INFO - [4/527] https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s4
+2026-03-21 17:17:39,569 - INFO - Scraping detail: https://coba.oploverz.ltd/series/the-daily-life-of-the-immortal-king-s4
+2026-03-21 17:17:50,901 - INFO - [5/527] https://coba.oploverz.ltd/series/aoashi
+2026-03-21 17:17:50,910 - INFO - Scraping detail: https://coba.oploverz.ltd/series/aoashi
+2026-03-21 17:18:14,315 - INFO - [6/527] https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-season-2
+2026-03-21 17:18:14,316 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mahouka-koukou-no-rettousei-season-2
+2026-03-21 17:18:29,081 - INFO - [7/527] https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-2
+2026-03-21 17:18:29,081 - INFO - Scraping detail: https://coba.oploverz.ltd/series/saiki-kusuo-no-ps-nan-2
+2026-03-21 17:18:50,350 - INFO - [8/527] https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-3
+2026-03-21 17:18:50,351 - INFO - Scraping detail: https://coba.oploverz.ltd/series/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-season-3
+2026-03-21 17:19:05,978 - INFO - [9/527] https://coba.oploverz.ltd/series/rurouni-kenshin-meiji-kenkaku-romantan-2023
+2026-03-21 17:19:05,979 - INFO - Scraping detail: https://coba.oploverz.ltd/series/rurouni-kenshin-meiji-kenkaku-romantan-2023
+2026-03-21 17:19:28,583 - INFO - [10/527] https://coba.oploverz.ltd/series/akatsuki-no-yona
+2026-03-21 17:19:28,583 - INFO - Scraping detail: https://coba.oploverz.ltd/series/akatsuki-no-yona
+2026-03-21 17:19:49,460 - INFO - [11/527] https://coba.oploverz.ltd/series/bungou-stray-dogs-season-4
+2026-03-21 17:19:49,462 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bungou-stray-dogs-season-4
+2026-03-21 17:20:03,652 - INFO - [12/527] https://coba.oploverz.ltd/series/koutetsujou-no-kabaneri
+2026-03-21 17:20:03,654 - INFO - Scraping detail: https://coba.oploverz.ltd/series/koutetsujou-no-kabaneri
+2026-03-21 17:20:15,137 - INFO - [13/527] https://coba.oploverz.ltd/series/oregairu
+2026-03-21 17:20:15,137 - INFO - Scraping detail: https://coba.oploverz.ltd/series/oregairu
+2026-03-21 17:20:28,129 - INFO - [14/527] https://coba.oploverz.ltd/series/goblin-slayer-s2
+2026-03-21 17:20:28,130 - INFO - Scraping detail: https://coba.oploverz.ltd/series/goblin-slayer-s2
+2026-03-21 17:20:40,466 - INFO - [15/527] https://coba.oploverz.ltd/series/katekyou-hitman-reborn
+2026-03-21 17:20:40,470 - INFO - Scraping detail: https://coba.oploverz.ltd/series/katekyou-hitman-reborn
+2026-03-21 17:23:26,318 - INFO - [16/527] https://coba.oploverz.ltd/series/bubuki-buranki
+2026-03-21 17:23:26,337 - INFO - Scraping detail: https://coba.oploverz.ltd/series/bubuki-buranki
+2026-03-21 17:26:36,937 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-21 17:26:37,003 - INFO - Backup dibuat
+2026-03-21 17:26:37,003 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-21 17:26:41,610 - INFO - Ditemukan 527 anime unik
+2026-03-21 17:26:41,612 - INFO - Total anime di website: 527
+2026-03-21 17:26:41,613 - INFO - [1/527] https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-3-ultra-romantic
+2026-03-21 17:26:41,613 - INFO - Scraping detail: https://coba.oploverz.ltd/series/kaguya-sama-love-is-war-3-ultra-romantic
+2026-03-21 17:26:56,167 - INFO - === MULAI SCRAPING mode: full ===
+2026-03-21 17:26:56,189 - INFO - Backup dibuat
+2026-03-21 17:26:56,190 - INFO - Mengambil daftar anime dari https://coba.oploverz.ltd/series
+2026-03-21 17:27:00,701 - INFO - Ditemukan 527 anime unik
+2026-03-21 17:27:00,703 - INFO - Total anime di website: 527
+2026-03-21 17:27:00,704 - INFO - [1/527] https://coba.oploverz.ltd/series/mobile-suit-gundam-iron-blooded-orphans
+2026-03-21 17:27:00,705 - INFO - Scraping detail: https://coba.oploverz.ltd/series/mobile-suit-gundam-iron-blooded-orphans
