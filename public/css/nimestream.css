@@ -1094,6 +1094,72 @@ body.ns-theme .ns-filter-chips {
 }
 
 /* ============================================================ */
+/* === MOBILE ORIENTATION FIX === */
+/* ============================================================ */
+
+/* Prevent page rotation when device is rotated - only allow video fullscreen rotation */
+@media screen and (max-width: 767px) {
+    /* Lock portrait orientation for the page */
+    html, body {
+        transform-origin: top left;
+        transform: rotate(0deg);
+        transition: none !important;
+    }
+    
+    /* Allow rotation only when video is in fullscreen */
+    html:fullscreen, body:fullscreen,
+    html:-webkit-full-screen, body:-webkit-full-screen,
+    html:-moz-full-screen, body:-moz-full-screen,
+    html:-ms-fullscreen, body:-ms-fullscreen {
+        transform: none !important;
+        orientation: inherit !important;
+    }
+    
+    /* Video player specific rotation handling */
+    video:fullscreen,
+    video:-webkit-full-screen,
+    video:-moz-full-screen,
+    video:-ms-fullscreen {
+        transform: none !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain !important;
+    }
+    
+    /* Prevent unwanted rotation on mobile devices */
+    @media screen and (orientation: landscape) and (max-width: 767px) {
+        html:not(:fullscreen):not(:-webkit-full-screen):not(:-moz-full-screen):not(:-ms-fullscreen):not(.video-fullscreen),
+        body:not(:fullscreen):not(:-webkit-full-screen):not(:-moz-full-screen):not(:-ms-fullscreen):not(.video-fullscreen) {
+            transform: rotate(90deg) !important;
+            transform-origin: center center !important;
+            width: 100vh !important;
+            height: 100vw !important;
+            overflow: hidden !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+    }
+    
+    /* Allow proper rotation when video is fullscreen */
+    body.video-fullscreen {
+        transform: none !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+    }
+    
+    body.video-fullscreen html {
+        transform: none !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+}
+
+/* ============================================================ */
 /* === MOBILE CRITICAL FIXES - OVERRIDE EVERYTHING === */
 /* ============================================================ */
 

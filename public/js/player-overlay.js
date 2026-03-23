@@ -7,6 +7,29 @@ let videoElement = null;
 let iframeElement = null;
 let settings = { speed: 1.0 };
 
+// Add fullscreen change event listener
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+function handleFullscreenChange() {
+    const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || document.msFullscreenElement);
+    
+    // Add/remove class to body for CSS targeting
+    document.body.classList.toggle('video-fullscreen', isFullscreen);
+    
+    // Handle orientation lock only for video fullscreen
+    if (isFullscreen) {
+        tryLockLandscape();
+    } else {
+        tryUnlockOrientation();
+    }
+    
+    applyFullscreenMode(isFullscreen);
+}
+
 function applyFullscreenMode(isActive) {
     const overlay = document.getElementById('playerOverlay');
     if (!overlay) return;

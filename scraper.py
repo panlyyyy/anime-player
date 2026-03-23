@@ -1,5 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Nimegami Anime Scraper - Complete Version
+Scrapes anime list, details, episodes, and trailers from nimegami.id
+"""
+
 import requests
 from bs4 import BeautifulSoup
+import base64
 import json
 import re
 import time
@@ -9,691 +17,900 @@ import shutil
 import argparse
 import logging
 from datetime import datetime
-from urllib.parse import urljoin
-from typing import Optional
+from urllib.parse import urljoin, urlparse, parse_qs
+from typing import Optional, Dict, List, Any
+import hashlib
 
-BASE_URL = "https://coba.oploverz.ltd"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+# ============ KONFIGURASI ============
+BASE_URL = "https://nimegami.id"
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9,id;q=0.8",
+    "Connection": "keep-alive",
+}
 
-os.makedirs("logs", exist_ok=True)
+# Konstanta file & logging
+LOG_DIR = "logs"
+DATA_DIR = "public/data"
+COUNT_FILE = os.path.join(LOG_DIR, "last_total_nimegami.txt")
+DB_PATH = os.path.join(DATA_DIR, "anime_master_nimegami.json")
+EXPECTED_MIN_ANIME = 500
+EXPECTED_MIN_WITH_EPISODES_RATIO = 0.5
+
+# Ekstensi file
+IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.svg'}
+VIDEO_EXTENSIONS = {'.mp4', '.m3u8', '.mkv', '.webm', '.avi', '.mov', '.flv'}
+STREAM_HINTS = {'4meplayer', 'video.g', 'player.', 'embed.', 'stream.', 'vidcdn', 'gdrive', 'youtube', 'drive.google', 'berkasdrive', 'mitedrive', 'krakenfiles', 'racaty'}
+DOWNLOAD_PAGE_HOSTS = {'mediafire.com', 'zippyshare.com', 'solidfiles.com', 'mega.nz', 'drive.google.com'}
+
+# Setup logging
+os.makedirs(LOG_DIR, exist_ok=True)
+os.makedirs(DATA_DIR, exist_ok=True)
 logging.basicConfig(
-    filename="logs/scraper.log",
+    filename=os.path.join(LOG_DIR, "nimegami_scraper.log"),
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    encoding="utf-8"
+    encoding="utf-8",
+    filemode='a'
 )
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
+console.setFormatter(logging.Formatter("%(levelname)s - %(message)s"))
 logging.getLogger().addHandler(console)
+logger = logging.getLogger(__name__)
 
-COUNT_FILE = "logs/last_total.txt"
-EXPECTED_MIN = 500
 
-def clean(text):
-    return ' '.join(text.strip().split()) if text else ''
+# ============ FUNGSI UTILITAS ============
 
-def get_soup(url, retries=3):
-    for i in range(retries):
+def clean(text: Optional[str]) -> str:
+    """Bersihkan teks dari whitespace berlebih."""
+    if not text:
+        return ""
+    return ' '.join(text.strip().split())
+
+def get_soup(url: str, retries: int = 3, timeout: int = 20) -> Optional[BeautifulSoup]:
+    """Mengambil dan parse HTML dari URL dengan retry mechanism."""
+    for attempt in range(retries):
         try:
-            res = requests.get(url, headers=HEADERS, timeout=15)
+            logger.debug(f"Request ke {url} (attempt {attempt + 1}/{retries})")
+            res = requests.get(url, headers=HEADERS, timeout=timeout, allow_redirects=True)
+            res.raise_for_status()
             res.encoding = 'utf-8'
             return BeautifulSoup(res.text, 'html.parser')
+        except requests.exceptions.Timeout:
+            logger.warning(f"Timeout ({attempt + 1}/{retries}): {url}")
+        except requests.exceptions.ConnectionError:
+            logger.warning(f"Connection error ({attempt + 1}/{retries}): {url}")
+        except requests.exceptions.HTTPError as e:
+            logger.warning(f"HTTP error {e.response.status_code} ({attempt + 1}/{retries}): {url}")
         except Exception as e:
-            logging.warning(f"Request gagal ({i+1}/{retries}): {e}")
-            if i < retries - 1:
-                time.sleep(2 ** i)
+            logger.warning(f"Error umum ({attempt + 1}/{retries}): {e}")
+        
+        if attempt < retries - 1:
+            wait_time = 2 ** attempt + random.uniform(0, 1)
+            logger.info(f"Menunggu {wait_time:.1f} detik sebelum retry...")
+            time.sleep(wait_time)
+    
+    logger.error(f"Gagal mengambil {url} setelah {retries} percobaan")
     return None
 
-IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
-VIDEO_EXTENSIONS = {'.mp4', '.m3u8', '.mkv', '.webm'}
-STREAM_HINTS = {'4meplayer', 'video.g', 'oplo2.4meplayer.pro', 'blogger.com', 'drive.google', 'player.', 'embed.', 'stream.', 'vidcdn', 'gdrive'}
-# Host yang hanya memberi halaman download, bukan stream — jangan masukkan ke videos
-DOWNLOAD_PAGE_HOSTS = {'mediafire.com', 'zippyshare.com', 'solidfiles.com', 'mega.nz', 'drive.google.com', 'google drive'}
-
 def looks_like_image_url(url: str) -> bool:
+    """Cek apakah URL kemungkinan adalah gambar."""
     if not url:
         return False
-    lower = url.lower().split('?')[0]
+    lower = url.lower().split('?')[0].split('#')[0]
     return any(lower.endswith(ext) for ext in IMAGE_EXTENSIONS)
 
 def looks_like_direct_video_url(url: str) -> bool:
+    """Cek apakah URL kemungkinan adalah video langsung."""
     if not url:
         return False
-    lower = url.lower().split('?')[0]
-    return any(lower.endswith(ext) for ext in VIDEO_EXTENSIONS) or bool(
-        re.search(r'\.(mp4|m3u8)(\b|$)', lower, re.IGNORECASE)
-    )
+    lower = url.lower().split('?')[0].split('#')[0]
+    if any(lower.endswith(ext) for ext in VIDEO_EXTENSIONS):
+        return True
+    if re.search(r'\.(mp4|m3u8)(\b|$)', lower, re.IGNORECASE):
+        return True
+    return False
 
 def is_download_page_url(url: str) -> bool:
-    """URL ke host yang hanya menampilkan halaman download, bukan stream langsung."""
+    """Cek apakah URL adalah halaman download (bukan video langsung)."""
     if not url:
         return False
     lower = url.lower()
-    return any(h in lower for h in DOWNLOAD_PAGE_HOSTS)
+    return any(host in lower for host in DOWNLOAD_PAGE_HOSTS)
 
-def validate_video_url(url: str) -> bool:
+def extract_youtube_video_id(url: str) -> Optional[str]:
+    """Ekstrak video ID YouTube dari berbagai format URL."""
+    if not url or 'youtube' not in url.lower():
+        return None
+    
+    # Format: youtube.com/embed/VIDEO_ID
+    match = re.search(r'youtube\.com/embed/([a-zA-Z0-9_-]{11})', url)
+    if match:
+        return match.group(1)
+    
+    # Format: youtube.com/watch?v=VIDEO_ID
+    match = re.search(r'[?&]v=([a-zA-Z0-9_-]{11})', url)
+    if match:
+        return match.group(1)
+    
+    # Format: youtu.be/VIDEO_ID
+    match = re.search(r'youtu\.be/([a-zA-Z0-9_-]{11})', url)
+    if match:
+        return match.group(1)
+    
+    return None
+
+def validate_video_url(url: str, skip_head_request: bool = True) -> bool:
     """
-    Validasi sederhana untuk menghindari videoElement.src diisi HTML/image.
-    Mengandalkan HEAD + content-type 'video/*' kalau tidak jelas dari ekstensi.
+    Validasi URL video dengan pendekatan lebih fleksibel.
+    
+    Args:
+        url: URL yang akan divalidasi
+        skip_head_request: Jika True, skip HEAD request (lebih cepat, lebih toleran)
+    
+    Returns:
+        True jika URL dianggap valid untuk streaming
     """
-    if not url or looks_like_image_url(url):
+    if not url:
         return False
-
+    
     lower = url.lower()
-    if any(h in lower for h in STREAM_HINTS):
-        # ini biasanya link ke player/stream page, bukan file video langsung
+    
+    # Tolak jika terlihat seperti gambar
+    if looks_like_image_url(url):
         return False
-
-    # MediaFire dll: halaman download, bukan stream — tolak sebagai direct video
-    if is_download_page_url(url):
-        return False
-
-    # Jika sudah jelas .mp4/.m3u8, terima cepat tanpa HEAD.
-    if looks_like_direct_video_url(url):
+    
+    # Terima jika mengandung hint streaming yang valid
+    trusted_hosts = {'berkasdrive.com', 'mitedrive.com', 'krakenfiles.com', 
+                     'racaty.com', 'files.im', 'gdrive', 'youtube.com', 'youtu.be'}
+    if any(host in lower for host in trusted_hosts):
+        logger.debug(f"✓ Trusted host: {url[:80]}...")
         return True
-
+    
+    if any(hint in lower for hint in STREAM_HINTS):
+        logger.debug(f"✓ Stream hint detected: {url[:80]}...")
+        return True
+    
+    # Terima jika ekstensi video langsung
+    if looks_like_direct_video_url(url):
+        logger.debug(f"✓ Direct video extension: {url[:80]}...")
+        return True
+    
+    # Jika skip_head_request, anggap valid untuk URL yang tidak jelas
+    if skip_head_request:
+        logger.debug(f"✓ Fallback accept (skip_head_request=True): {url[:80]}...")
+        return True
+    
+    # Fallback: HEAD request untuk cek content-type
     try:
         res = requests.head(url, headers=HEADERS, timeout=10, allow_redirects=True)
         ctype = (res.headers.get('content-type') or '').lower()
-        return 'video/' in ctype
-    except Exception:
-        return False
+        # Terima video/* atau application/octet-stream (common untuk download)
+        is_valid = 'video/' in ctype or 'application/octet-stream' in ctype
+        logger.debug(f"HEAD request: {url[:60]}... | Content-Type: {ctype} | Valid: {is_valid}")
+        return is_valid
+    except Exception as e:
+        # Jika error, lebih aman menerima daripada menolak (false negative)
+        logger.debug(f"HEAD request failed for {url[:60]}...: {e} → accepting as fallback")
+        return True
 
 def guess_quality(text_or_url: str) -> Optional[str]:
+    """Tebak kualitas/resolusi dari teks atau URL."""
     if not text_or_url:
         return None
     t = text_or_url.lower()
-    if '2160' in t or '4k' in t:
-        return '4k'
-    if 'uhd' in t:
-        return '4k'
-    if 'fhd' in t:
-        return '1080p'
-    if '1080' in t:
-        return '1080p'
-    if '720' in t:
-        return '720p'
-    if '480' in t:
-        return '480p'
-    if '360' in t:
-        return '360p'
-    if '240' in t:
-        return '240p'
-    # Sering muncul di streamUrl script sebagai "sd"/"hd" tanpa angka.
-    # Map konservatif agar player punya pilihan kualitas minimal.
-    if re.search(r'(?:^|\\W)sd(?:\\W|$)', t):
-        return '360p'
-    if re.search(r'(?:^|\\W)hd(?:\\W|$)', t):
-        return '720p'
+    
+    # Prioritas dari tertinggi ke terendah
+    quality_map = [
+        (r'(?:^|\W)2160p(?:\W|$)|\b4k\b|\buhd\b', '4k'),
+        (r'\bfhd\b', '1080p'),
+        (r'(?:^|\W)1080p(?:\W|$)', '1080p'),
+        (r'(?:^|\W)720p(?:\W|$)|\bhd\b', '720p'),
+        (r'(?:^|\W)480p(?:\W|$)', '480p'),
+        (r'(?:^|\W)360p(?:\W|$)|\bsd\b', '360p'),
+        (r'(?:^|\W)240p(?:\W|$)', '240p'),
+    ]
+    
+    for pattern, quality in quality_map:
+        if re.search(pattern, t):
+            return quality
     return None
 
-def best_default_quality(videos: dict, streams: dict) -> Optional[str]:
-    priority = ['1080p', '720p', '480p', '360p', '240p', '4k']
-    for q in priority:
-        if videos.get(q):
-            return q
-    for q in priority:
-        if streams.get(q):
-            return q
-    return None
-
-def extract_episode_sources(episode_url):
+def extract_trailer(soup: BeautifulSoup) -> Optional[Dict[str, str]]:
     """
-    Fungsi ini akan dipanggil oleh API.
-
-    Return:
-      {
-        "videos": { "480p": <mp4/m3u8 url>, ... },
-        "streams": { "480p": <player/stream url>, ... },
-        "default": "480p"
-      }
+    Ekstrak trailer dari elemen <div class="trailer" id="Trailer">.
+    
+    Returns:
+        Dict dengan keys: 'url', 'embed_url', 'video_id', 'platform'
+        atau None jika tidak ditemukan
     """
-    videos = {}
-    streams = {}
-    soup = get_soup(episode_url)
-    # Fallback: coba anime.oploverz.ac jika coba.oploverz.ltd gagal
-    if not soup and 'coba.oploverz.ltd' in episode_url:
-        alt_url = episode_url.replace('coba.oploverz.ltd', 'anime.oploverz.ac')
-        soup = get_soup(alt_url)
-    if not soup:
+    trailer_div = soup.find('div', class_='trailer', id='Trailer')
+    if not trailer_div:
         return None
-
-    for a in soup.select('a[href]'):
-        href = (a.get('href') or '').strip()
-        if not href or href.startswith('javascript:'):
-            continue
-
-        href = urljoin(episode_url, href)
-        if looks_like_image_url(href):
-            continue
-
-        text = a.get_text(' ', strip=True)
-        quality = guess_quality(f'{text} {href}')
-        lower_href = href.lower()
-
-        # Stream/player (tidak bisa langsung di-load oleh <video>)
-        if any(hint in lower_href for hint in STREAM_HINTS) or 'video.g' in lower_href:
-            if not quality and not streams:
-                quality = '360p'  # fallback minimal
-            if quality:
-                streams[quality] = href
-            continue
-
-        # Direct video
-        is_m3u8_or_mp4 = 'm3u8' in lower_href or 'mp4' in lower_href
-        is_container_video = any(ext in lower_href for ext in ['.mkv', '.webm'])
-        if not (is_m3u8_or_mp4 or is_container_video):
-            continue
-
-        if not quality:
-            # Kalau label resolusi tidak ada, ambil sebagai fallback minimal
-            if not videos:
-                quality = '360p'
-            else:
-                # mencegah kita asal ambil tanpa mengetahui resolusi
-                continue
-
-        if validate_video_url(href):
-            videos[quality] = href
-
-    # Halaman episode ini SvelteKit: tombol "Nonton Online 360p/480p/..." kadang tidak
-    # berupa `<a href>`, tapi tersimpan di payload `streamUrl` pada script.
-    # Kalau extractor berbasis `<a>` gagal, coba ambil dari script hydrated data.
-    if (not streams) or len(streams) < 4:
-        try:
-            html_str = str(soup)
-
-            # Ambil pair: { source: "...360p...", url: "https://..." }
-            pair_re = re.compile(
-                r'(?:"source"|source)\s*:\s*"([^"]+)"\s*,\s*(?:"url"|url)\s*:\s*"([^"]+)"',
-                flags=re.IGNORECASE
-            )
-
-            # Penting: jangan parse semua script sekaligus, karena bisa mencampur stream
-            # antar-episode dan ujungnya kualitas yang sama akan "tertimpa" dengan token
-            # episode lain (akibatnya semua eps bisa memutar media yang sama).
-            # Jadi kita ambil hanya 1 segmen `streamUrl:[ ... ]` terdekat di halaman.
-            segment = None
-            patterns = [
-                # Contoh umum dari halaman:
-                # streamUrl:[{source:"Nonton Online 720p",url:"https://..."}],content:null,...
-                r'streamUrl\s*:\s*\[\s*(?P<inside>[\s\S]*?)\s*\]\s*,\s*content',
-                # Variasi lain (kadang ada releasedAt sebelum content)
-                r'streamUrl\s*:\s*\[\s*(?P<inside>[\s\S]*?)\s*\]\s*,\s*releasedAt',
-            ]
-            for pat in patterns:
-                m = re.search(pat, html_str, flags=re.IGNORECASE)
-                if m:
-                    segment = m.group('inside')
-                    break
-
-            if not segment:
-                # Fallback: parse dari kumpulan script yang mengandung streamUrl,
-                # tapi hanya ambil segmen setelah kemunculan pertama "streamUrl:".
-                first = html_str.lower().find('streamurl')
-                if first != -1:
-                    segment = html_str[first:first + 500000]  # batas aman
-                else:
-                    segment = html_str
-
-            for m in pair_re.finditer(segment):
-                source = (m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
-                url = (m.group(2) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
-                if not url:
-                    continue
-                # Banyak episode pakai source seperti "google-v2", "viu" tanpa resolusi — tetap simpan
-                q = guess_quality(source) or guess_quality(url) or '360p'
-
-                # Pastikan absolute URL; abaikan token/ID mentah (mis. "3561110768215")
-                if url.startswith('/'):
-                    url = urljoin(episode_url, url)
-                if not url.startswith('http://') and not url.startswith('https://'):
-                    continue
-
-                lower_url = url.lower()
-
-                # streamUrl pada halaman bisa berupa:
-                # - embed/player URL (iframe)
-                # - link video langsung (mp4/m3u8)
-                # Jangan buang URL embed hanya karena host tidak ada di STREAM_HINTS.
-                if looks_like_direct_video_url(url):
-                    if validate_video_url(url):
-                        videos[q] = url
-                else:
-                    streams[q] = url
-
-            # Fallback: beberapa halaman `streamUrl` tidak selalu punya field `source`.
-            # Kalau hasil streams masih kosong, coba ekstrak object { ... } dan ambil `url` apa adanya.
-            if not streams and segment:
-                try:
-                    objects = re.findall(r'\{[^{}]*\}', segment)
-                    for obj in objects:
-                        u_m = re.search(r'url\s*:\s*"([^"]+)"', obj, flags=re.IGNORECASE)
-                        if not u_m:
-                            continue
-                        u = (u_m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip()
-                        if not u:
-                            continue
-
-                        s_m = re.search(r'source\s*:\s*"([^"]+)"', obj, flags=re.IGNORECASE)
-                        src = (s_m.group(1) or '').replace('&amp;', '&').replace('\\u0026', '&').strip() if s_m else ''
-
-                        q = guess_quality(src) or guess_quality(u) or '360p'
-
-                        if u.startswith('/'):
-                            u = urljoin(episode_url, u)
-                        if not u.startswith('http://') and not u.startswith('https://'):
-                            continue
-
-                        if looks_like_direct_video_url(u):
-                            if validate_video_url(u):
-                                videos[q] = u
-                        else:
-                            streams[q] = u
-                except Exception as e:
-                    logging.warning(f"Fallback parse streamUrl failed: {e}")
-        except Exception as e:
-            logging.warning(f"Gagal ekstrak streamUrl dari script: {e}")
-
-    default_q = best_default_quality(videos, streams)
-    if not default_q:
+    
+    iframe = trailer_div.find('iframe')
+    if not iframe or not iframe.get('src'):
         return None
-
+    
+    src = iframe['src'].strip()
+    
+    # Deteksi platform
+    platform = 'unknown'
+    video_id = None
+    
+    if 'youtube' in src.lower() or 'youtu.be' in src.lower():
+        platform = 'youtube'
+        video_id = extract_youtube_video_id(src)
+    elif 'vimeo' in src.lower():
+        platform = 'vimeo'
+        match = re.search(r'vimeo\.com/(?:video/)?(\d+)', src)
+        video_id = match.group(1) if match else None
+    elif 'dailymotion' in src.lower():
+        platform = 'dailymotion'
+        match = re.search(r'dailymotion\.com/(?:embed/)?video/([a-zA-Z0-9]+)', src)
+        video_id = match.group(1) if match else None
+    
     return {
-        'videos': videos,
-        'streams': streams,
-        'default': default_q,
+        'url': src,
+        'embed_url': src,  # Sudah embed URL dari iframe
+        'video_id': video_id,
+        'platform': platform,
+        'watch_url': f"https://www.youtube.com/watch?v={video_id}" if platform == 'youtube' and video_id else None
     }
 
-def extract_episodes(soup, page_url=None):
-    """page_url: URL halaman series untuk urljoin saat href relatif."""
-    base = (page_url or '').rstrip('/') or BASE_URL
-    episodes = []
-    containers = soup.select('.episodelist ul li, .list-episode li, .eplister li')
-    if not containers:
-        # jangan ambil semua link random, filter yang memang mengarah ke /episode/
-        containers = soup.select('a[href*="/episode/"]')
+def extract_episode_sources(episode_data: str) -> Dict[str, Any]:
+    """
+    Parse base64 JSON dari atribut data pada <li class="select-eps">.
     
-    seen = set()
-    for elem in containers:
-        if elem.name == 'a':
-            link = elem
-        else:
-            link = elem.find('a')
-            if not link:
+    Returns:
+        Dict dengan keys:
+        - 'videos': dict {resolusi: url}
+        - 'default': resolusi default terpilih
+        - 'raw': data mentah untuk debugging
+    """
+    result = {'videos': {}, 'default': None, 'raw': None}
+    
+    if not episode_data:
+        return result
+    
+    try:
+        # Decode base64
+        decoded = base64.b64decode(episode_data).decode('utf-8')
+        sources = json.loads(decoded)
+        result['raw'] = sources
+        
+        if not isinstance(sources, list):
+            logger.warning(f"Unexpected JSON structure: {type(sources)}")
+            return result
+        
+        for src in sources:
+            if not isinstance(src, dict):
                 continue
-        href = link.get('href', '')
-        if '/episode/' not in href:
-            continue
+                
+            res = src.get('format', '').lower().strip()  # "360p", "480p", dll
+            urls = src.get('url', [])
+            
+            if not urls or not isinstance(urls, list) or not urls[0]:
+                continue
+            
+            url = urls[0].strip()
+                        
+            # Validasi URL
+            if validate_video_url(url):
+                # Normalisasi resolusi key
+                if res and res not in result['videos']:
+                    result['videos'][res] = url
+                    logger.debug(f"✓ Added {res}: {url[:70]}...")
+                elif not res:
+                    # Jika tidak ada format, coba tebak dari URL
+                    guessed = guess_quality(url)
+                    if guessed and guessed not in result['videos']:
+                        result['videos'][guessed] = url
+                        logger.debug(f"✓ Added {guessed} (guessed): {url[:70]}...")
+            else:
+                logger.debug(f"✗ Rejected URL: {url[:70]}...")
+                
+    except base64.binascii.Error as e:
+        logger.warning(f"Base64 decode error: {e} | Data: {episode_data[:100]}...")
+    except json.JSONDecodeError as e:
+        logger.warning(f"JSON parse error: {e} | Decoded: {episode_data[:100] if len(episode_data) < 200 else '...'}")
+    except Exception as e:
+        logger.warning(f"Unexpected error parsing episode sources: {e}")
+    
+    # Tentukan default resolution dengan prioritas
+    if result['videos']:
+        priority = ['1080p', '720p', '480p', '360p', '240p', '4k', 'fhd', 'hd', 'sd']
+        for q in priority:
+            if q in result['videos']:
+                result['default'] = q
+                break
+        # Fallback: ambil key pertama
+        if not result['default']:
+            result['default'] = next(iter(result['videos']))
+    
+    return result
 
-        text = clean(link.get_text())
-        num = None
-        match = re.search(r'(?:episode|eps)\s*[:\-]?\s*(\d+)', text, flags=re.IGNORECASE)
-        if match:
-            num = int(match.group(1))
-        else:
-            match2 = re.search(r'/episode/(\d+)', href)
-            if match2:
-                num = int(match2.group(1))
-        if num is None:
-            continue
-        if num in seen:
-            continue
-        seen.add(num)
-        if not href.startswith('http'):
-            href = urljoin(base + '/', href)
+def extract_episodes(soup: BeautifulSoup, page_url: str) -> List[Dict[str, Any]]:
+    """
+    Ambil daftar episode dari halaman detail anime.
+    
+    Returns:
+        List of episode dicts dengan keys: number, sources, default, trailer_hint
+    """
+    episodes = []
+    eps_container = soup.find('div', class_='list_eps_stream')
+    
+    if not eps_container:
+        logger.warning(f"Tidak menemukan container episode (.list_eps_stream) di {page_url}")
+        return episodes
 
-        # Jangan ambil sumber video di sini, biarkan API yang mengambil
+    for li in eps_container.find_all('li', class_='select-eps'):
+        eps_data = li.get('data', '').strip()
+        if not eps_data:
+            continue
+        
+        # Ekstrak nomor episode dari teks
+        text = li.get_text(strip=True)
+        match = re.search(r'Episode\s*(\d+)', text, re.IGNORECASE)
+        if not match:
+            # Fallback: cari angka apa saja
+            match = re.search(r'(\d+)', text)
+        
+        if not match:
+            logger.debug(f"Could not extract episode number from: '{text}'")
+            continue
+        
+        number = int(match.group(1))
+        
+        # Parse sources
+        sources_result = extract_episode_sources(eps_data)
+        
+        if not sources_result['videos']:
+            logger.debug(f"Episode {number}: No valid video sources found")
+            continue
+        
         episodes.append({
-            "number": num,
-            "url": href,
-            "sources": {},          # akan diisi oleh API
-            "default": '360p'        # sementara
+            "number": number,
+            "url": page_url,  # Nimegami: semua episode di halaman yang sama
+            "sources": sources_result['videos'],
+            "default": sources_result['default'],
+            "title": f"Episode {number}",
         })
-        time.sleep(random.uniform(0.5, 1))
+        
+        logger.debug(f"✓ Episode {number}: {len(sources_result['videos'])} qualities available")
 
+    # Sort by episode number
     episodes.sort(key=lambda x: x['number'])
-
-    # Gap-fill: hanya isi gap kecil (<=30 eps) untuk hindari episode palsu (mis. Gintama 1-316)
-    if len(episodes) >= 2:
-        nums = [e['number'] for e in episodes]
-        min_ep, max_ep = min(nums), max(nums)
-        expected = max_ep - min_ep + 1
-        gap_size = expected - len(episodes)
-        if expected > len(episodes) and expected <= 1200 and gap_size <= 30:
-            full_url = page_url or base
-            m = re.search(r'/series/([^/]+)', full_url)
-            series_slug = m.group(1) if m else full_url.rstrip('/').split('/')[-1]
-            base_ep_url = f"{BASE_URL}/series/{series_slug}/episode/"
-            existing = set(nums)
-            for n in range(min_ep, max_ep + 1):
-                if n not in existing:
-                    episodes.append({
-                        "number": n,
-                        "url": base_ep_url + str(n),
-                        "sources": {},
-                        "default": '360p',
-                    })
-            episodes.sort(key=lambda x: x['number'])
-
+    
+    if episodes:
+        logger.info(f"Found {len(episodes)} episodes (range: {episodes[0]['number']}-{episodes[-1]['number']})")
+    else:
+        logger.info("No episodes found with valid video sources")
+    
     return episodes
 
-def scrape_anime_detail(url):
-    logging.info(f"Scraping detail: {url}")
+def scrape_anime_detail(url: str) -> Optional[Dict[str, Any]]:
+    """
+    Scraping detail anime dari URL halaman detail.
+    
+    Returns:
+        Dict dengan semua informasi anime atau None jika gagal
+    """
+    logger.info(f"Scraping detail: {url}")
     soup = get_soup(url)
+    
     if not soup:
         return None
 
-    title_elem = soup.find('h1')
+    # ===== TITLE =====
+    title_elem = soup.find('h1', class_='title')
     title = clean(title_elem.text) if title_elem else url.split('/')[-1].replace('-', ' ').title()
-    title = title.split('|')[0].strip()
+    # Hapus suffix seperti " : Episode 1 - 12 (End)"
+    title = re.sub(r'\s*:?\s*Episode.*$', '', title, flags=re.IGNORECASE).strip()
+    title = re.sub(r'\s*\([^)]*Complete[^)]*\)$', '', title, flags=re.IGNORECASE).strip()
     
     slug = url.rstrip('/').split('/')[-1]
 
-    # Poster: prefer og:image dulu (lebih stabil), fallback ke elemen poster.
-    og_img = soup.select_one('meta[property="og:image"]')
+    # ===== IMAGE =====
     image = ''
-    if og_img and og_img.get('content'):
-        image = og_img.get('content', '').strip()
-    else:
-        img = soup.select_one('.anime-poster img, .poster img, .thumb img')
-        if not img:
-            img = soup.find('img')
-        image = img.get('src', '').strip() if img and img.get('src') else ''
-
-    if image and image.startswith('/'):
-        image = BASE_URL + image
-    # Validasi ringan: jangan ambil URL yang kelihatan seperti video.
-    if image and looks_like_direct_video_url(image):
-        image = ''
-
+    thumbnail_div = soup.find('div', class_='thumbnail')
+    if thumbnail_div:
+        img_tag = thumbnail_div.find('img')
+        if img_tag and img_tag.get('src'):
+            image = img_tag['src'].strip()
+            if image.startswith('/'):
+                image = urljoin(BASE_URL, image)
+            # Validasi: jangan simpan jika ternyata video
+            if looks_like_direct_video_url(image):
+                image = ''
+    
+    # ===== SYNOPSIS =====
     synopsis = ''
-    for p in soup.find_all('p'):
-        text = clean(p.text)
-        if len(text) > 100 and 'Tipe:' not in text and 'Status:' not in text and 'Genre:' not in text:
-            synopsis = text
-            break
+    sinopsis_div = soup.find('div', id='Sinopsis')
+    if sinopsis_div:
+        # Ambil semua paragraf dalam sinopsis
+        paragraphs = sinopsis_div.find_all('p')
+        if paragraphs:
+            synopsis = ' '.join(clean(p.get_text()) for p in paragraphs if p.get_text().strip())
+    
+    # ===== INFO TABLE =====
+    info = {
+        'studio': '', 'release_date': '', 'status': 'Unknown', 
+        'genre': [], 'type': '', 'score': '', 'duration': '',
+        'alternative_title': ''
+    }
+    
+    info_table = soup.find('div', class_='info2')
+    if info_table:
+        rows = info_table.find_all('tr')
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) < 2:
+                continue
+            
+            label = clean(cells[0].get_text()).rstrip(':').lower()
+            value = clean(cells[1].get_text())
+            
+            if 'studio' in label:
+                # Ambil nama studio pertama jika ada koma
+                info['studio'] = value.split(',')[0].strip()
+            elif any(kw in label for kw in ['musim', 'rilis', 'season', 'aired']):
+                info['release_date'] = value
+            elif 'rating' in label or 'score' in label:
+                # Ekstrak angka rating
+                match = re.search(r'(\d+\.?\d*)', value)
+                if match:
+                    info['score'] = match.group(1)
+            elif any(kw in label for kw in ['durasi', 'duration', 'episode']):
+                info['duration'] = value
+            elif any(kw in label for kw in ['kategori', 'genre', 'genres']):
+                # Parse genre yang dipisah koma
+                genres = [g.strip() for g in value.split(',') if g.strip()]
+                info['genre'] = genres
+            elif 'type' in label:
+                info['type'] = value
+            elif any(kw in label for kw in ['judul alternatif', 'alternative', 'japanese']):
+                info['alternative_title'] = value
 
-    # Japanese title (contoh: 進撃の巨人 Season2)
-    japanese_title = ''
-    jap = soup.select_one('.japanese-title, [class*="japanese"], .subtitle')
-    if jap:
-        japanese_title = clean(jap.get_text())
-    if not japanese_title:
-        for elem in soup.find_all(['span', 'p', 'div']):
-            t = elem.get_text(strip=True)
-            if t and re.search(r'[\u3040-\u30ff\u4e00-\u9fff]', t) and len(t) < 80:
-                japanese_title = clean(t)
-                break
-
-    full_text = soup.get_text(separator="\n")
-    info = {'studio': '', 'release_date': '', 'status': 'Unknown', 'genre': [],
-            'type': '', 'score': '', 'duration': ''}
-    for line in full_text.split('\n'):
-        line = line.strip()
-        if not line:
-            continue
-        if 'Studio:' in line:
-            info['studio'] = line.replace('Studio:', '').strip()
-        elif 'Tanggal Rilis:' in line:
-            info['release_date'] = line.replace('Tanggal Rilis:', '').strip()
-        elif 'Status:' in line:
-            status_raw = line.replace('Status:', '').strip()
-            if 'ongoing' in status_raw.lower() or 'on going' in status_raw.lower():
-                info['status'] = 'Ongoing'
-            elif 'completed' in status_raw.lower() or 'selesai' in status_raw.lower() or 'tamat' in status_raw.lower():
-                info['status'] = 'Completed'
-            else:
-                info['status'] = status_raw
-        elif 'Genre:' in line:
-            # Potong di "Skor:" atau "Durasi:" bila ada (format: Genre: A, B Skor: 8)
-            genre_text = re.sub(r'\s*(?:Skor|Durasi|Tipe|Studio|Status):.*', '', line.replace('Genre:', '').strip())
-            info['genre'] = [g.strip() for g in genre_text.split(',') if g.strip()]
-        elif 'Tipe:' in line:
-            info['type'] = line.replace('Tipe:', '').strip()
-        elif 'Skor:' in line:
-            m = re.search(r'(\d+\.?\d*)\s*/\s*10', line)
-            info['score'] = m.group(1) if m else line.replace('Skor:', '').strip()
-        elif 'Durasi:' in line or 'Duration:' in line.lower():
-            info['duration'] = line.replace('Durasi:', '').replace('Duration:', '').strip()
-
-    # Status parsing lebih robust
-    m = re.search(r'Status:\s*([^\n\r]+)', full_text, flags=re.IGNORECASE)
-    if m:
-        status_raw = clean(m.group(1))
-        status_l = status_raw.lower()
-        if 'ongoing' in status_l or 'on going' in status_l:
-            info['status'] = 'Ongoing'
-        elif 'completed' in status_l or 'selesai' in status_l or 'tamat' in status_l:
-            info['status'] = 'Completed'
-        else:
-            info['status'] = status_raw
-
-    # Fallback: parse dari elemen list (Oploverz pakai li dalam grid)
-    info_items = soup.select('li, .anime-info li, .info-list li, [class*="info"] li, .detail-info span')
-    for elem in info_items:
-        text = elem.get_text(strip=True)
-        if not text:
-            continue
-        if text.startswith('Tipe:'):
-            info['type'] = info['type'] or text.replace('Tipe:', '').strip()
-        elif text.startswith('Studio:'):
-            info['studio'] = info['studio'] or text.replace('Studio:', '').strip()
-        elif 'Tanggal Rilis:' in text or 'Tgl Rilis:' in text:
-            info['release_date'] = info['release_date'] or re.sub(r'(?:Tanggal Rilis|Tgl Rilis):\s*', '', text, flags=re.I).strip()
-        elif text.startswith('Status:'):
-            if not info['status'] or info['status'] == 'Unknown':
-                s = text.replace('Status:', '').strip().lower()
-                info['status'] = 'Ongoing' if 'ongoing' in s or 'on going' in s else ('Completed' if 'selesai' in s or 'completed' in s or 'tamat' in s else text.replace('Status:', '').strip())
-        elif 'Genre:' in text:
-            if not info['genre']:
-                genre_text = re.sub(r'\s*(?:Skor|Durasi|Tipe|Studio|Status):.*', '', text.replace('Genre:', '').strip())
-                info['genre'] = [g.strip() for g in genre_text.split(',') if g.strip()]
-        elif text.startswith('Skor:'):
-            if not info['score']:
-                sm = re.search(r'(\d+\.?\d*)\s*/\s*10', text)
-                info['score'] = sm.group(1) if sm else text.replace('Skor:', '').strip()
-        elif text.startswith('Durasi:') or text.startswith('Duration:'):
-            if not info['duration']:
-                info['duration'] = text.replace('Durasi:', '').replace('Duration:', '').strip()
-        elif re.match(r'^\d+\s*min\.', text) and not info['duration']:
-            info['duration'] = text
-
-    # Fallback genre dari SvelteKit JSON: genres:[{id:90,name:"Action",slug:"action"},...]
-    if not info['genre']:
-        html_str = str(soup)
-        gm = re.search(r'genres:\s*\[([^\]]*)\]', html_str, re.IGNORECASE)
-        if gm:
-            block = gm.group(1)
-            for nm in re.findall(r'name\s*:\s*"([^"]+)"', block, re.IGNORECASE):
-                name = nm.strip()
-                if name and len(name) < 50 and name not in info['genre']:
-                    if name not in ('Ongoing', 'Completed', 'TV', 'Movie', 'OVA', 'ONA', 'Special', 'Live Action'):
-                        info['genre'].append(name)
-            info['genre'] = info['genre'][:8]
-
+    # ===== TRAILER =====
+    trailer = extract_trailer(soup)
+    
+    # ===== EPISODES =====
     episodes = extract_episodes(soup, url)
 
-    if not episodes:
-        logging.warning(f"Anime {title} tidak memiliki episode, tetap disimpan")
-
+    # ===== BUILD RESULT =====
     return {
         "title": title,
         "slug": slug,
+        "url": url,
         "image": image,
         "synopsis": synopsis,
         "studio": info['studio'],
         "release_date": info['release_date'],
-        "status": info['status'],
+        "status": '',  # Akan diisi dari list page
         "genre": info['genre'],
-        "type": info.get('type', ''),
-        "score": info.get('score', ''),
-        "duration": info.get('duration', ''),
-        "japanese_title": japanese_title,
+        "type": info['type'],
+        "score": float(info['score']) if info['score'] else None,
+        "duration": info['duration'],
+        "alternative_title": info['alternative_title'],
+        "japanese_title": info['alternative_title'] or title,
         "title_lower": title.lower(),
+        "trailer": trailer,
         "episodes": episodes,
-        "last_updated": datetime.now().isoformat()
+        "episode_count": len(episodes),
+        "has_streaming": len(episodes) > 0,
+        "last_scraped": datetime.now().isoformat(),
+        "last_updated": datetime.now().isoformat(),
+        # Metadata untuk debugging
+        "_debug": {
+            "trailer_found": trailer is not None,
+            "episodes_found": len(episodes),
+        }
     }
 
-def get_all_anime_links():
-    """Ambil semua link anime dari halaman utama /series"""
-    url = f"{BASE_URL}/series"
-    logging.info(f"Mengambil daftar anime dari {url}")
-    soup = get_soup(url)
-    if not soup:
-        return []
+def get_all_anime_links() -> List[str]:
+    """
+    Ambil semua link anime dari halaman daftar streaming dengan pagination.
+    
+    Returns:
+        List of anime detail URLs
+    """
+    all_links = []
+    page_url = f"{BASE_URL}/anime-list-streaming/"
+    page_count = 0
+    
+    while page_url and page_count < 50:  # Safety limit
+        page_count += 1
+        logger.info(f"[Page {page_count}] Mengambil daftar dari {page_url}")
+        
+        soup = get_soup(page_url)
+        if not soup:
+            logger.error(f"Gagal mengambil halaman {page_url}")
+            break
+        
+        # Cari container daftar anime
+        animelist_div = soup.find('div', class_='animelist')
+        if animelist_div:
+            for li in animelist_div.find_all('li'):
+                a_tag = li.find('a')
+                if a_tag and a_tag.get('href'):
+                    href = urljoin(BASE_URL, a_tag['href'])
+                    # Normalisasi URL
+                    href = href.rstrip('/')
+                    if href not in all_links:
+                        all_links.append(href)
+        
+        # Cari link next page
+        next_link = soup.find('a', class_='next page-numbers')
+        if next_link and next_link.get('href'):
+            page_url = urljoin(BASE_URL, next_link['href']).rstrip('/')
+            # Hindari infinite loop
+            if page_url in [f"{BASE_URL}/anime-list-streaming/page/{i}/" for i in range(1, page_count + 1)]:
+                break
+        else:
+            page_url = None
+        
+        # Rate limiting
+        time.sleep(random.uniform(1, 2))
+    
+    # Hapus duplikat (preserve order)
+    seen = set()
+    unique_links = []
+    for link in all_links:
+        if link not in seen:
+            seen.add(link)
+            unique_links.append(link)
+    
+    logger.info(f"✓ Ditemukan {len(unique_links)} anime unik dari {page_count} halaman")
+    return unique_links
 
-    links = set()
-    for a in soup.find_all('a', href=True):
-        href = a['href']
-        if '/series/' in href and not '/episode/' in href:
-            if href.startswith('/'):
-                href = BASE_URL + href
-            links.add(href.rstrip('/'))
+def extract_status_from_list_page() -> Dict[str, str]:
+    """
+    Ekstrak status (Complete/Ongoing) dari halaman list.
+    
+    Returns:
+        Dict {url: status}
+    """
+    status_map = {}
+    page_url = f"{BASE_URL}/anime-list-streaming/"
+    page_count = 0
+    
+    while page_url and page_count < 50:
+        page_count += 1
+        soup = get_soup(page_url)
+        if not soup:
+            break
+        
+        animelist_div = soup.find('div', class_='animelist')
+        if animelist_div:
+            for li in animelist_div.find_all('li'):
+                a_tag = li.find('a')
+                if not a_tag or not a_tag.get('href'):
+                    continue
+                
+                href = urljoin(BASE_URL, a_tag['href']).rstrip('/')
+                title_text = a_tag.get_text(strip=True)
+                
+                # Ekstrak status dari teks "(Complete)" atau "(On-Going)"
+                match = re.search(r'\(([^)]+)\)', title_text)
+                if match:
+                    status_raw = match.group(1).strip().lower()
+                    if 'complete' in status_raw or 'finished' in status_raw:
+                        status = 'Completed'
+                    elif 'ongoing' in status_raw or 'on-going' in status_raw:
+                        status = 'Ongoing'
+                    elif 'upcoming' in status_raw:
+                        status = 'Upcoming'
+                    else:
+                        status = status_raw.title()
+                else:
+                    status = 'Unknown'
+                
+                status_map[href] = status
+        
+        # Next page
+        next_link = soup.find('a', class_='next page-numbers')
+        if next_link and next_link.get('href'):
+            page_url = urljoin(BASE_URL, next_link['href']).rstrip('/')
+        else:
+            page_url = None
+        
+        time.sleep(random.uniform(0.5, 1.5))
+    
+    logger.info(f"✓ Status map: {len(status_map)} entries")
+    return status_map
 
-    logging.info(f"Ditemukan {len(links)} anime unik")
-    return list(links)
-
-def load_existing_db():
-    path = 'public/data/anime_master.json'
-    if not os.path.exists(path):
+def load_existing_db() -> Dict[str, Dict]:
+    """Load database existing dari file JSON."""
+    if not os.path.exists(DB_PATH):
         return {}
+    
     try:
-        with open(path, 'r', encoding='utf-8') as f:
-            data = json.load(f).get('data', [])
-        return {a['slug']: a for a in data}
-    except:
+        with open(DB_PATH, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if isinstance(data, dict) and 'data' in data:
+            anime_list = data['data']
+        elif isinstance(data, list):
+            anime_list = data
+        else:
+            logger.warning(f"Unexpected JSON structure in {DB_PATH}")
+            return {}
+        
+        # Convert to dict keyed by slug
+        return {a['slug']: a for a in anime_list if isinstance(a, dict) and 'slug' in a}
+    
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {e}")
+        return {}
+    except Exception as e:
+        logger.error(f"Error loading existing DB: {e}")
         return {}
 
-def is_data_valid(data, min_total=EXPECTED_MIN, min_episode_ratio=0.5):
+def is_data_valid(data: List[Dict], min_total: int = EXPECTED_MIN_ANIME, 
+                  min_episode_ratio: float = EXPECTED_MIN_WITH_EPISODES_RATIO) -> bool:
+    """Validasi kualitas data sebelum save."""
     if len(data) < min_total:
-        logging.error(f"Data terlalu sedikit: {len(data)} < {min_total}")
+        logger.error(f"❌ Data terlalu sedikit: {len(data)} < {min_total}")
         return False
-    valid = [a for a in data if len(a.get('episodes', [])) > 0]
-    ratio = len(valid) / len(data)
+    
+    # Hitung anime yang minimal punya trailer ATAU episode
+    valid = [a for a in data if a.get('has_streaming') or a.get('trailer')]
+    ratio = len(valid) / len(data) if data else 0
+    
     if ratio < min_episode_ratio:
-        logging.error(f"Rasio anime dengan episode terlalu rendah: {ratio:.2f}")
+        logger.error(f"❌ Rasio anime dengan konten terlalu rendah: {ratio:.2%} < {min_episode_ratio:.2%}")
+        logger.error(f"   Valid: {len(valid)}/{len(data)} (punya streaming atau trailer)")
         return False
+    
+    logger.info(f"✓ Data valid: {len(data)} anime, {len(valid)} dengan konten ({ratio:.2%})")
     return True
 
-def safe_save(data, final_path):
+def safe_save(data: List[Dict], final_path: str):
+    """Save data dengan atomic write untuk mencegah corrupt."""
+    # Deduplicate by slug
     unique = {}
-    for a in data:
-        unique[a['slug']] = a
+    for anime in data:
+        slug = anime.get('slug')
+        if slug:
+            unique[slug] = anime
+    
     data = list(unique.values())
-
+    data.sort(key=lambda x: x.get('title_lower', ''))
+    
+    # Prepare output
+    output = {
+        "meta": {
+            "source": "nimegami.id",
+            "scraped_at": datetime.now().isoformat(),
+            "total_anime": len(data),
+            "with_streaming": sum(1 for a in data if a.get('has_streaming')),
+            "with_trailer": sum(1 for a in data if a.get('trailer')),
+        },
+        "data": data
+    }
+    
+    # Atomic write: write to temp file first, then rename
     temp_path = final_path + ".tmp"
-    with open(temp_path, 'w', encoding='utf-8') as f:
-        json.dump({"timestamp": time.time(), "data": data}, f, ensure_ascii=False, indent=2)
-    os.replace(temp_path, final_path)
+    try:
+        with open(temp_path, 'w', encoding='utf-8') as f:
+            json.dump(output, f, ensure_ascii=False, indent=2)
+        # Backup existing if exists
+        if os.path.exists(final_path):
+            backup_path = final_path + ".backup"
+            shutil.copy2(final_path, backup_path)
+            logger.info(f"✓ Backup dibuat: {backup_path}")
+        
+        # Atomic rename
+        os.replace(temp_path, final_path)
+        logger.info(f"✓ Data saved: {final_path} ({len(data)} anime)")
+        
+    except Exception as e:
+        logger.error(f"❌ Error saving data: {e}")
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        raise
 
-def save_total_count(count):
-    with open(COUNT_FILE, 'w') as f:
-        f.write(str(count))
+def save_total_count(count: int):
+    """Save total count untuk deteksi drop."""
+    try:
+        with open(COUNT_FILE, 'w') as f:
+            f.write(str(count))
+    except Exception as e:
+        logger.warning(f"Could not save count file: {e}")
 
-def load_last_total():
+def load_last_total() -> Optional[int]:
+    """Load last total count."""
     if not os.path.exists(COUNT_FILE):
         return None
-    with open(COUNT_FILE, 'r') as f:
-        try:
+    try:
+        with open(COUNT_FILE, 'r') as f:
             return int(f.read().strip())
-        except:
-            return None
+    except:
+        return None
+
+def generate_no_streaming_message(anime_title: str) -> str:
+    """Generate pesan untuk anime tanpa streaming."""
+    return f"Maaf, untuk saat ini belum tersedia streaming untuk **{anime_title}**. Streaming akan diupdate secepatnya. Silakan cek kembali nanti atau gunakan fitur download jika tersedia."
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', choices=['full', 'update'], default='full')
-    parser.add_argument('--min-data', type=int, default=EXPECTED_MIN, help='Minimal jumlah anime yang dianggap valid')
-    parser.add_argument('--check-drop', action='store_true', help='Cek penurunan jumlah anime dari sebelumnya')
+    parser = argparse.ArgumentParser(description="Nimegami Anime Scraper")
+    parser.add_argument('--mode', choices=['full', 'update'], default='full',
+                        help='Mode scraping: full (semua) atau update (hanya baru/ubah)')
+    parser.add_argument('--min-data', type=int, default=EXPECTED_MIN_ANIME,
+                        help='Minimal jumlah anime yang dianggap valid')
+    parser.add_argument('--check-drop', action='store_true',
+                        help='Cek penurunan drastis jumlah anime dari sebelumnya')
+    parser.add_argument('--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument('--limit', type=int, default=None, help='Limit jumlah anime untuk testing')
     args = parser.parse_args()
-
-    logging.info(f"=== MULAI SCRAPING mode: {args.mode} ===")
-    os.makedirs("public/data", exist_ok=True)
-
-    db_path = 'public/data/anime_master.json'
-    if os.path.exists(db_path):
-        shutil.copy(db_path, 'public/data/anime_master_backup.json')
-        logging.info("Backup dibuat")
-
+    
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+    
+    logger.info(f"🚀 === MULAI SCRAPING NIMEGAMI ===")
+    logger.info(f"Mode: {args.mode} | Base URL: {BASE_URL}")
+    
+    # Backup existing DB
+    if os.path.exists(DB_PATH):
+        backup_path = DB_PATH + ".pre-scrape"
+        shutil.copy2(DB_PATH, backup_path)
+        logger.info(f"✓ Backup DB: {backup_path}")
+    
+    # Step 1: Get all anime links
+    logger.info("📋 Mengambil daftar anime...")
     all_anime_links = get_all_anime_links()
-    logging.info(f"Total anime di website: {len(all_anime_links)}")
-
+    
+    if args.limit:
+        all_anime_links = all_anime_links[:args.limit]
+        logger.info(f"⚠️ Limited to {args.limit} anime for testing")
+    
+    if not all_anime_links:
+        logger.error("❌ Tidak ada anime yang ditemukan. Periksa koneksi atau struktur website.")
+        return
+    
+    # Step 2: Get status map from list page
+    logger.info("📊 Mengambil status anime...")
+    status_map = extract_status_from_list_page()
+    
+    # Step 3: Scrape details
+    db = []
+    
     if args.mode == 'full':
-        db = []
+        logger.info(f"🔄 Full scrape: {len(all_anime_links)} anime")
+        
         for idx, url in enumerate(all_anime_links, 1):
-            logging.info(f"[{idx}/{len(all_anime_links)}] {url}")
+            logger.info(f"[{idx:4d}/{len(all_anime_links)}] {url.split('/')[-1]}")
+            
             data = scrape_anime_detail(url)
             if data:
+                # Add status from list page
+                data['status'] = status_map.get(url, data['status'] or 'Unknown')
                 db.append(data)
-            time.sleep(random.uniform(0.8, 1.5))
-
-    else:  # mode update
+            
+            # Rate limiting
+            time.sleep(random.uniform(0.8, 2.0))
+    
+    else:  # update mode
+        logger.info("🔄 Update mode: checking existing DB...")
         existing = load_existing_db()
-        db = list(existing.values())
         existing_slugs = set(existing.keys())
+        db = list(existing.values())
         
-        new_links = [url for url in all_anime_links if url.rstrip('/').split('/')[-1] not in existing_slugs]
+        # Find new anime
+        new_links = [url for url in all_anime_links 
+                     if url.rstrip('/').split('/')[-1] not in existing_slugs]
         
+        logger.info(f"🆕 {len(new_links)} anime baru ditemukan")
+        
+        # Scrape new anime
         for url in new_links:
             slug = url.rstrip('/').split('/')[-1]
-            logging.info(f"[NEW] {slug}")
+            logger.info(f"[NEW] {slug}")
+            
             data = scrape_anime_detail(url)
             if data:
+                data['status'] = status_map.get(url, data['status'] or 'Unknown')
                 db.append(data)
-            time.sleep(random.uniform(0.8, 1.5))
-
+            
+            time.sleep(random.uniform(0.8, 2.0))
+        
+        # Update existing anime (check for new episodes)
+        logger.info("🔍 Checking existing anime for updates...")
         for url in all_anime_links:
             slug = url.rstrip('/').split('/')[-1]
             if slug not in existing_slugs:
                 continue
-            anime = existing[slug]
-            logging.info(f"[UPDATE] {slug}")
+            
+            anime = existing[slug].copy()  # Don't modify original
+            logger.debug(f"[CHECK] {slug}")
+            
+            # Update status
+            anime['status'] = status_map.get(url, anime['status'])
+            
+            # Re-scrape to check for new episodes
             soup = get_soup(url)
             if not soup:
                 continue
             
             new_eps = extract_episodes(soup, url)
-            old_eps_numbers = {ep['number'] for ep in anime.get('episodes', [])}
+            old_ep_numbers = {ep['number'] for ep in anime.get('episodes', [])}
+            
             added = 0
             for ep in new_eps:
-                if ep['number'] not in old_eps_numbers:
+                if ep['number'] not in old_ep_numbers:
                     anime['episodes'].append(ep)
                     added += 1
+            
             if added > 0:
                 anime['episodes'].sort(key=lambda x: x['number'])
+                anime['episode_count'] = len(anime['episodes'])
+                anime['has_streaming'] = len(anime['episodes']) > 0
                 anime['last_updated'] = datetime.now().isoformat()
-                logging.info(f"➕ {added} episode baru ditambahkan")
+                logger.info(f"  ➕ {added} episode baru: {slug}")
             
-            full_text = soup.get_text(separator="\n")
-            for line in full_text.split('\n'):
-                line = line.strip()
-                if 'Status:' in line:
-                    status_raw = line.replace('Status:', '').strip()
-                    if 'ongoing' in status_raw.lower() or 'on going' in status_raw.lower():
-                        anime['status'] = 'Ongoing'
-                    elif 'completed' in status_raw.lower():
-                        anime['status'] = 'Completed'
+            # Update in db list
+            for i, item in enumerate(db):
+                if item.get('slug') == slug:
+                    db[i] = anime
                     break
             
-            time.sleep(random.uniform(0.5, 1))
-
+            time.sleep(random.uniform(0.3, 1.0))
+    
+    # Step 4: Add "no streaming" message for anime without episodes
+    logger.info("📝 Adding no-streaming messages...")
+    for anime in db:
+        if not anime.get('has_streaming') and anime.get('trailer'):
+            # Anime punya trailer tapi no streaming
+            anime['no_streaming_message'] = generate_no_streaming_message(anime['title'])
+            anime['has_trailer_only'] = True
+            logger.debug(f"  🎬 Trailer-only: {anime['title']}")
+    
+    # Step 5: Validate data
     if not is_data_valid(db, args.min_data):
-        logging.error("Data tidak valid. Proses dibatalkan.")
-        exit(1)
-
+        logger.error("❌ Data validation failed. Aborting save.")
+        return
+    
+    # Step 6: Check for drastic drop
     if args.check_drop:
         last_total = load_last_total()
         if last_total is not None:
             current_total = len(db)
-            if current_total < last_total * 0.8:
-                logging.error(f"Jumlah anime turun drastis: {last_total} → {current_total}. Proses dibatalkan.")
-                exit(1)
+            drop_threshold = 0.8  # 20% drop is suspicious
+            
+            if current_total < last_total * drop_threshold:
+                logger.error(f"❌ Drastic drop detected: {last_total} → {current_total} ({(current_total/last_total*100):.1f}%)")
+                logger.error("Aborting save to prevent data loss.")
+                return
             else:
-                logging.info(f"Jumlah anime: {last_total} → {current_total} (OK)")
-
-    safe_save(db, db_path)
+                logger.info(f"✓ Count check: {last_total} → {current_total} (OK)")
+    
+    # Step 7: Save
+    logger.info("💾 Saving data...")
+    safe_save(db, DB_PATH)
     save_total_count(len(db))
-    logging.info(f"Selesai! {len(db)} anime tersimpan di {db_path}")
+    
+    # Summary
+    with_streaming = sum(1 for a in db if a.get('has_streaming'))
+    with_trailer = sum(1 for a in db if a.get('trailer'))
+    trailer_only = sum(1 for a in db if a.get('has_trailer_only'))
+    logger.info(f"""
+🎉 === SCRAPING COMPLETE ===
+📦 Total anime: {len(db)}
+🎬 With streaming: {with_streaming}
+🎥 With trailer: {with_trailer}
+🎬 Trailer-only (no streaming): {trailer_only}
+📁 Saved to: {DB_PATH}
+📊 Log file: {os.path.join(LOG_DIR, 'nimegami_scraper.log')}
+    """)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        logger.warning("⚠️ Interrupted by user")
+    except Exception as e:
+        logger.exception(f"❌ Fatal error: {e}")
+        raise
