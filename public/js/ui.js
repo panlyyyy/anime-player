@@ -168,11 +168,6 @@ const UI = {
                 Eps ${episode.number}
             </div>
         `;
-    },
-
-    // Open anime detail page
-    openAnimeDetail(slug) {
-        window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
     }
 };
 
