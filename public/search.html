@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.1.4">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.1.5">
+    <link rel="stylesheet" href="/css/nimestream.css?v=1.1.5">
 </head>
 <body class="ns-theme">
     <div class="app-shell ns-shell">
@@ -190,6 +190,8 @@
                         res = await API.getAnimeList(1, 80, filters);
                         // Sort by high rating and popularity when browsing without search
                         if (res.success && res.data) {
+                            console.log('Search results before sort:', res.data.slice(0, 3).map(a => ({title: a.title, score: a.score, episodes: a.episodes?.length})));
+                            
                             res.data.sort((a, b) => {
                                 const scoreA = parseFloat(a.score) || 0;
                                 const scoreB = parseFloat(b.score) || 0;
@@ -203,6 +205,8 @@
                                 
                                 return finalScoreB - finalScoreA;
                             });
+                            
+                            console.log('Search results after sort:', res.data.slice(0, 3).map(a => ({title: a.title, score: a.score, episodes: a.episodes?.length})));
                         }
                     }
                     if (res.success) {

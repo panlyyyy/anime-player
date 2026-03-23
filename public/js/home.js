@@ -194,6 +194,8 @@ function renderRecommendations() {
         ? allAnime
         : allAnime.filter((a) => (a.genre || []).includes(currentGenre));
     
+    console.log('Home recommendations - filtered count:', filtered.length, 'genre:', currentGenre);
+    
     // Sort by rating and popularity (high to low) and take top 10
     const byScoreAndPopularity = [...filtered].sort((a, b) => {
         const scoreA = parseFloat(a.score) || 0;
@@ -209,6 +211,8 @@ function renderRecommendations() {
         return finalScoreB - finalScoreA;
     });
     const recommendations = byScoreAndPopularity.slice(0, 10);
+    
+    console.log('Home recommendations - top 3:', recommendations.slice(0, 3).map(a => ({title: a.title, score: a.score, episodes: a.episodes?.length})));
 
     const container = document.getElementById('recommendList');
     if (!container) return;
