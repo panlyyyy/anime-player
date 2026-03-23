@@ -1086,11 +1086,13 @@ body.ns-theme .ns-filter-label {
 }
 
 body.ns-theme .ns-filter-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    min-width: 0;
-    width: 100%;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
 }
 
 /* ============================================================ */
@@ -1112,7 +1114,6 @@ body.ns-theme .ns-filter-chips {
     html:-moz-full-screen, body:-moz-full-screen,
     html:-ms-fullscreen, body:-ms-fullscreen {
         transform: none !important;
-        orientation: inherit !important;
     }
     
     /* Video player specific rotation handling */

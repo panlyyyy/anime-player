@@ -375,12 +375,27 @@ function playCurrentEpisodeMediaByQuality(quality) {
     if (videoUrl && !isValidUrl(videoUrl)) videoUrl = null;
     if (streamUrl && !isValidUrl(streamUrl)) streamUrl = null;
 
+    console.log('Playing video with quality:', quality, 'videoUrl:', videoUrl, 'streamUrl:', streamUrl);
+
     if (videoUrl) {
         if (iframeElement) iframeElement.style.display = 'none';
         videoElement.style.display = '';
         videoElement.src = videoUrl;
         videoElement.load();
-        videoElement.play().catch(() => {});
+        
+        // Add error handling for video playback
+        videoElement.onerror = function(e) {
+            console.error('Video error:', e);
+            UI.showNotification('Gagal memuat video. Coba kualitas lain.', 3000, 'error');
+        };
+        
+        videoElement.onloadeddata = function() {
+            console.log('Video loaded successfully');
+            videoElement.play().catch(error => {
+                console.error('Video play error:', error);
+                UI.showNotification('Gagal memutar video. Coba episode lain.', 3000, 'error');
+            });
+        };
     } else if (streamUrl && (streamUrl.startsWith('http://') || streamUrl.startsWith('https://'))) {
         // Guard: jangan sampai kita embed "halaman episode asli" yang penuh UI.
         if (/\/episode\/\d+/.test(streamUrl) && /\/series\//.test(streamUrl)) {
@@ -389,6 +404,12 @@ function playCurrentEpisodeMediaByQuality(quality) {
         videoElement.style.display = 'none';
         iframeElement.style.display = '';
         iframeElement.src = streamUrl;
+        
+        // Add error handling for iframe
+        iframeElement.onerror = function() {
+            console.error('Iframe error');
+            UI.showNotification('Gagal memuat video embed.', 3000, 'error');
+        };
     } else if (streamUrl) {
         throw new Error('URL stream tidak valid (bukan absolute URL).');
     } else {

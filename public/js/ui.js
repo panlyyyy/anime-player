@@ -175,3 +175,8 @@ const UI = {
         window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
     }
 };
+
+// Global function for onclick handlers
+window.openAnimeDetail = function(slug) {
+    window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
+};

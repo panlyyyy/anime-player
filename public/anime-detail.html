@@ -442,8 +442,8 @@
                         <div class="episodes-grid">
                             ${anime.episodes.map((ep, index) => `
                                 <div class="episode-card" onclick="playEpisode(${index})">
-                                    <div class="episode-number">EP ${ep.number}</div>
-                                    <div class="episode-title">${ep.title || `Episode ${ep.number}`}</div>
+                                    <div class="episode-number">${ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer') ? 'Trailer' : `EP ${ep.number}`}</div>
+                                    <div class="episode-title">${ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer') ? 'Trailer' : (ep.title || `Episode ${ep.number}`)}</div>
                                 </div>
                             `).join('')}
                         </div>
