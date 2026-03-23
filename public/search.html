@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.0.4">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.5">
+    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.5">
 </head>
 <body class="ns-theme">
     <div class="app-shell ns-shell">
@@ -162,15 +162,26 @@
                 typeFilter.addEventListener('change', performLoad);
             }
 
-            function renderList(list) {
+            async function renderList(list) {
                 resultsContainer.innerHTML = list.map(anime => UI.renderGridCard(anime, { showMeta: true })).join('');
                 resultsContainer.querySelectorAll('.anime-card').forEach(card => {
                     card.addEventListener('click', async () => {
                         const slug = card.dataset.slug;
                         UI.showLoading(true);
                         try {
-                            const res = await API.getDetail(slug);
-                            if (res.success) openPlayer(res.data);
+                            // Load dari anime_master.json
+                            const response = await fetch('/data/anime_master.json');
+                            const data = await response.json();
+                            const anime = data.data.find(a => a.slug === slug);
+                            
+                            if (anime && anime.episodes && anime.episodes.length > 0) {
+                                openPlayer(anime);
+                            } else {
+                                UI.showNotification('Anime tidak memiliki episode', 3000, 'error');
+                            }
+                        } catch (error) {
+                            console.error('Error loading anime:', error);
+                            UI.showNotification('Gagal memuat anime', 3000, 'error');
                         } finally {
                             UI.showLoading(false);
                         }
