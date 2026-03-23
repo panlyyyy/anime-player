@@ -45,10 +45,15 @@ STREAM_HINTS = {'4meplayer', 'video.g', 'player.', 'embed.', 'stream.', 'vidcdn'
 DOWNLOAD_PAGE_HOSTS = {'mediafire.com', 'zippyshare.com', 'solidfiles.com', 'mega.nz', 'drive.google.com'}
 
 # Setup logging
-os.makedirs(LOG_DIR, exist_ok=True)
-os.makedirs(DATA_DIR, exist_ok=True)
+try:
+    os.makedirs(LOG_DIR, exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok=True)
+except OSError:
+    # Read-only filesystem (e.g., Vercel serverless)
+    pass
+
 logging.basicConfig(
-    filename=os.path.join(LOG_DIR, "nimegami_scraper.log"),
+    filename=os.path.join(LOG_DIR, "nimegami_scraper.log") if os.path.isdir(LOG_DIR) else None,
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     encoding="utf-8",
