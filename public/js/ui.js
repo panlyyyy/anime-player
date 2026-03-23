@@ -151,7 +151,7 @@ const UI = {
             return `<div class="anime-meta">${parts.join(' • ')}</div>${genreTags ? `<div class="anime-genres">${genreTags}</div>` : ''}`;
         })() : `<div class="anime-meta"><span>${anime.episodes?.length || '?'} eps</span></div>`;
         return `
-            <div class="anime-card" data-slug="${anime.slug}" onclick="openAnimeDetail('${anime.slug}')">
+            <div class="anime-card" data-slug="${anime.slug}">
                 <img src="${anime.image || 'https://via.placeholder.com/300x450'}" alt="${anime.title.replace(/"/g, '&quot;')}" loading="lazy">
                 <div class="anime-info">
                     <h3>${anime.title.replace(/"/g, '&quot;')}</h3>
@@ -169,9 +169,4 @@ const UI = {
             </div>
         `;
     }
-};
-
-// Global function for onclick handlers
-window.openAnimeDetail = function(slug) {
-    window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
 };

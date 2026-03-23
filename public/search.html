@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.0.8">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.8">
+    <link rel="stylesheet" href="/css/style.css?v=1.1.1">
+    <link rel="stylesheet" href="/css/nimestream.css?v=1.1.1">
 </head>
 <body class="ns-theme">
     <div class="app-shell ns-shell">
@@ -163,18 +163,13 @@
                         const slug = card.dataset.slug;
                         UI.showLoading(true);
                         try {
-                            // Load dari anime_master.json
-                            const response = await fetch('/data/anime_master.json');
-                            const data = await response.json();
-                            const anime = data.data.find(a => a.slug === slug);
-                            
-                            if (anime && anime.episodes && anime.episodes.length > 0) {
-                                openPlayer(anime);
+                            const res = await API.getDetail(slug);
+                            if (res.success && res.data.episodes && res.data.episodes.length > 0) {
+                                openPlayer(res.data);
                             } else {
-                                UI.showNotification('Anime tidak memiliki episode', 3000, 'error');
+                                UI.showNotification('Anime ini belum memiliki episode', 3000, 'error');
                             }
-                        } catch (error) {
-                            console.error('Error loading anime:', error);
+                        } catch (e) {
                             UI.showNotification('Gagal memuat anime', 3000, 'error');
                         } finally {
                             UI.showLoading(false);
@@ -193,6 +188,14 @@
                         res = await API.search(query, filters);
                     } else {
                         res = await API.getAnimeList(1, 80, filters);
+                        // Sort by high rating when browsing without search
+                        if (res.success && res.data) {
+                            res.data.sort((a, b) => {
+                                const scoreA = parseFloat(a.score) || 0;
+                                const scoreB = parseFloat(b.score) || 0;
+                                return scoreB - scoreA;
+                            });
+                        }
                     }
                     if (res.success) {
                         if (res.data.length === 0) {

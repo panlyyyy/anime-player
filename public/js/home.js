@@ -103,8 +103,8 @@ function renderFeatured(anime) {
     featured.querySelector('.watch-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const slug = e.currentTarget.dataset.slug;
-        // Open detail page instead of player
-        window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
+        const a = allAnime.find((x) => x.slug === slug) || heroCandidates.find((x) => x.slug === slug);
+        if (a) openPlayer(a);
     });
 
     featured.querySelector('.fav-btn')?.addEventListener('click', (e) => {
@@ -163,8 +163,8 @@ function renderContinueWatching() {
     container.querySelectorAll('.anime-card-wide').forEach(card => {
         card.addEventListener('click', () => {
             const slug = card.dataset.slug;
-            // Open detail page instead of player
-            window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
+            const hItem = continueAnime.find((h) => h.slug === slug);
+            if (hItem) openContinueFromHistory(hItem);
         });
     });
 }
@@ -214,8 +214,8 @@ function renderRecommendations() {
     container.querySelectorAll('.anime-card-wide').forEach(card => {
         card.addEventListener('click', () => {
             const slug = card.dataset.slug;
-            // Open detail page instead of player
-            window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
+            const anime = allAnime.find(a => a.slug === slug);
+            if (anime) openPlayer(anime);
         });
     });
 }
