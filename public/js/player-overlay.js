@@ -383,15 +383,30 @@ function playCurrentEpisodeMediaByQuality(quality) {
     
     // Handle base64 encoded URLs from streaming services
     if (videoUrl && !isValidUrl(videoUrl)) {
-        // Try to decode if it looks like base64
+        // Try to decode if it looks like base64 or has id parameter
         try {
-            const decoded = atob(videoUrl);
-            if (decoded && isValidUrl(decoded)) {
-                videoUrl = decoded;
+            // Check if URL has id parameter with base64
+            if (videoUrl.includes('id=')) {
+                const idMatch = videoUrl.match(/id=([^&]+)/);
+                if (idMatch && idMatch[1]) {
+                    const base64Id = idMatch[1];
+                    const decodedId = atob(base64Id);
+                    if (decodedId && isValidUrl(decodedId)) {
+                        videoUrl = decodedId;
+                        console.log('Decoded base64 URL:', decodedId);
+                    }
+                }
             } else {
-                videoUrl = null;
+                // Try direct base64 decode
+                const decoded = atob(videoUrl);
+                if (decoded && isValidUrl(decoded)) {
+                    videoUrl = decoded;
+                } else {
+                    videoUrl = null;
+                }
             }
-        } catch {
+        } catch (error) {
+            console.warn('Failed to decode URL:', error);
             videoUrl = null;
         }
     }
