@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.1.6">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.1.6">
+    <link rel="stylesheet" href="/css/style.css?v=20260323-1">
+    <link rel="stylesheet" href="/css/nimestream.css?v=20260323-1">
 </head>
 <body class="ns-theme">
     <div class="app-shell ns-shell">
@@ -119,11 +119,11 @@
         </div>
     </div>
 
-    <script src="/js/layout-shell.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="/js/ui.js"></script>
-    <script src="/js/player-overlay.js"></script>
+    <script src="/js/layout-shell.js?v=20260323-1"></script>
+    <script src="/js/api.js?v=20260323-1"></script>
+    <script src="/js/storage.js?v=20260323-1"></script>
+    <script src="/js/ui.js?v=20260323-1"></script>
+    <script src="/js/player-overlay.js?v=20260323-1"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('searchInput');
@@ -142,6 +142,11 @@
                     type: typeFilter.value || undefined,
                     q: searchInput.value.trim() || undefined
                 };
+            }
+
+            async function getBrowsableAnime() {
+                const data = await API.loadStaticData();
+                return data.filter((anime) => API.isDisplayableAnime(anime));
             }
 
             async function loadFilters() {
@@ -164,11 +169,7 @@
                         UI.showLoading(true);
                         try {
                             const res = await API.getDetail(slug);
-                            if (res.success && res.data.episodes && res.data.episodes.length > 0) {
-                                openPlayer(res.data);
-                            } else {
-                                UI.showNotification('Anime ini belum memiliki episode', 3000, 'error');
-                            }
+                            if (res.success) openPlayer(res.data);
                         } catch (e) {
                             UI.showNotification('Gagal memuat anime', 3000, 'error');
                         } finally {
@@ -186,28 +187,18 @@
                     let res;
                     if (query) {
                         res = await API.search(query, filters);
-                    } else {
-                        res = await API.getAnimeList(1, 80, filters);
-                        // Sort by high rating and popularity when browsing without search
-                        if (res.success && res.data) {
-                            console.log('Search results before sort:', res.data.slice(0, 3).map(a => ({title: a.title, score: a.score, episodes: a.episodes?.length})));
-                            
-                            res.data.sort((a, b) => {
-                                const scoreA = parseFloat(a.score) || 0;
-                                const scoreB = parseFloat(b.score) || 0;
-                                
-                                // Prioritize score, but also consider episode count as popularity indicator
-                                const popularityA = (a.episodes?.length || 0) * 0.1;
-                                const popularityB = (b.episodes?.length || 0) * 0.1;
-                                
-                                const finalScoreA = scoreA + popularityA;
-                                const finalScoreB = scoreB + popularityB;
-                                
-                                return finalScoreB - finalScoreA;
-                            });
-                            
-                            console.log('Search results after sort:', res.data.slice(0, 3).map(a => ({title: a.title, score: a.score, episodes: a.episodes?.length})));
+                        if (res.success && Array.isArray(res.data)) {
+                            res.data = API.sortAnimeByRanking(res.data);
                         }
+                    } else {
+                        const anime = await getBrowsableAnime();
+                        const ranked = API.sortAnimeByRanking(API.filterAnime(anime, filters));
+                        res = {
+                            success: true,
+                            data: ranked.slice(0, 120),
+                            total: ranked.length,
+                            fallback: 'static-ranked'
+                        };
                     }
                     if (res.success) {
                         if (res.data.length === 0) {

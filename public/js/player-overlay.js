@@ -1,14 +1,12 @@
 let currentAnime = null;
 let currentEpisodes = [];
 let currentEpisode = null;
-let currentMediaResponse = null; // hasil API.getVideoSources untuk episode aktif
+let currentMediaResponse = null;
 let currentSelectedQuality = null;
 let videoElement = null;
 let iframeElement = null;
 let settings = { speed: 1.0 };
 
-// Add fullscreen change event listener
-// Listen for openPlayer event from detail page
 document.addEventListener('openPlayer', (e) => {
     const data = e.detail;
     if (data) {
@@ -22,19 +20,21 @@ document.addEventListener('mozfullscreenchange', handleFullscreenChange);
 document.addEventListener('MSFullscreenChange', handleFullscreenChange);
 
 function handleFullscreenChange() {
-    const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || 
-                           document.mozFullScreenElement || document.msFullscreenElement);
-    
-    // Add/remove class to body for CSS targeting
+    const isFullscreen = !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+    );
+
     document.body.classList.toggle('video-fullscreen', isFullscreen);
-    
-    // Handle orientation lock only for video fullscreen
+
     if (isFullscreen) {
         tryLockLandscape();
     } else {
         tryUnlockOrientation();
     }
-    
+
     applyFullscreenMode(isFullscreen);
 }
 
@@ -44,13 +44,11 @@ function applyFullscreenMode(isActive) {
     overlay.classList.toggle('player-fullscreen-active', !!isActive);
 }
 
-/** Coba kunci orientasi landscape (Android Chrome + fullscreen; iOS sering tidak support). */
 function tryLockLandscape() {
     try {
         const o = screen.orientation;
         if (o && typeof o.lock === 'function') {
-            o.lock('landscape')
-                .catch(() => o.lock('landscape-primary').catch(() => {}));
+            o.lock('landscape').catch(() => o.lock('landscape-primary').catch(() => {}));
         }
     } catch (e) {}
 }
@@ -64,7 +62,6 @@ function tryUnlockOrientation() {
     } catch (e) {}
 }
 
-/** @returns {boolean} true jika fullscreen API dipakai */
 function tryVideoElementFullscreen() {
     try {
         if (videoElement && videoElement.requestFullscreen) {
@@ -104,7 +101,6 @@ function toggleFullscreen() {
         return;
     }
 
-    // Fallback mode (Fullscreen API tidak ada): toggle pakai class saja.
     const overlay = document.getElementById('playerOverlay');
     if (!document.fullscreenElement && overlay && overlay.classList.contains('player-fullscreen-active')) {
         tryUnlockOrientation();
@@ -112,7 +108,6 @@ function toggleFullscreen() {
         return;
     }
 
-    // Di HP: fullscreen ke kontainer video + kunci landscape (Chrome Android). iOS sering tidak support lock.
     const container = document.querySelector('#playerOverlay .video-container');
     const preferContainer =
         typeof window.matchMedia === 'function' &&
@@ -161,19 +156,178 @@ function ensureOverlayFavoriteButton() {
     title.parentElement.insertBefore(btn, title.nextSibling);
 }
 
-function closePlayer() {
+function ensureAvailabilityNoticeElement() {
+    let note = document.getElementById('overlayAvailabilityNote');
+    if (note) return note;
+
+    const description = document.getElementById('overlayDescription');
+    if (!description || !description.parentElement) return null;
+
+    note = document.createElement('div');
+    note.id = 'overlayAvailabilityNote';
+    Object.assign(note.style, {
+        display: 'none',
+        margin: '14px 0 0',
+        padding: '12px 14px',
+        borderRadius: '12px',
+        background: 'rgba(99, 102, 241, 0.12)',
+        border: '1px solid rgba(99, 102, 241, 0.24)',
+        color: '#d4d4d8',
+        fontSize: '0.9rem',
+        lineHeight: '1.5'
+    });
+    description.insertAdjacentElement('afterend', note);
+    return note;
+}
+
+function setAvailabilityNotice(message = '', tone = 'info') {
+    const note = ensureAvailabilityNoticeElement();
+    if (!note) return;
+
+    if (!message) {
+        note.style.display = 'none';
+        note.textContent = '';
+        return;
+    }
+
+    const tones = {
+        info: {
+            background: 'rgba(99, 102, 241, 0.12)',
+            border: '1px solid rgba(99, 102, 241, 0.24)'
+        },
+        warning: {
+            background: 'rgba(245, 158, 11, 0.12)',
+            border: '1px solid rgba(245, 158, 11, 0.24)'
+        }
+    };
+
+    const style = tones[tone] || tones.info;
+    note.style.display = 'block';
+    note.style.background = style.background;
+    note.style.border = style.border;
+    note.textContent = message;
+}
+
+function ensurePlayerEmptyState() {
+    let empty = document.getElementById('playerEmptyState');
+    if (empty) return empty;
+
+    const container = document.querySelector('#playerOverlay .video-container');
+    if (!container) return null;
+
+    empty = document.createElement('div');
+    empty.id = 'playerEmptyState';
+    Object.assign(empty.style, {
+        position: 'absolute',
+        inset: '0',
+        display: 'none',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        textAlign: 'center',
+        background: 'linear-gradient(180deg, rgba(9, 9, 11, 0.55), rgba(9, 9, 11, 0.95))',
+        zIndex: '2'
+    });
+
+    const content = document.createElement('div');
+    Object.assign(content.style, {
+        maxWidth: '420px'
+    });
+
+    const poster = document.createElement('img');
+    poster.id = 'playerEmptyPoster';
+    Object.assign(poster.style, {
+        width: '112px',
+        aspectRatio: '2 / 3',
+        objectFit: 'cover',
+        borderRadius: '16px',
+        margin: '0 auto 16px',
+        display: 'none',
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)'
+    });
+
+    const title = document.createElement('div');
+    title.id = 'playerEmptyTitle';
+    Object.assign(title.style, {
+        fontSize: '1.1rem',
+        fontWeight: '700',
+        marginBottom: '8px'
+    });
+
+    const message = document.createElement('div');
+    message.id = 'playerEmptyMessage';
+    Object.assign(message.style, {
+        color: '#d4d4d8',
+        fontSize: '0.95rem',
+        lineHeight: '1.55'
+    });
+
+    content.appendChild(poster);
+    content.appendChild(title);
+    content.appendChild(message);
+    empty.appendChild(content);
+    container.appendChild(empty);
+    return empty;
+}
+
+function hidePlayerEmptyState() {
+    const empty = ensurePlayerEmptyState();
+    if (!empty) return;
+    empty.style.display = 'none';
+}
+
+function showPlayerEmptyState(title, message, image = '') {
+    const empty = ensurePlayerEmptyState();
+    if (!empty) return;
+
+    const poster = document.getElementById('playerEmptyPoster');
+    const titleEl = document.getElementById('playerEmptyTitle');
+    const messageEl = document.getElementById('playerEmptyMessage');
+
+    if (poster) {
+        if (image) {
+            poster.src = image;
+            poster.style.display = 'block';
+        } else {
+            poster.removeAttribute('src');
+            poster.style.display = 'none';
+        }
+    }
+
+    if (titleEl) titleEl.textContent = title || 'Belum ada media';
+    if (messageEl) messageEl.textContent = message || 'Belum ada video yang bisa diputar untuk anime ini.';
+    empty.style.display = 'flex';
+}
+
+function resetMediaElements() {
+    currentMediaResponse = null;
+    currentSelectedQuality = null;
+    hidePlayerEmptyState();
+
     if (videoElement) {
         videoElement.pause();
         videoElement.removeAttribute('src');
         videoElement.load();
+        videoElement.onerror = null;
+        videoElement.onloadeddata = null;
+        videoElement.style.display = '';
     }
+
     if (iframeElement) {
         iframeElement.src = '';
+        iframeElement.onerror = null;
+        iframeElement.style.display = 'none';
     }
+}
+
+function closePlayer() {
+    resetMediaElements();
+    currentEpisode = null;
     document.getElementById('playerOverlay').style.display = 'none';
     document.body.style.overflow = 'auto';
     applyFullscreenMode(false);
     tryUnlockOrientation();
+    setAvailabilityNotice('');
     if (document.fullscreenElement) {
         try { document.exitFullscreen(); } catch (e) {}
     }
@@ -196,8 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     ensureOverlayFavoriteButton();
+    ensureAvailabilityNoticeElement();
+    ensurePlayerEmptyState();
 
-    // Fullscreen UX: tombol custom + dblclick.
     const videoContainer = document.querySelector('.video-container');
     if (videoContainer && !document.querySelector('.fullscreen-player-btn')) {
         const fsBtn = document.createElement('button');
@@ -269,13 +424,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let lastHistorySync = 0;
     function syncWatchProgressToHistory() {
-        if (!currentAnime || !currentEpisode || !videoElement) return;
-        // Hanya untuk <video> langsung (bukan iframe embed)
+        if (!currentAnime || !currentEpisode || !videoElement || isTrailerItem(currentEpisode)) return;
         if (videoElement.style.display === 'none') return;
         const t = videoElement.currentTime;
         const d = videoElement.duration;
-        Storage.setProgress(currentEpisode.url, t);
+        Storage.setProgress(currentEpisode, t);
         Storage.updateHistoryWatchProgress(currentAnime.slug, {
+            lastEpisodeKey: Storage.getEpisodeKey(currentEpisode),
             lastEpisodeNumber: currentEpisode.number,
             lastEpisodeUrl: currentEpisode.url,
             lastProgressSeconds: t,
@@ -284,8 +439,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     videoElement.addEventListener('timeupdate', () => {
-        if (currentEpisode) {
-            Storage.setProgress(currentEpisode.url, videoElement.currentTime);
+        if (currentEpisode && !isTrailerItem(currentEpisode)) {
+            Storage.setProgress(currentEpisode, videoElement.currentTime);
         }
         const now = Date.now();
         if (now - lastHistorySync > 2000) {
@@ -332,7 +487,7 @@ function pickFromMap(map, preferKey) {
 
 function setQualityUI(quality) {
     const tagEl = document.getElementById('currentQualityTag');
-    if (tagEl && quality) tagEl.textContent = quality;
+    if (tagEl && quality != null) tagEl.textContent = quality;
 
     const container = document.getElementById('qualityButtons');
     if (!container) return;
@@ -367,6 +522,167 @@ function renderQualityButtons(qualities, activeQuality) {
     });
 }
 
+function isValidUrl(u) {
+    return !!(u && typeof u === 'string' && (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('//')));
+}
+
+function isTrailerItem(item) {
+    return item?.kind === 'trailer';
+}
+
+function getMediaKey(item) {
+    if (!item) return '';
+    if (isTrailerItem(item)) {
+        return `trailer::${item.embed_url || item.url || item.watch_url || item.title || 'default'}`;
+    }
+    return `episode::${item.number ?? ''}`;
+}
+
+function isLikelyIframeSource(url) {
+    if (!isValidUrl(url)) return false;
+
+    try {
+        const parsed = new URL(url, window.location.origin);
+        const host = parsed.hostname.toLowerCase();
+        const path = parsed.pathname.toLowerCase();
+        const looksLikeDirectVideo = /\.(mp4|m3u8|webm|mkv|mov)(?:$|\?)/i.test(parsed.href);
+
+        if (looksLikeDirectVideo) return false;
+        if (host.includes('youtube.com') || host.includes('youtu.be')) return true;
+        if (host.includes('berkasdrive.com') || host.includes('mitedrive.com')) return true;
+        if (path.includes('/streaming/') || path.includes('/embed/') || path.includes('/view/')) return true;
+    } catch (e) {
+        return false;
+    }
+
+    return false;
+}
+
+function withAutoplay(url) {
+    if (!isValidUrl(url)) return url;
+    try {
+        const parsed = new URL(url, window.location.origin);
+        if (parsed.hostname.includes('youtube.com')) {
+            parsed.searchParams.set('autoplay', '1');
+            parsed.searchParams.set('rel', '0');
+        }
+        return parsed.toString();
+    } catch (e) {
+        return url;
+    }
+}
+
+function playEmbedUrl(url) {
+    if (!iframeElement || !videoElement) return;
+    hidePlayerEmptyState();
+    videoElement.pause();
+    videoElement.removeAttribute('src');
+    videoElement.load();
+    videoElement.style.display = 'none';
+    iframeElement.style.display = '';
+    iframeElement.src = withAutoplay(url);
+    iframeElement.onerror = function () {
+        UI.showNotification('Gagal memuat video embed.', 3000, 'error');
+    };
+}
+
+function playVideoUrl(url) {
+    if (!videoElement || !iframeElement) return;
+    hidePlayerEmptyState();
+    iframeElement.src = '';
+    iframeElement.style.display = 'none';
+    videoElement.style.display = '';
+    videoElement.src = url;
+    videoElement.load();
+
+    videoElement.onerror = function (e) {
+        console.error('Video error:', e);
+        UI.showNotification('Gagal memuat video. Coba kualitas lain.', 3000, 'error');
+    };
+
+    videoElement.onloadeddata = function () {
+        videoElement.play().catch((error) => {
+            console.error('Video play error:', error);
+            UI.showNotification('Gagal memutar video. Coba episode lain.', 3000, 'error');
+        });
+    };
+}
+
+function updateActiveEpisodeCard(activeItem) {
+    const activeKey = getMediaKey(activeItem);
+    document.querySelectorAll('.ep-card[data-key]').forEach((el) => {
+        el.classList.toggle('active', el.dataset.key === activeKey);
+    });
+}
+
+function buildMediaPlaylist(anime) {
+    const list = [];
+
+    if (anime?.trailer && (anime.trailer.embed_url || anime.trailer.url || anime.trailer.watch_url)) {
+        list.push({
+            kind: 'trailer',
+            title: 'Trailer',
+            embed_url: anime.trailer.embed_url || anime.trailer.url,
+            url: anime.trailer.url || anime.trailer.embed_url || anime.trailer.watch_url,
+            watch_url: anime.trailer.watch_url || anime.trailer.url,
+            platform: anime.trailer.platform || '',
+        });
+    }
+
+    (anime?.episodes || []).forEach((episode) => {
+        list.push({
+            ...episode,
+            kind: 'episode',
+            title: episode.title || `Episode ${episode.number}`,
+        });
+    });
+
+    return list;
+}
+
+function resolveRequestedMediaItem(list, requested) {
+    if (!requested || !Array.isArray(list) || list.length === 0) return null;
+    if (isTrailerItem(requested)) {
+        return list.find((item) => isTrailerItem(item)) || null;
+    }
+    if (requested.number != null) {
+        return list.find((item) => !isTrailerItem(item) && Number(item.number) === Number(requested.number)) || null;
+    }
+    if (requested.url) {
+        return list.find((item) => item.url === requested.url) || null;
+    }
+    return null;
+}
+
+function updateEpisodeSection(visible, title = 'Trailer dan Episode') {
+    const container = document.getElementById('episodeList');
+    const heading = container?.previousElementSibling;
+    if (heading) {
+        heading.style.display = visible ? '' : 'none';
+        heading.textContent = title;
+    }
+    if (container) {
+        container.style.display = visible ? 'grid' : 'none';
+    }
+}
+
+function showNoMediaState(anime) {
+    resetMediaElements();
+    renderQualityButtons([], null);
+    setQualityUI('Info');
+    document.getElementById('currentEpisodeTag').textContent = 'Info';
+    updateEpisodeSection(false);
+    showPlayerEmptyState(
+        anime?.title || 'Belum ada media',
+        anime?.no_streaming_message || 'Anime ini belum punya episode atau trailer yang bisa diputar saat ini.',
+        anime?.image || ''
+    );
+    setAvailabilityNotice(
+        anime?.no_streaming_message || 'Anime ini tampil di katalog, tapi episode dan trailer belum tersedia.',
+        'warning'
+    );
+}
+
 function playCurrentEpisodeMediaByQuality(quality) {
     if (!currentMediaResponse) return;
     if (!videoElement || !iframeElement) return;
@@ -378,100 +694,60 @@ function playCurrentEpisodeMediaByQuality(quality) {
     let videoUrl = pickFromMap(sources, quality);
     let streamUrl = pickFromMap(streams, quality);
 
-    // Pastikan hanya URL absolut yang dipakai (hindari 404 dari token/ID seperti "3561110768215")
-    const isValidUrl = (u) => u && typeof u === 'string' && (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('//'));
-    
-    // Handle base64 encoded URLs from streaming services
     if (videoUrl && !isValidUrl(videoUrl)) {
-        // Try to decode if it looks like base64 or has id parameter
         try {
-            // Check if URL has id parameter with base64
             if (videoUrl.includes('id=')) {
                 const idMatch = videoUrl.match(/id=([^&]+)/);
                 if (idMatch && idMatch[1]) {
-                    const base64Id = idMatch[1];
-                    const decodedId = atob(base64Id);
+                    const decodedId = atob(idMatch[1]);
                     if (decodedId && isValidUrl(decodedId)) {
                         videoUrl = decodedId;
-                        console.log('Decoded base64 URL:', decodedId);
                     }
                 }
             } else {
-                // Try direct base64 decode
                 const decoded = atob(videoUrl);
-                if (decoded && isValidUrl(decoded)) {
-                    videoUrl = decoded;
-                } else {
-                    videoUrl = null;
-                }
+                videoUrl = decoded && isValidUrl(decoded) ? decoded : null;
             }
         } catch (error) {
-            console.warn('Failed to decode URL:', error);
+            console.warn('Failed to decode source URL:', error);
             videoUrl = null;
         }
     }
-    
+
     if (streamUrl && !isValidUrl(streamUrl)) {
-        // Try to decode if it looks like base64
         try {
             const decoded = atob(streamUrl);
-            if (decoded && isValidUrl(decoded)) {
-                streamUrl = decoded;
-            } else {
-                streamUrl = null;
-            }
-        } catch {
+            streamUrl = decoded && isValidUrl(decoded) ? decoded : null;
+        } catch (error) {
             streamUrl = null;
         }
     }
 
-    console.log('Playing video with quality:', quality, 'videoUrl:', videoUrl, 'streamUrl:', streamUrl);
+    if (videoUrl && isLikelyIframeSource(videoUrl)) {
+        streamUrl = streamUrl || videoUrl;
+        videoUrl = null;
+    }
 
     if (videoUrl) {
-        if (iframeElement) iframeElement.style.display = 'none';
-        videoElement.style.display = '';
-        videoElement.src = videoUrl;
-        videoElement.load();
-        
-        // Add error handling for video playback
-        videoElement.onerror = function(e) {
-            console.error('Video error:', e);
-            UI.showNotification('Gagal memuat video. Coba kualitas lain.', 3000, 'error');
-        };
-        
-        videoElement.onloadeddata = function() {
-            console.log('Video loaded successfully');
-            videoElement.play().catch(error => {
-                console.error('Video play error:', error);
-                UI.showNotification('Gagal memutar video. Coba episode lain.', 3000, 'error');
-            });
-        };
-    } else if (streamUrl && isValidUrl(streamUrl)) {
-        // Guard: jangan sampai kita embed "halaman episode asli" yang penuh UI.
-        if (/\/episode\/\d+/.test(streamUrl) && /\/series\//.test(streamUrl)) {
-            throw new Error('StreamUrl terdeteksi mengarah ke halaman episode (bukan media).');
-        }
-        videoElement.style.display = 'none';
-        iframeElement.style.display = '';
-        iframeElement.src = streamUrl;
-        
-        // Add error handling for iframe
-        iframeElement.onerror = function() {
-            console.error('Iframe error');
-            UI.showNotification('Gagal memuat video embed.', 3000, 'error');
-        };
-    } else if (streamUrl) {
-        throw new Error('URL stream tidak valid (bukan absolute URL).');
-    } else {
-        throw new Error('Tidak ada sumber video/stream yang valid');
+        playVideoUrl(videoUrl);
+        return;
     }
+
+    if (streamUrl && isValidUrl(streamUrl)) {
+        if (/\/episode\/\d+/.test(streamUrl) && /\/series\//.test(streamUrl)) {
+            throw new Error('Stream URL terdeteksi mengarah ke halaman episode, bukan media.');
+        }
+        playEmbedUrl(streamUrl);
+        return;
+    }
+
+    throw new Error('Tidak ada sumber video atau embed yang valid.');
 }
 
-window.openPlayer = function(anime, episode = null) {
+window.openPlayer = function (anime, episode = null) {
     currentAnime = anime;
-    currentEpisodes = anime.episodes || [];
+    currentEpisodes = buildMediaPlaylist(anime);
 
-    // History (untuk bagian "Lanjutkan Menonton" dan halaman history)
     Storage.addToHistory(anime);
 
     document.getElementById('overlayTitle').textContent = anime.title || '';
@@ -486,22 +762,28 @@ window.openPlayer = function(anime, episode = null) {
         if (anime.studio) meta.push(anime.studio);
         if (anime.release_date) meta.push(anime.release_date);
         if (anime.status) meta.push(anime.status);
-        if (anime.score) meta.push(`★ ${anime.score}`);
+        const numericScore = parseFloat(anime.score);
+        if (Number.isFinite(numericScore) && numericScore >= 0 && numericScore <= 10) meta.push(`Rating ${numericScore}`);
         if (anime.duration) meta.push(anime.duration);
-        if (meta.length) parts.push(`<span class="overlay-meta">${meta.join(' • ')}</span>`);
+        if (meta.length) parts.push(`<span class="overlay-meta">${meta.join(' | ')}</span>`);
         if (anime.genre && anime.genre.length) parts.push(`<span class="overlay-genres">${anime.genre.map(g => `<span class="overlay-genre-tag">${String(g).replace(/</g, '&lt;')}</span>`).join('')}</span>`);
         detailEl.innerHTML = parts.length ? parts.join('') : '';
     }
 
-    if (!episode && currentEpisodes.length > 0) {
-        episode = currentEpisodes[0];
-    }
+    const preferredEpisode =
+        resolveRequestedMediaItem(currentEpisodes, episode) ||
+        currentEpisodes.find((item) => !isTrailerItem(item)) ||
+        currentEpisodes.find((item) => isTrailerItem(item)) ||
+        null;
 
-    if (episode) {
-        loadEpisode(episode);
-    }
+    renderEpisodeList(currentEpisodes, preferredEpisode);
 
-    renderEpisodeList(currentEpisodes, episode);
+    if (preferredEpisode) {
+        loadEpisode(preferredEpisode);
+    } else {
+        currentEpisode = null;
+        showNoMediaState(anime);
+    }
 
     document.getElementById('playerOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -515,53 +797,70 @@ window.openPlayer = function(anime, episode = null) {
 async function loadEpisode(episode) {
     if (!episode) return;
 
-    if (videoElement) {
-        videoElement.pause();
-        videoElement.removeAttribute('src');
-        videoElement.load();
-    }
-    if (iframeElement) {
-        iframeElement.src = '';
-    }
-
+    resetMediaElements();
     currentEpisode = episode;
+    updateActiveEpisodeCard(episode);
 
-    document.querySelectorAll('.ep-card').forEach(el => el.classList.remove('active'));
-    const activeCard = Array.from(document.querySelectorAll('.ep-card')).find(el => {
-        try {
-            const ep = JSON.parse(decodeURIComponent(el.dataset.episode));
-            return ep.number === episode.number;
-        } catch (e) {
-            return false;
+    document.getElementById('currentEpisodeTag').textContent = isTrailerItem(episode)
+        ? 'Trailer'
+        : `Episode ${episode.number}`;
+
+    if (isTrailerItem(episode)) {
+        renderQualityButtons([], null);
+        setQualityUI('Trailer');
+        const trailerOnly = !currentEpisodes.some((item) => !isTrailerItem(item));
+        setAvailabilityNotice(
+            trailerOnly
+                ? 'Anime ini saat ini hanya punya trailer, episode belum tersedia.'
+                : 'Trailer tersedia di daftar sebelum episode.',
+            'info'
+        );
+
+        const trailerUrl = episode.embed_url || episode.url || episode.watch_url;
+        if (!trailerUrl) {
+            showPlayerEmptyState(currentAnime?.title || 'Trailer', 'Trailer belum bisa diputar saat ini.', currentAnime?.image || '');
+            return;
         }
-    });
-    if (activeCard) activeCard.classList.add('active');
 
-    document.getElementById('currentEpisodeTag').textContent = `Episode ${episode.number}`;
+        playEmbedUrl(trailerUrl);
+        return;
+    }
+
+    setAvailabilityNotice(
+        currentEpisodes.some((item) => isTrailerItem(item)) ? 'Trailer tersedia di daftar episode.' : '',
+        'info'
+    );
 
     UI.showLoading(true, 'Memuat video...');
     try {
-        // Try API first
         let res = null;
-        try {
-            res = await API.getVideoSources(episode.url);
-        } catch (apiError) {
-            console.warn('API failed, using static data:', apiError);
+
+        if (episode.sources && Object.keys(episode.sources).length > 0) {
+            res = {
+                success: true,
+                sources: episode.sources,
+                streams: episode.streams || {},
+                default: episode.default || '360p',
+                url: episode.url,
+                number: episode.number
+            };
         }
-        
-        // If API fails or returns no success, use episode data directly
-        if (!res || !res.success) {
-            if (episode.sources && Object.keys(episode.sources).length > 0) {
-                res = {
-                    success: true,
-                    sources: episode.sources,
-                    streams: {},
-                    default: episode.default || '360p',
-                    url: episode.url
-                };
-            } else {
-                throw new Error('Tidak ada sumber video');
+
+        if (!res || (!Object.keys(res.sources || {}).length && !Object.keys(res.streams || {}).length)) {
+            try {
+                res = await API.getVideoSources(episode.url, episode.number);
+            } catch (apiError) {
+                console.warn('API episode gagal, memakai data lokal episode:', apiError);
             }
+        }
+
+        if (!res || !res.success || (!Object.keys(res.sources || {}).length && !Object.keys(res.streams || {}).length)) {
+            showPlayerEmptyState(
+                currentAnime?.title || 'Episode',
+                'Sumber video untuk episode ini belum tersedia. Anda bisa coba trailer atau episode lain.',
+                currentAnime?.image || ''
+            );
+            throw new Error('Tidak ada sumber video');
         }
 
         currentMediaResponse = res;
@@ -570,15 +869,16 @@ async function loadEpisode(episode) {
         const initialQuality = qualities.includes(defaultQuality) ? defaultQuality : (qualities[0] || defaultQuality);
         currentSelectedQuality = initialQuality;
 
-        setQualityUI(initialQuality);
         renderQualityButtons(qualities, initialQuality);
+        setQualityUI(initialQuality);
         playCurrentEpisodeMediaByQuality(initialQuality);
 
-        Storage.addWatchedEpisode(currentAnime.slug, episode.number);
-
+        if (Number.isFinite(Number(episode.number))) {
+            Storage.addWatchedEpisode(currentAnime.slug, Number(episode.number));
+        }
     } catch (err) {
         console.error('Load episode error:', err);
-        UI.showNotification('Gagal memuat video. Coba episode lain.', 3000, 'error');
+        UI.showNotification('Gagal memuat video. Coba kualitas lain, trailer, atau episode lain.', 3500, 'error');
     } finally {
         UI.showLoading(false);
     }
@@ -586,52 +886,43 @@ async function loadEpisode(episode) {
 
 function renderEpisodeList(episodes, activeEpisode) {
     const container = document.getElementById('episodeList');
-    
-    // Separate trailer from regular episodes
-    const trailerEpisode = episodes.find(ep => 
-        ep.number === 0 || (ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer'))
-    );
-    const regularEpisodes = episodes.filter(ep => 
-        ep.number !== 0 && !(ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer'))
-    );
-    
-    let html = '';
-    
-    // Add trailer first if exists
-    if (trailerEpisode) {
-        html += `
-            <div class="ep-card trailer-card" data-episode='${encodeURIComponent(JSON.stringify(trailerEpisode))}'>
-                <i class="fas fa-film" style="font-size: 1.2rem; margin-bottom: 5px; display: block;"></i>
-                <div>Trailer</div>
+    if (!container) return;
+
+    if (!episodes || episodes.length === 0) {
+        container.innerHTML = '';
+        updateEpisodeSection(false);
+        return;
+    }
+
+    const regularEpisodes = episodes.filter((item) => !isTrailerItem(item));
+    const onlyTrailer = regularEpisodes.length === 0 && episodes.some((item) => isTrailerItem(item));
+    updateEpisodeSection(true, 'Trailer dan Episode');
+
+    let html = episodes.map((item) => {
+        const isActive = activeEpisode && getMediaKey(item) === getMediaKey(activeEpisode);
+        const label = isTrailerItem(item) ? 'Trailer' : `EP ${item.number}`;
+        const icon = isTrailerItem(item) ? '<i class="fas fa-film" style="font-size: 1.1rem; margin-bottom: 6px; display: block;"></i>' : '';
+        return `
+            <div class="ep-card ${isActive ? 'active' : ''} ${isTrailerItem(item) ? 'trailer-card' : ''}" data-key="${getMediaKey(item)}" data-media='${encodeURIComponent(JSON.stringify(item))}'>
+                ${icon}
+                <div>${label}</div>
             </div>
         `;
+    }).join('');
+
+    if (onlyTrailer) {
+        html += '<div class="empty" style="grid-column: 1 / -1; padding: 12px 8px; font-size: 0.9rem;">Episode belum tersedia, saat ini hanya ada trailer.</div>';
     }
-    
-    // Add regular episodes
-    regularEpisodes.forEach(ep => {
-        html += `
-            <div class="ep-card ${activeEpisode && ep.number === activeEpisode.number ? 'active' : ''}" data-episode='${encodeURIComponent(JSON.stringify(ep))}'>
-                <div>EP ${ep.number}</div>
-            </div>
-        `;
-    });
-    
-    // Show message if no episodes but has trailer
-    if (regularEpisodes.length === 0 && !trailerEpisode) {
-        html = '<div class="empty" style="padding: 20px; text-align: center; color: var(--ns-muted);">Tidak ada episode yang tersedia</div>';
-    } else if (regularEpisodes.length === 0 && trailerEpisode) {
-        html += '<div class="notice" style="padding: 10px; text-align: center; color: var(--ns-muted); font-size: 0.9rem;">Anime ini hanya memiliki trailer, tidak ada episode.</div>';
-    }
-    
+
     container.innerHTML = html;
 
-    container.querySelectorAll('.ep-card').forEach(el => {
+    container.querySelectorAll('.ep-card[data-media]').forEach((el) => {
         el.addEventListener('click', () => {
             try {
-                const ep = JSON.parse(decodeURIComponent(el.dataset.episode));
-                loadEpisode(ep);
+                const media = JSON.parse(decodeURIComponent(el.dataset.media));
+                loadEpisode(media);
             } catch (e) {
-                console.error('Error parsing episode data', e);
+                console.error('Error parsing media data', e);
             }
         });
     });

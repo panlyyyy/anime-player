@@ -59,6 +59,75 @@ const API = {
         return this.dataCache;
     },
 
+    getEpisodeCount(anime) {
+        return Array.isArray(anime?.episodes) ? anime.episodes.length : 0;
+    },
+
+    hasPlayableMedia(anime) {
+        return this.getEpisodeCount(anime) > 0 || !!anime?.trailer;
+    },
+
+    isDisplayableAnime(anime) {
+        if (!anime || !anime.slug || !anime.title) {
+            return false;
+        }
+
+        return Boolean(
+            anime.image ||
+            anime.synopsis ||
+            anime.description ||
+            this.getEpisodeCount(anime) > 0 ||
+            anime.trailer ||
+            (Array.isArray(anime.genre) && anime.genre.length > 0) ||
+            anime.score
+        );
+    },
+
+    filterAnime(list = [], filters = {}) {
+        let filtered = Array.isArray(list) ? [...list] : [];
+        if (filters.genre) filtered = filtered.filter((a) => (a.genre || []).includes(filters.genre));
+        if (filters.status) filtered = filtered.filter((a) => (a.status || '').trim() === filters.status);
+        if (filters.type) filtered = filtered.filter((a) => (a.type || '').trim() === filters.type);
+        if (filters.q) {
+            const q = String(filters.q || '').trim().toLowerCase();
+            filtered = filtered.filter((a) => (a.title_lower || a.title || '').toLowerCase().includes(q));
+        }
+        return filtered;
+    },
+
+    getAnimeRankScore(anime) {
+        const rawScore = parseFloat(anime?.score ?? anime?.rating);
+        const score = Number.isFinite(rawScore) && rawScore >= 0 && rawScore <= 10 ? rawScore : 0;
+        const episodeCount = this.getEpisodeCount(anime);
+        const genreCount = Array.isArray(anime?.genre) ? anime.genre.length : 0;
+        const hasTrailer = anime?.trailer ? 1 : 0;
+        const isCompleted = String(anime?.status || '').toLowerCase().includes('completed') ? 1 : 0;
+        const mediaBonus = episodeCount > 0 ? 400 : (hasTrailer ? 150 : -500);
+        return (score * 1000) + mediaBonus + (Math.min(episodeCount, 60) * 3) + genreCount + (hasTrailer * 2) + isCompleted;
+    },
+
+    sortAnimeByRanking(list = []) {
+        return [...list].sort((a, b) => {
+            const rankDiff = this.getAnimeRankScore(b) - this.getAnimeRankScore(a);
+            if (rankDiff !== 0) return rankDiff;
+
+            const rawScoreA = parseFloat(a?.score ?? a?.rating);
+            const rawScoreB = parseFloat(b?.score ?? b?.rating);
+            const safeScoreA = Number.isFinite(rawScoreA) && rawScoreA >= 0 && rawScoreA <= 10 ? rawScoreA : 0;
+            const safeScoreB = Number.isFinite(rawScoreB) && rawScoreB >= 0 && rawScoreB <= 10 ? rawScoreB : 0;
+            const scoreDiff = safeScoreB - safeScoreA;
+            if (scoreDiff !== 0) return scoreDiff;
+
+            const playableDiff = Number(this.hasPlayableMedia(b)) - Number(this.hasPlayableMedia(a));
+            if (playableDiff !== 0) return playableDiff;
+
+            const episodeDiff = this.getEpisodeCount(b) - this.getEpisodeCount(a);
+            if (episodeDiff !== 0) return episodeDiff;
+
+            return String(a?.title || '').localeCompare(String(b?.title || ''), 'id');
+        });
+    },
+
     async getFilters() {
         try {
             const payload = await this.fetch('/api/filters');
@@ -99,14 +168,10 @@ const API = {
 
     _fallbackAnimeList(page, limit, filters = {}) {
         return this.loadStaticData().then(data => {
-            let filtered = data;
-            if (filters.genre) filtered = filtered.filter(a => (a.genre || []).includes(filters.genre));
-            if (filters.status) filtered = filtered.filter(a => (a.status || '').trim() === filters.status);
-            if (filters.type) filtered = filtered.filter(a => (a.type || '').trim() === filters.type);
-            if (filters.q) {
-                const q = String(filters.q || '').trim().toLowerCase();
-                filtered = filtered.filter(a => (a.title_lower || a.title || '').toLowerCase().includes(q));
-            }
+            const filtered = this.sortAnimeByRanking(this.filterAnime(
+                data.filter((anime) => this.isDisplayableAnime(anime)),
+                filters
+            ));
             const safePage = Number(page) || 1;
             const safeLimit = Number(limit) || 50;
             const start = (safePage - 1) * safeLimit;
@@ -138,15 +203,20 @@ const API = {
         }
     },
 
-    async getVideoSources(episodeUrl) {
+    async getVideoSources(episodeUrl, episodeNumber = null) {
         try {
-            return await this.fetch('/api/episode', { url: episodeUrl });
+            const params = { url: episodeUrl };
+            if (episodeNumber != null) params.number = episodeNumber;
+            return await this.fetch('/api/episode', params);
         } catch (error) {
             console.warn('API episode gagal, fallback ke data statis:', error);
             const data = await this.loadStaticData();
 
             for (const anime of data) {
-                const episode = (anime.episodes || []).find(item => item.url === episodeUrl);
+                const episode = (anime.episodes || []).find(item =>
+                    item.url === episodeUrl &&
+                    (episodeNumber == null || Number(item.number) === Number(episodeNumber))
+                );
                 if (episode) {
                     return {
                         success: true,
@@ -193,10 +263,9 @@ const API = {
     _fallbackSearch(query, filters = {}) {
         const keyword = String(query || '').trim().toLowerCase();
         return this.loadStaticData().then(data => {
-            let results = keyword ? data.filter(item => (item.title_lower || item.title || '').toLowerCase().includes(keyword)) : data;
-            if (filters.genre) results = results.filter(a => (a.genre || []).includes(filters.genre));
-            if (filters.status) results = results.filter(a => (a.status || '').trim() === filters.status);
-            if (filters.type) results = results.filter(a => (a.type || '').trim() === filters.type);
+            const source = data.filter((anime) => this.isDisplayableAnime(anime));
+            const seeded = keyword ? source.filter(item => (item.title_lower || item.title || '').toLowerCase().includes(keyword)) : source;
+            const results = this.sortAnimeByRanking(this.filterAnime(seeded, filters));
             return { success: true, data: results, total: results.length, fallback: 'static' };
         });
     }

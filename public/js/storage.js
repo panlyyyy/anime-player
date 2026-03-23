@@ -14,11 +14,29 @@ const Storage = {
         return this.getHistory().find((h) => h.slug === slug) || null;
     },
 
+    getEpisodeKey(episodeOrUrl, episodeNumber = null) {
+        if (episodeOrUrl && typeof episodeOrUrl === 'object') {
+            const url = String(episodeOrUrl.url || '').trim();
+            const number = Number(episodeOrUrl.number);
+            if (!url) return '';
+            return Number.isFinite(number) ? `${url}::${number}` : url;
+        }
+
+        const url = String(episodeOrUrl || '').trim();
+        const number = Number(episodeNumber);
+        if (!url) return '';
+        return Number.isFinite(number) ? `${url}::${number}` : url;
+    },
+
     /**
      * Cari episode untuk resume dari entry history + objek anime (punya episodes[]).
      */
     findResumeEpisode(anime, historyEntry) {
         if (!anime || !anime.episodes || !historyEntry) return null;
+        if (historyEntry.lastEpisodeKey) {
+            const byKey = anime.episodes.find((e) => this.getEpisodeKey(e) === historyEntry.lastEpisodeKey);
+            if (byKey) return byKey;
+        }
         if (historyEntry.lastEpisodeUrl) {
             const byUrl = anime.episodes.find((e) => e.url === historyEntry.lastEpisodeUrl);
             if (byUrl) return byUrl;
@@ -58,6 +76,7 @@ const Storage = {
             ...anime,
             watchedAt: Date.now(),
             // Pertahankan progress resume kalau user buka anime yang sama lagi
+            lastEpisodeKey: existing?.lastEpisodeKey,
             lastEpisodeNumber: existing?.lastEpisodeNumber,
             lastEpisodeUrl: existing?.lastEpisodeUrl,
             lastProgressSeconds: existing?.lastProgressSeconds,
@@ -123,12 +142,15 @@ const Storage = {
     },
     
     // ===== PROGRESS =====
-    getProgress(episodeUrl) {
-        return parseFloat(localStorage.getItem(`progress_${episodeUrl}`)) || 0;
+    getProgress(episodeOrUrl, episodeNumber = null) {
+        const key = this.getEpisodeKey(episodeOrUrl, episodeNumber);
+        return parseFloat(localStorage.getItem(`progress_${key}`)) || 0;
     },
     
-    setProgress(episodeUrl, time) {
-        localStorage.setItem(`progress_${episodeUrl}`, time);
+    setProgress(episodeOrUrl, time, episodeNumber = null) {
+        const key = this.getEpisodeKey(episodeOrUrl, episodeNumber);
+        if (!key) return;
+        localStorage.setItem(`progress_${key}`, time);
         this.cleanupProgress();
     },
     

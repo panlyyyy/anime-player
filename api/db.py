@@ -9,6 +9,50 @@ DATA_FILE = BASE_DIR / 'public' / 'data' / 'anime_master.json'
 CACHE = None
 CACHE_MTIME = 0
 EPISODE_MAP = {}
+EPISODE_URL_MAP = {}
+
+
+def _episode_map_key(url, number=None):
+    url = (url or '').strip()
+    if not url:
+        return ''
+    if number is None:
+        return url
+    try:
+        return f'{url}::{int(number)}'
+    except (TypeError, ValueError):
+        return url
+
+
+def _rebuild_episode_maps(data):
+    EPISODE_MAP.clear()
+    EPISODE_URL_MAP.clear()
+
+    url_counts = {}
+    for anime in data:
+        for ep in anime.get('episodes', []) or []:
+            url = (ep.get('url') or '').strip()
+            if not url:
+                continue
+            url_counts[url] = url_counts.get(url, 0) + 1
+
+    for anime in data:
+        for ep in anime.get('episodes', []) or []:
+            url = (ep.get('url') or '').strip()
+            if not url:
+                continue
+
+            payload = {
+                'sources': ep.get('sources', {}),
+                'default': ep.get('default', '360p'),
+                'number': ep.get('number'),
+            }
+
+            number = ep.get('number')
+            EPISODE_MAP[_episode_map_key(url, number)] = payload
+
+            if url_counts.get(url) == 1:
+                EPISODE_URL_MAP[url] = payload
 
 def _fetch_static_data() -> list:
     """
@@ -92,32 +136,25 @@ def load_data():
         data = _fetch_static_data()
         CACHE = data
         CACHE_MTIME = -1
-        EPISODE_MAP.clear()
-        for anime in data:
-            for ep in anime.get('episodes', []):
-                EPISODE_MAP[ep['url']] = {
-                    'sources': ep.get('sources', {}),
-                    'default': ep.get('default', '360p')
-                }
+        _rebuild_episode_maps(data)
         return CACHE
     try:
         with DATA_FILE.open('r', encoding='utf-8') as f:
             data = json.load(f).get('data', [])
         CACHE = data
         CACHE_MTIME = mtime
-        EPISODE_MAP.clear()
-        for anime in data:
-            for ep in anime.get('episodes', []):
-                EPISODE_MAP[ep['url']] = {
-                    'sources': ep.get('sources', {}),
-                    'default': ep.get('default', '360p')
-                }
+        _rebuild_episode_maps(data)
         return CACHE
     except Exception as e:
         print(f"DB error: {e}")
         return []
 
-def get_episode_data(url):
-    if not EPISODE_MAP:
+def get_episode_data(url, number=None):
+    if not EPISODE_MAP and not EPISODE_URL_MAP:
         load_data()
-    return EPISODE_MAP.get(url)
+
+    keyed = _episode_map_key(url, number)
+    if keyed in EPISODE_MAP:
+        return EPISODE_MAP.get(keyed)
+
+    return EPISODE_URL_MAP.get((url or '').strip())

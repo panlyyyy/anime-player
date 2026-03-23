@@ -5,23 +5,18 @@ let heroCandidates = [];
 document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
     setupEventListeners();
-
 });
 
 async function loadData() {
     UI.showLoading(true);
     try {
-        const res = await API.getAnimeList(1, 50);
-        if (!res.success) throw new Error('Gagal memuat data');
-
-        allAnime = res.data;
+        const data = await API.loadStaticData();
+        allAnime = API.sortAnimeByRanking(data.filter((anime) => API.isDisplayableAnime(anime)));
 
         startHeroCarousel();
-
         renderGenrePills();
         renderContinueWatching();
         renderRecommendations();
-
     } catch (err) {
         console.error(err);
         UI.showNotification('Gagal memuat data', 3000, 'error');
@@ -37,15 +32,21 @@ function startHeroCarousel() {
         clearInterval(heroCarouselTimer);
         heroCarouselTimer = null;
     }
-    const withEps = allAnime.filter(a => (a.episodes?.length || 0) > 0);
-    const byScore = [...withEps].sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0));
-    // Prioritaskan featured dari DB yang ada di allAnime
-    const featured = FEATURED_HERO_SLUGS.map(s => withEps.find(a => a.slug === s)).filter(Boolean);
-    heroCandidates = featured.length > 0 ? featured : (byScore.length > 0 ? byScore : allAnime).slice(0, Math.min(5, allAnime.length));
+
+    const withPlayableMedia = allAnime.filter((anime) => API.hasPlayableMedia(anime));
+    const byScore = API.sortAnimeByRanking(withPlayableMedia);
+    const featured = FEATURED_HERO_SLUGS.map((slug) => withPlayableMedia.find((anime) => anime.slug === slug)).filter(Boolean);
+
+    heroCandidates = featured.length > 0
+        ? featured
+        : (byScore.length > 0 ? byScore : allAnime).slice(0, Math.min(5, allAnime.length));
+
     if (heroCandidates.length === 0) return;
+
     let idx = 0;
     renderFeatured(heroCandidates[idx]);
     if (heroCandidates.length <= 1) return;
+
     heroCarouselTimer = setInterval(() => {
         idx = (idx + 1) % heroCandidates.length;
         renderFeatured(heroCandidates[idx]);
@@ -57,18 +58,18 @@ function renderFeatured(anime) {
     if (!featured || !anime) return;
 
     const dots = heroCandidates.length > 1
-        ? `<div class="hero-dots">${heroCandidates.map((a) =>
-            `<button type="button" class="hero-dot ${a.slug === anime.slug ? 'active' : ''}" data-slug="${a.slug}" aria-label="Hero ${a.title.replace(/"/g, '')}"></button>`
+        ? `<div class="hero-dots">${heroCandidates.map((item) =>
+            `<button type="button" class="hero-dot ${item.slug === anime.slug ? 'active' : ''}" data-slug="${item.slug}" aria-label="Hero ${item.title.replace(/"/g, '')}"></button>`
         ).join('')}</div>`
         : '';
 
-    const safe = (s) => String(s ?? '').replace(/</g, '').replace(/"/g, '&quot;');
-    const synopsisRaw = anime.synopsis || anime.description || '';
-    const synopsis = safe(synopsisRaw);
-    const epCount = anime.episodes?.length ?? '?';
-    const year = anime.release_date ? (anime.release_date.match(/\d{4}/) || [])[0] : (anime.year || '—');
-    const rating = anime.score != null ? anime.score : (anime.rating != null ? anime.rating : '—');
-    const genreLine = (anime.genre?.slice(0, 4) || []).map((g) => safe(g)).filter(Boolean).join(' • ');
+    const safe = (value) => String(value ?? '').replace(/</g, '').replace(/"/g, '&quot;');
+    const synopsis = safe(anime.synopsis || anime.description || '');
+    const episodeCount = anime.episodes?.length ?? '?';
+    const year = anime.release_date ? (anime.release_date.match(/\d{4}/) || [])[0] : (anime.year || '-');
+    const rawRating = parseFloat(anime.score ?? anime.rating);
+    const rating = Number.isFinite(rawRating) && rawRating >= 0 && rawRating <= 10 ? rawRating : '-';
+    const genreLine = (anime.genre?.slice(0, 4) || []).map((genre) => safe(genre)).filter(Boolean).join(' | ');
 
     featured.innerHTML = `
         <img src="${anime.image || 'https://images.unsplash.com/photo-1541562232579-512a21360020'}" class="featured-img" data-slug="${anime.slug}" alt="${safe(anime.title)}">
@@ -79,13 +80,13 @@ function renderFeatured(anime) {
                 <div class="hero-meta-row">
                     <span class="hero-rating"><i class="fas fa-star"></i> ${safe(rating)}</span>
                     <span class="hero-pill">${safe(year)}</span>
-                    <span class="hero-pill">${epCount} EP</span>
+                    <span class="hero-pill">${episodeCount} EP</span>
                     ${genreLine ? `<span class="hero-genres">${genreLine}</span>` : ''}
                 </div>
                 <p class="hero-synopsis line-clamp-3 line-clamp-md-none">${synopsis || 'Sinopsis belum tersedia.'}</p>
                 <div class="tags">
-                    ${anime.genre?.slice(0, 3).map(g => `<span class="tag">${safe(g)}</span>`).join('') || '<span class="tag">Anime</span>'}
-                    <span class="tag">Eps ${epCount}</span>
+                    ${anime.genre?.slice(0, 3).map((genre) => `<span class="tag">${safe(genre)}</span>`).join('') || '<span class="tag">Anime</span>'}
+                    <span class="tag">Eps ${episodeCount}</span>
                 </div>
                 <div class="action-group">
                     <button type="button" class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton</button>
@@ -103,22 +104,20 @@ function renderFeatured(anime) {
     featured.querySelector('.watch-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const slug = e.currentTarget.dataset.slug;
-        const a = allAnime.find((x) => x.slug === slug) || heroCandidates.find((x) => x.slug === slug);
-        if (a) openPlayer(a);
+        const selected = allAnime.find((item) => item.slug === slug) || heroCandidates.find((item) => item.slug === slug);
+        if (selected) openPlayer(selected);
     });
 
     featured.querySelector('.fav-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
-        const slug = e.currentTarget.dataset.slug;
-        toggleFavorite(slug);
+        toggleFavorite(e.currentTarget.dataset.slug);
     });
 
     featured.querySelectorAll('.hero-dot').forEach((dot) => {
         dot.addEventListener('click', (e) => {
             e.stopPropagation();
-            const slug = dot.dataset.slug;
-            const a = heroCandidates.find((x) => x.slug === slug);
-            if (a) renderFeatured(a);
+            const selected = heroCandidates.find((item) => item.slug === dot.dataset.slug);
+            if (selected) renderFeatured(selected);
         });
     });
 }
@@ -127,20 +126,20 @@ let currentGenre = 'Semua';
 
 function renderGenrePills() {
     const genres = new Set();
-    allAnime.forEach(a => a.genre?.forEach(g => genres.add(g)));
+    allAnime.forEach((anime) => anime.genre?.forEach((genre) => genres.add(genre)));
     const genreList = ['Semua', ...Array.from(genres).sort()];
 
     const container = document.querySelector('.category-scroll');
     if (!container) return;
 
-    container.innerHTML = genreList.map(g =>
-        `<div class="pill ${g === currentGenre ? 'active' : ''}" data-genre="${g.replace(/"/g, '&quot;')}">${g.replace(/"/g, '&quot;')}</div>`
+    container.innerHTML = genreList.map((genre) =>
+        `<div class="pill ${genre === currentGenre ? 'active' : ''}" data-genre="${genre.replace(/"/g, '&quot;')}">${genre.replace(/"/g, '&quot;')}</div>`
     ).join('');
 
-    container.querySelectorAll('.pill').forEach(pill => {
+    container.querySelectorAll('.pill').forEach((pill) => {
         pill.addEventListener('click', () => {
             currentGenre = pill.dataset.genre || 'Semua';
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.pill').forEach((node) => node.classList.remove('active'));
             pill.classList.add('active');
             renderRecommendations();
         });
@@ -158,24 +157,25 @@ function renderContinueWatching() {
     const container = document.getElementById('continueList');
     if (!container) return;
 
-    container.innerHTML = continueAnime.map(anime => UI.renderHorizontalCard(anime, 'continue')).join('');
+    container.innerHTML = continueAnime.map((anime) => UI.renderHorizontalCard(anime, 'continue')).join('');
 
-    container.querySelectorAll('.anime-card-wide').forEach(card => {
+    container.querySelectorAll('.anime-card-wide').forEach((card) => {
         card.addEventListener('click', () => {
             const slug = card.dataset.slug;
-            const hItem = continueAnime.find((h) => h.slug === slug);
-            if (hItem) openContinueFromHistory(hItem);
+            const historyItem = continueAnime.find((item) => item.slug === slug);
+            if (historyItem) openContinueFromHistory(historyItem);
         });
     });
 }
 
-async function openContinueFromHistory(hItem) {
-    if (!hItem?.slug) return;
-    let anime = allAnime.find((a) => a.slug === hItem.slug);
+async function openContinueFromHistory(historyItem) {
+    if (!historyItem?.slug) return;
+
+    let anime = allAnime.find((item) => item.slug === historyItem.slug);
     if (!anime) {
         UI.showLoading(true);
         try {
-            const res = await API.getDetail(hItem.slug);
+            const res = await API.getDetail(historyItem.slug);
             if (!res.success) throw new Error('no data');
             anime = res.data;
         } catch (e) {
@@ -185,34 +185,19 @@ async function openContinueFromHistory(hItem) {
             UI.showLoading(false);
         }
     }
-    const ep = Storage.findResumeEpisode(anime, hItem);
-    openPlayer(anime, ep);
+
+    const episode = Storage.findResumeEpisode(anime, historyItem);
+    openPlayer(anime, episode);
 }
 
 function renderRecommendations() {
-    let filtered = currentGenre === 'Semua'
+    const filtered = currentGenre === 'Semua'
         ? allAnime
-        : allAnime.filter((a) => (a.genre || []).includes(currentGenre));
-    
-    console.log('Home recommendations - filtered count:', filtered.length, 'genre:', currentGenre);
-    
-    // Sort by rating and popularity (high to low) and take top 10
-    const byScoreAndPopularity = [...filtered].sort((a, b) => {
-        const scoreA = parseFloat(a.score) || 0;
-        const scoreB = parseFloat(b.score) || 0;
-        
-        // Prioritize score, but also consider episode count as popularity indicator
-        const popularityA = (a.episodes?.length || 0) * 0.1;
-        const popularityB = (b.episodes?.length || 0) * 0.1;
-        
-        const finalScoreA = scoreA + popularityA;
-        const finalScoreB = scoreB + popularityB;
-        
-        return finalScoreB - finalScoreA;
-    });
-    const recommendations = byScoreAndPopularity.slice(0, 10);
-    
-    console.log('Home recommendations - top 3:', recommendations.slice(0, 3).map(a => ({title: a.title, score: a.score, episodes: a.episodes?.length})));
+        : allAnime.filter((anime) => (anime.genre || []).includes(currentGenre));
+
+    const playable = filtered.filter((anime) => API.hasPlayableMedia(anime));
+    const source = playable.length > 0 ? playable : filtered;
+    const recommendations = API.sortAnimeByRanking(source).slice(0, 12);
 
     const container = document.getElementById('recommendList');
     if (!container) return;
@@ -221,13 +206,13 @@ function renderRecommendations() {
         container.innerHTML = `<div class="empty" style="padding:24px;color:var(--ns-muted);">Tidak ada anime untuk genre ini</div>`;
         return;
     }
-    container.innerHTML = recommendations.map(anime => UI.renderHorizontalCard(anime, 'recommend')).join('');
 
-    container.querySelectorAll('.anime-card-wide').forEach(card => {
+    container.innerHTML = recommendations.map((anime) => UI.renderHorizontalCard(anime, 'recommend')).join('');
+
+    container.querySelectorAll('.anime-card-wide').forEach((card) => {
         card.addEventListener('click', () => {
-            const slug = card.dataset.slug;
-            const anime = allAnime.find(a => a.slug === slug);
-            if (anime) openPlayer(anime);
+            const selected = allAnime.find((anime) => anime.slug === card.dataset.slug);
+            if (selected) openPlayer(selected);
         });
     });
 }
@@ -244,9 +229,9 @@ function setupEventListeners() {
 
 function resolveAnimeForFavorite(slug) {
     return (
-        allAnime.find((a) => String(a.slug) === String(slug)) ||
-        heroCandidates.find((a) => String(a.slug) === String(slug)) ||
-        Storage.getFavorites().find((f) => String(f.slug) === String(slug)) ||
+        allAnime.find((anime) => String(anime.slug) === String(slug)) ||
+        heroCandidates.find((anime) => String(anime.slug) === String(slug)) ||
+        Storage.getFavorites().find((anime) => String(anime.slug) === String(slug)) ||
         null
     );
 }

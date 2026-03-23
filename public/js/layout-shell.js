@@ -1,7 +1,17 @@
 /** PWA: daftar service worker untuk install di HP */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        let hasRefreshedForUpdate = false;
+        navigator.serviceWorker.register('/sw.js?v=20260323-1', {
+            updateViaCache: 'none'
+        }).then((registration) => {
+            registration.update().catch(() => {});
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (hasRefreshedForUpdate) return;
+                hasRefreshedForUpdate = true;
+                window.location.reload();
+            });
+        }).catch(() => {});
     });
 }
 

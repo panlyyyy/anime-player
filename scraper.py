@@ -396,6 +396,50 @@ def extract_episodes(soup: BeautifulSoup, page_url: str) -> List[Dict[str, Any]]
     
     return episodes
 
+
+def extract_episode_media_from_page(page_url: str, episode_number: Optional[int] = None) -> Dict[str, Any]:
+    """
+    Ambil media episode tertentu langsung dari halaman detail anime.
+
+    Args:
+        page_url: URL halaman anime/detail.
+        episode_number: Nomor episode yang dicari. Jika None, pakai episode pertama.
+
+    Returns:
+        Dict dengan keys:
+        - videos: dict kualitas -> URL
+        - streams: dict kualitas -> URL embed/stream
+        - default: kualitas default
+        - number: nomor episode yang terpilih
+    """
+    result = {'videos': {}, 'streams': {}, 'default': None, 'number': None}
+    if not page_url:
+        return result
+
+    soup = get_soup(page_url)
+    if not soup:
+        return result
+
+    episodes = extract_episodes(soup, page_url)
+    if not episodes:
+        return result
+
+    selected = None
+    if episode_number is not None:
+        selected = next((ep for ep in episodes if ep.get('number') == episode_number), None)
+
+    if not selected:
+        selected = episodes[0]
+
+    if not selected:
+        return result
+
+    result['videos'] = selected.get('sources', {}) or {}
+    result['streams'] = selected.get('streams', {}) or {}
+    result['default'] = selected.get('default')
+    result['number'] = selected.get('number')
+    return result
+
 def scrape_anime_detail(url: str) -> Optional[Dict[str, Any]]:
     """
     Scraping detail anime dari URL halaman detail.

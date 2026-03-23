@@ -51,6 +51,19 @@ const UI = {
         }
     },
 
+    getAvailabilityText(anime) {
+        const episodeCount = Array.isArray(anime?.episodes) ? anime.episodes.length : 0;
+        if (episodeCount > 0) return `${episodeCount} eps`;
+        if (anime?.trailer) return 'Trailer tersedia';
+        return 'Belum ada episode';
+    },
+
+    getScoreText(anime) {
+        const raw = parseFloat(anime?.score ?? anime?.rating);
+        if (!Number.isFinite(raw) || raw < 0 || raw > 10) return null;
+        return `Rating ${raw}`;
+    },
+
     renderHorizontalCard(anime, type = 'continue') {
         if (type === 'continue') {
             const watchedEps = Storage.getWatchedEpisodes(anime.slug).length;
@@ -75,28 +88,31 @@ const UI = {
                     </div>
                     <div class="ns-card-body">
                         <div class="card-title ns-card-title">${anime.title.replace(/"/g, '&quot;')}</div>
-                        <div class="card-sub ns-card-sub">Eps ${epLabel} • ${timeLabel}</div>
-                    </div>
-                </div>
-            `;
-        } else {
-            return `
-                <div class="anime-card-wide portrait ns-card" data-slug="${anime.slug}">
-                    <div class="ns-card-poster">
-                        <img src="${anime.image || 'https://via.placeholder.com/300x450'}" class="card-thumb" loading="lazy" alt="">
-                        <div class="ns-card-shade"></div>
-                        <div class="ns-card-play" aria-hidden="true"><span><i class="fas fa-play"></i></span></div>
-                    </div>
-                    <div class="ns-card-body">
-                        <div class="card-title ns-card-title">${anime.title.replace(/"/g, '&quot;')}</div>
-                        <div class="card-sub ns-card-sub">${anime.genre?.[0] || 'Anime'} • TV</div>
+                        <div class="card-sub ns-card-sub">Eps ${epLabel} | ${timeLabel}</div>
                     </div>
                 </div>
             `;
         }
+
+        const subtitle = [this.getScoreText(anime), this.getAvailabilityText(anime)]
+            .filter(Boolean)
+            .join(' | ') || (anime.genre?.[0] || 'Anime');
+
+        return `
+            <div class="anime-card-wide portrait ns-card" data-slug="${anime.slug}">
+                <div class="ns-card-poster">
+                    <img src="${anime.image || 'https://via.placeholder.com/300x450'}" class="card-thumb" loading="lazy" alt="">
+                    <div class="ns-card-shade"></div>
+                    <div class="ns-card-play" aria-hidden="true"><span><i class="fas fa-play"></i></span></div>
+                </div>
+                <div class="ns-card-body">
+                    <div class="card-title ns-card-title">${anime.title.replace(/"/g, '&quot;')}</div>
+                    <div class="card-sub ns-card-sub">${subtitle}</div>
+                </div>
+            </div>
+        `;
     },
 
-    /** Tombol favorit hero + player overlay */
     applyFavoriteUiState(slug) {
         if (slug == null || slug === '') return;
         const s = String(slug);
@@ -117,7 +133,6 @@ const UI = {
         }
     },
 
-    /** Kartu khusus halaman favorit (tombol hapus) */
     renderFavoriteGridCard(anime) {
         const t = anime.title.replace(/"/g, '&quot;');
         return `
@@ -129,7 +144,7 @@ const UI = {
                 <div class="anime-info">
                     <h3>${t}</h3>
                     <div class="anime-meta">
-                        <span>${anime.episodes?.length || '?'} eps</span>
+                        <span>${this.getAvailabilityText(anime)}</span>
                     </div>
                 </div>
             </div>
@@ -140,16 +155,16 @@ const UI = {
         const showResume = options.showResume !== false && (anime.lastEpisodeNumber != null || (anime.lastProgressSeconds || 0) > 0);
         const showMeta = options.showMeta === true;
         const resumeLine = showResume
-            ? `<div class="anime-meta resume-line">Eps ${anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?'} • ${Storage.formatTime(anime.lastProgressSeconds || 0)}</div>`
+            ? `<div class="anime-meta resume-line">Eps ${anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?'} | ${Storage.formatTime(anime.lastProgressSeconds || 0)}</div>`
             : '';
         const metaLine = showMeta ? (() => {
-            const parts = [];
-            if (anime.episodes?.length) parts.push(`${anime.episodes.length} eps`);
-            if (anime.score) parts.push(`★ ${anime.score}`);
+            const parts = [this.getAvailabilityText(anime)];
+            const scoreText = this.getScoreText(anime);
+            if (scoreText) parts.push(scoreText);
             if (anime.status) parts.push(anime.status);
             const genreTags = (anime.genre || []).slice(0, 2).map(g => `<span class="anime-genre-tag">${String(g).replace(/</g, '&lt;')}</span>`).join('');
-            return `<div class="anime-meta">${parts.join(' • ')}</div>${genreTags ? `<div class="anime-genres">${genreTags}</div>` : ''}`;
-        })() : `<div class="anime-meta"><span>${anime.episodes?.length || '?'} eps</span></div>`;
+            return `<div class="anime-meta">${parts.join(' | ')}</div>${genreTags ? `<div class="anime-genres">${genreTags}</div>` : ''}`;
+        })() : `<div class="anime-meta"><span>${this.getAvailabilityText(anime)}</span></div>`;
         return `
             <div class="anime-card" data-slug="${anime.slug}">
                 <img src="${anime.image || 'https://via.placeholder.com/300x450'}" alt="${anime.title.replace(/"/g, '&quot;')}" loading="lazy">
