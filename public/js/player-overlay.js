@@ -33,6 +33,7 @@ function handleFullscreenChange() {
         tryLockLandscape();
     } else {
         tryUnlockOrientation();
+        tryLockPortrait();
     }
 
     applyFullscreenMode(isFullscreen);
@@ -49,6 +50,15 @@ function tryLockLandscape() {
         const o = screen.orientation;
         if (o && typeof o.lock === 'function') {
             o.lock('landscape').catch(() => o.lock('landscape-primary').catch(() => {}));
+        }
+    } catch (e) {}
+}
+
+function tryLockPortrait() {
+    try {
+        const o = screen.orientation;
+        if (o && typeof o.lock === 'function') {
+            o.lock('portrait').catch(() => o.lock('portrait-primary').catch(() => {}));
         }
     } catch (e) {}
 }
@@ -97,6 +107,7 @@ function toggleFullscreen() {
             document.webkitExitFullscreen?.();
         } catch (e2) {}
         tryUnlockOrientation();
+        tryLockPortrait();
         applyFullscreenMode(false);
         return;
     }
@@ -112,6 +123,14 @@ function toggleFullscreen() {
     const preferContainer =
         typeof window.matchMedia === 'function' &&
         window.matchMedia('(max-width: 900px)').matches;
+    const preferNativeVideoFullscreen =
+        !!videoElement &&
+        videoElement.style.display !== 'none' &&
+        !!videoElement.getAttribute('src');
+
+    if (preferNativeVideoFullscreen && tryVideoElementFullscreen()) {
+        return;
+    }
 
     try {
         if (preferContainer && container && container.requestFullscreen) {
@@ -327,6 +346,7 @@ function closePlayer() {
     document.body.style.overflow = 'auto';
     applyFullscreenMode(false);
     tryUnlockOrientation();
+    tryLockPortrait();
     setAvailabilityNotice('');
     if (document.fullscreenElement) {
         try { document.exitFullscreen(); } catch (e) {}
@@ -340,9 +360,15 @@ document.addEventListener('DOMContentLoaded', () => {
     videoElement = document.getElementById('videoPlayer');
     if (!videoElement) return;
     iframeElement = document.getElementById('videoIframe');
+    tryLockPortrait();
 
     settings = Storage.getSettings();
     videoElement.playbackRate = settings.speed;
+
+    if (iframeElement) {
+        iframeElement.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+        iframeElement.setAttribute('allowfullscreen', 'true');
+    }
 
     const closeBtn = document.querySelector('.close-player');
     if (closeBtn) {
@@ -391,6 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tryLockLandscape();
         } else {
             tryUnlockOrientation();
+            tryLockPortrait();
         }
     });
 
@@ -402,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             applyFullscreenMode(false);
             tryUnlockOrientation();
+            tryLockPortrait();
         }
     });
 
@@ -545,12 +573,13 @@ function isLikelyIframeSource(url) {
         const parsed = new URL(url, window.location.origin);
         const host = parsed.hostname.toLowerCase();
         const path = parsed.pathname.toLowerCase();
-        const looksLikeDirectVideo = /\.(mp4|m3u8|webm|mkv|mov)(?:$|\?)/i.test(parsed.href);
+        const looksLikeDirectVideo = /\.(mp4|m3u8|webm|mkv|mov)$/i.test(path);
 
-        if (looksLikeDirectVideo) return false;
+        if (path.includes('streaming.php')) return true;
         if (host.includes('youtube.com') || host.includes('youtu.be')) return true;
-        if (host.includes('berkasdrive.com') || host.includes('mitedrive.com')) return true;
+        if (host.includes('berkasdrive.com') || host.includes('mitedrive.com') || host.includes('dlgan.space')) return true;
         if (path.includes('/streaming/') || path.includes('/embed/') || path.includes('/view/')) return true;
+        if (looksLikeDirectVideo) return false;
     } catch (e) {
         return false;
     }
@@ -579,6 +608,7 @@ function playEmbedUrl(url) {
     videoElement.removeAttribute('src');
     videoElement.load();
     videoElement.style.display = 'none';
+    iframeElement.referrerPolicy = 'strict-origin-when-cross-origin';
     iframeElement.style.display = '';
     iframeElement.src = withAutoplay(url);
     iframeElement.onerror = function () {
@@ -597,6 +627,10 @@ function playVideoUrl(url) {
 
     videoElement.onerror = function (e) {
         console.error('Video error:', e);
+        if (isLikelyIframeSource(url)) {
+            playEmbedUrl(url);
+            return;
+        }
         UI.showNotification('Gagal memuat video. Coba kualitas lain.', 3000, 'error');
     };
 
@@ -776,6 +810,9 @@ window.openPlayer = function (anime, episode = null) {
         currentEpisodes.find((item) => isTrailerItem(item)) ||
         null;
 
+    document.getElementById('playerOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
     renderEpisodeList(currentEpisodes, preferredEpisode);
 
     if (preferredEpisode) {
@@ -784,9 +821,6 @@ window.openPlayer = function (anime, episode = null) {
         currentEpisode = null;
         showNoMediaState(anime);
     }
-
-    document.getElementById('playerOverlay').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
 
     ensureOverlayFavoriteButton();
     const favBtn = document.getElementById('overlayFavoriteBtn');

@@ -1,6 +1,7 @@
 let allAnime = [];
 let heroCarouselTimer = null;
 let heroCandidates = [];
+const recommendationShuffleSeed = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
@@ -26,6 +27,16 @@ async function loadData() {
 }
 
 const FEATURED_HERO_SLUGS = ['jigokuraku-s2', 'jujutsu-kaisen-s3-the-culling-game', 'one-piece', 'gintama-s5-gintama'];
+
+function stableShuffleWeight(value) {
+    const input = `${recommendationShuffleSeed}:${value}`;
+    let hash = 0;
+    for (let i = 0; i < input.length; i += 1) {
+        hash = ((hash << 5) - hash) + input.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash);
+}
 
 function startHeroCarousel() {
     if (heroCarouselTimer) {
@@ -197,7 +208,10 @@ function renderRecommendations() {
 
     const playable = filtered.filter((anime) => API.hasPlayableMedia(anime));
     const source = playable.length > 0 ? playable : filtered;
-    const recommendations = API.sortAnimeByRanking(source).slice(0, 12);
+    const topPool = API.sortAnimeByRanking(source).slice(0, Math.min(30, source.length));
+    const recommendations = [...topPool]
+        .sort((a, b) => stableShuffleWeight(`${currentGenre}:${a.slug}`) - stableShuffleWeight(`${currentGenre}:${b.slug}`))
+        .slice(0, 12);
 
     const container = document.getElementById('recommendList');
     if (!container) return;
