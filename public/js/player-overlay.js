@@ -371,7 +371,7 @@ function playCurrentEpisodeMediaByQuality(quality) {
     let streamUrl = pickFromMap(streams, quality);
 
     // Pastikan hanya URL absolut yang dipakai (hindari 404 dari token/ID seperti "3561110768215")
-    const isValidUrl = (u) => u && typeof u === 'string' && (u.startsWith('http://') || u.startsWith('https://'));
+    const isValidUrl = (u) => u && typeof u === 'string' && (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('//'));
     if (videoUrl && !isValidUrl(videoUrl)) videoUrl = null;
     if (streamUrl && !isValidUrl(streamUrl)) streamUrl = null;
 
@@ -396,7 +396,7 @@ function playCurrentEpisodeMediaByQuality(quality) {
                 UI.showNotification('Gagal memutar video. Coba episode lain.', 3000, 'error');
             });
         };
-    } else if (streamUrl && (streamUrl.startsWith('http://') || streamUrl.startsWith('https://'))) {
+    } else if (streamUrl && isValidUrl(streamUrl)) {
         // Guard: jangan sampai kita embed "halaman episode asli" yang penuh UI.
         if (/\/episode\/\d+/.test(streamUrl) && /\/series\//.test(streamUrl)) {
             throw new Error('StreamUrl terdeteksi mengarah ke halaman episode (bukan media).');
