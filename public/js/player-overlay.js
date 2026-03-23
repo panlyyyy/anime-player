@@ -8,6 +8,14 @@ let iframeElement = null;
 let settings = { speed: 1.0 };
 
 // Add fullscreen change event listener
+// Listen for openPlayer event from detail page
+document.addEventListener('openPlayer', (e) => {
+    const data = e.detail;
+    if (data) {
+        window.openPlayer(data.anime || data, data.currentEpisode || data.episode || null);
+    }
+});
+
 document.addEventListener('fullscreenchange', handleFullscreenChange);
 document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 document.addEventListener('mozfullscreenchange', handleFullscreenChange);
@@ -491,81 +499,43 @@ async function loadEpisode(episode) {
 
     UI.showLoading(true, 'Memuat video...');
     try {
-        const res = await API.getVideoSources(episode.url);
-        if (!res.success) {
-            throw new Error(res.error || 'Tidak ada sumber');
+        // Try API first
+        let res = null;
+        try {
+            res = await API.getVideoSources(episode.url);
+        } catch (apiError) {
+            console.warn('API failed, using static data:', apiError);
+        }
+        
+        // If API fails or returns no success, use episode data directly
+        if (!res || !res.success) {
+            if (episode.sources && Object.keys(episode.sources).length > 0) {
+                res = {
+                    success: true,
+                    sources: episode.sources,
+                    streams: {},
+                    default: episode.default || '360p',
+                    url: episode.url
+                };
+            } else {
+                throw new Error('Tidak ada sumber video');
+            }
         }
 
         currentMediaResponse = res;
         const qualities = getAvailableQualities(res.sources || {}, res.streams || {});
-        const defaultQuality = res.default || '360p';
+        const defaultQuality = res.default || qualities[0] || '360p';
         const initialQuality = qualities.includes(defaultQuality) ? defaultQuality : (qualities[0] || defaultQuality);
         currentSelectedQuality = initialQuality;
 
         setQualityUI(initialQuality);
         renderQualityButtons(qualities, initialQuality);
-
         playCurrentEpisodeMediaByQuality(initialQuality);
-
-        // Restore progress hanya untuk direct video (HTML5 <video>).
-        // Jangan panggil updateHistoryWatchProgress dengan currentTime=0 di sini — itu menimpa menit tersimpan.
-        if ((res.sources || {}) && (res.sources[initialQuality] || null) && videoElement && videoElement.style.display !== 'none') {
-            const fromKey = Storage.getProgress(episode.url);
-            const he = Storage.getHistoryEntry(currentAnime.slug);
-            const fromHistory =
-                he && he.lastEpisodeUrl === episode.url && Number(he.lastProgressSeconds) > 0
-                    ? Number(he.lastProgressSeconds)
-                    : 0;
-            const resumeAt = fromKey > 0 ? fromKey : fromHistory;
-
-            const applyResume = () => {
-                if (resumeAt <= 0) return;
-                try {
-                    const dur = videoElement.duration;
-                    if (Number.isFinite(dur) && dur > 0 && resumeAt >= dur - 3) return;
-                    videoElement.currentTime = resumeAt;
-                } catch (e) {}
-            };
-
-            const syncDurationAndProgress = () => {
-                const d = videoElement.duration;
-                Storage.updateHistoryWatchProgress(currentAnime.slug, {
-                    lastEpisodeNumber: episode.number,
-                    lastEpisodeUrl: episode.url,
-                    lastProgressSeconds: videoElement.currentTime,
-                    lastDurationSeconds: Number.isFinite(d) && d > 0 ? d : undefined,
-                });
-            };
-
-            let metaHandled = false;
-            const onLoadedMeta = () => {
-                if (metaHandled) return;
-                metaHandled = true;
-                applyResume();
-                window.setTimeout(() => {
-                    syncDurationAndProgress();
-                    Storage.setProgress(episode.url, videoElement.currentTime);
-                }, 50);
-            };
-
-            videoElement.addEventListener('loadedmetadata', onLoadedMeta, { once: true });
-            if (videoElement.readyState >= 1) {
-                onLoadedMeta();
-            }
-        } else {
-            // iframe / embed: tidak bisa sync detik; reset progress supaya tidak menampilkan waktu episode lama
-            Storage.updateHistoryWatchProgress(currentAnime.slug, {
-                lastEpisodeNumber: episode.number,
-                lastEpisodeUrl: episode.url,
-                lastProgressSeconds: 0,
-                lastDurationSeconds: 0,
-            });
-        }
 
         Storage.addWatchedEpisode(currentAnime.slug, episode.number);
 
     } catch (err) {
-        console.error(err);
+        console.error('Load episode error:', err);
         UI.showNotification('Gagal memuat video. Coba episode lain.', 3000, 'error');
     } finally {
         UI.showLoading(false);

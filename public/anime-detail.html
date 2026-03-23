@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.0.3">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.3">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.4">
+    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.4">
     <style>
         /* Detail page specific styles */
         .anime-hero {
@@ -442,8 +442,8 @@
                         <div class="episodes-grid">
                             ${anime.episodes.map((ep, index) => `
                                 <div class="episode-card" onclick="playEpisode(${index})">
-                                    <div class="episode-number">${ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer') ? 'Trailer' : `EP ${ep.number}`}</div>
-                                    <div class="episode-title">${ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer') ? 'Trailer' : (ep.title || `Episode ${ep.number}`)}</div>
+                                    <div class="episode-number">${ep.number === 0 || (ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer')) ? '🎬 Trailer' : `EP ${ep.number}`}</div>
+                                    <div class="episode-title">${ep.title || `Episode ${ep.number}`}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -506,21 +506,14 @@
         }
 
         function openPlayer(anime, episode) {
-            // Create player overlay with episode data
-            const playerData = {
-                ...anime,
-                currentEpisode: episode,
-                episodes: anime.episodes || []
-            };
-            
-            // Use existing player overlay
-            UI.showLoading(true);
-            setTimeout(() => {
-                UI.showLoading(false);
-                // Trigger player overlay
-                const event = new CustomEvent('openPlayer', { detail: playerData });
-                document.dispatchEvent(event);
-            }, 500);
+            // Dispatch event to player-overlay.js
+            const event = new CustomEvent('openPlayer', { 
+                detail: { 
+                    anime: anime, 
+                    episode: episode 
+                } 
+            });
+            document.dispatchEvent(event);
         }
 
         function showError(message) {
