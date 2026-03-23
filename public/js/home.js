@@ -103,8 +103,8 @@ function renderFeatured(anime) {
     featured.querySelector('.watch-btn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const slug = e.currentTarget.dataset.slug;
-        const a = allAnime.find((x) => x.slug === slug) || heroCandidates.find((x) => x.slug === slug);
-        if (a) openPlayer(a);
+        // Open detail page instead of player
+        window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
     });
 
     featured.querySelector('.fav-btn')?.addEventListener('click', (e) => {
@@ -163,8 +163,8 @@ function renderContinueWatching() {
     container.querySelectorAll('.anime-card-wide').forEach(card => {
         card.addEventListener('click', () => {
             const slug = card.dataset.slug;
-            const hItem = continueAnime.find((h) => h.slug === slug);
-            if (hItem) openContinueFromHistory(hItem);
+            // Open detail page instead of player
+            window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
         });
     });
 }
@@ -193,8 +193,14 @@ function renderRecommendations() {
     let filtered = currentGenre === 'Semua'
         ? allAnime
         : allAnime.filter((a) => (a.genre || []).includes(currentGenre));
-    const shuffled = [...filtered].sort(() => 0.5 - Math.random());
-    const recommendations = shuffled.slice(0, 10);
+    
+    // Sort by rating (high to low) and take top 10
+    const byScore = [...filtered].sort((a, b) => {
+        const scoreA = parseFloat(a.score) || 0;
+        const scoreB = parseFloat(b.score) || 0;
+        return scoreB - scoreA;
+    });
+    const recommendations = byScore.slice(0, 10);
 
     const container = document.getElementById('recommendList');
     if (!container) return;
@@ -208,8 +214,8 @@ function renderRecommendations() {
     container.querySelectorAll('.anime-card-wide').forEach(card => {
         card.addEventListener('click', () => {
             const slug = card.dataset.slug;
-            const anime = allAnime.find(a => a.slug === slug);
-            if (anime) openPlayer(anime);
+            // Open detail page instead of player
+            window.location.href = `/anime-detail.html?slug=${encodeURIComponent(slug)}`;
         });
     });
 }

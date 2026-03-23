@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.0.5">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.5">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.7">
+    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.7">
 </head>
 <body class="ns-theme">
     <div class="app-shell ns-shell">
@@ -51,8 +51,10 @@
                 </div>
                 <div class="ns-filters" id="filterSection">
                     <div class="ns-filter-group">
-                        <span class="ns-filter-label">Genre:</span>
-                        <div class="ns-filter-chips" id="genreFilters"></div>
+                        <label class="ns-filter-label">Genre</label>
+                        <select id="genreFilter" class="ns-select">
+                            <option value="">Semua</option>
+                        </select>
                     </div>
                     <div class="ns-filter-group">
                         <span class="ns-filter-label">Status:</span>
@@ -127,16 +129,15 @@
             const searchInput = document.getElementById('searchInput');
             const searchBtn = document.getElementById('searchBtn');
             const resultsContainer = document.getElementById('searchResults');
-            const genreFilters = document.getElementById('genreFilters');
+            const genreFilter = document.getElementById('genreFilter');
             const statusFilter = document.getElementById('statusFilter');
             const typeFilter = document.getElementById('typeFilter');
 
             let filtersData = { genres: [], statuses: [], types: [] };
-            let activeGenre = '';
 
             function getFilters() {
                 return {
-                    genre: activeGenre || undefined,
+                    genre: genreFilter.value || undefined,
                     status: statusFilter.value || undefined,
                     type: typeFilter.value || undefined,
                     q: searchInput.value.trim() || undefined
@@ -145,16 +146,9 @@
 
             async function loadFilters() {
                 filtersData = await API.getFilters();
-                genreFilters.innerHTML = '<button type="button" class="ns-filter-chip active" data-genre="">Semua</button>' +
-                    (filtersData.genres || []).map(g => `<button type="button" class="ns-filter-chip" data-genre="${(g || '').replace(/"/g, '&quot;')}">${(g || '').replace(/</g, '&lt;')}</button>`).join('');
-                genreFilters.querySelectorAll('.ns-filter-chip').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        genreFilters.querySelectorAll('.ns-filter-chip').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        activeGenre = btn.dataset.genre || '';
-                        performLoad();
-                    });
-                });
+                genreFilter.innerHTML = '<option value="">Semua</option>' +
+                    (filtersData.genres || []).map(g => `<option value="${(g || '').replace(/"/g, '&quot;')}">${(g || '').replace(/</g, '&lt;')}</option>`).join('');
+                genreFilter.addEventListener('change', performLoad);
                 const types = filtersData.types || [];
                 typeFilter.innerHTML = '<option value="">Semua</option>' + types.map(t => `<option value="${(t || '').replace(/"/g, '&quot;')}">${(t || '').replace(/</g, '&lt;')}</option>`).join('');
                 statusFilter.innerHTML = '<option value="">Semua</option>' + (filtersData.statuses || ['Ongoing', 'Completed']).map(s => `<option value="${(s || '').replace(/"/g, '&quot;')}">${(s || '').replace(/</g, '&lt;')}</option>`).join('');
