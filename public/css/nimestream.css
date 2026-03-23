@@ -1785,15 +1785,19 @@ body.ns-theme .ns-sr-only {
 }
 
 @media (min-width: 1024px) {
+    body.ns-theme .featured.panlyyy-hero {
+        height: clamp(760px, 84vh, 920px);
+    }
+
     body.ns-theme .featured-content {
-        justify-content: flex-end;
-        padding-top: 88px;
+        justify-content: flex-start;
+        padding-top: 56px;
         padding-bottom: 88px;
         align-items: flex-start;
     }
 
     body.ns-theme .featured-content .hero-copy {
-        max-width: min(620px, 46vw);
+        max-width: min(760px, 58vw);
         padding: 24px 24px 20px;
         border-radius: 24px;
         background: linear-gradient(180deg, rgba(9, 9, 11, 0.82), rgba(9, 9, 11, 0.48));

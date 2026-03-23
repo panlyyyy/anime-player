@@ -2,7 +2,7 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         let hasRefreshedForUpdate = false;
-        navigator.serviceWorker.register('/sw.js?v=20260323-1', {
+        navigator.serviceWorker.register('/sw.js?v=20260323-3', {
             updateViaCache: 'none'
         }).then((registration) => {
             registration.update().catch(() => {});

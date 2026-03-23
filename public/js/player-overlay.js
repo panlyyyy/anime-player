@@ -6,6 +6,7 @@ let currentSelectedQuality = null;
 let videoElement = null;
 let iframeElement = null;
 let settings = { speed: 1.0 };
+let orientationGuardTimer = null;
 
 document.addEventListener('openPlayer', (e) => {
     const data = e.detail;
@@ -28,21 +29,51 @@ function handleFullscreenChange() {
     );
 
     document.body.classList.toggle('video-fullscreen', isFullscreen);
-
-    if (isFullscreen) {
-        tryLockLandscape();
-    } else {
-        tryUnlockOrientation();
-        tryLockPortrait();
-    }
-
     applyFullscreenMode(isFullscreen);
+    queueOrientationSync(0);
 }
 
 function applyFullscreenMode(isActive) {
     const overlay = document.getElementById('playerOverlay');
     if (!overlay) return;
     overlay.classList.toggle('player-fullscreen-active', !!isActive);
+}
+
+function isMobileViewport() {
+    return typeof window.matchMedia === 'function'
+        ? window.matchMedia('(max-width: 900px)').matches
+        : true;
+}
+
+function isAnyFullscreenActive() {
+    const overlay = document.getElementById('playerOverlay');
+    return !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement ||
+        overlay?.classList.contains('player-fullscreen-active')
+    );
+}
+
+function syncPreferredOrientation() {
+    if (!isMobileViewport()) return;
+    if (isAnyFullscreenActive()) {
+        tryLockLandscape();
+        return;
+    }
+    tryUnlockOrientation();
+    tryLockPortrait();
+}
+
+function queueOrientationSync(delay = 120) {
+    if (orientationGuardTimer) {
+        clearTimeout(orientationGuardTimer);
+    }
+    orientationGuardTimer = setTimeout(() => {
+        orientationGuardTimer = null;
+        syncPreferredOrientation();
+    }, delay);
 }
 
 function tryLockLandscape() {
@@ -106,16 +137,15 @@ function toggleFullscreen() {
         try {
             document.webkitExitFullscreen?.();
         } catch (e2) {}
-        tryUnlockOrientation();
-        tryLockPortrait();
         applyFullscreenMode(false);
+        queueOrientationSync(0);
         return;
     }
 
     const overlay = document.getElementById('playerOverlay');
     if (!document.fullscreenElement && overlay && overlay.classList.contains('player-fullscreen-active')) {
-        tryUnlockOrientation();
         applyFullscreenMode(false);
+        queueOrientationSync(0);
         return;
     }
 
@@ -345,8 +375,7 @@ function closePlayer() {
     document.getElementById('playerOverlay').style.display = 'none';
     document.body.style.overflow = 'auto';
     applyFullscreenMode(false);
-    tryUnlockOrientation();
-    tryLockPortrait();
+    queueOrientationSync(0);
     setAvailabilityNotice('');
     if (document.fullscreenElement) {
         try { document.exitFullscreen(); } catch (e) {}
@@ -360,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     videoElement = document.getElementById('videoPlayer');
     if (!videoElement) return;
     iframeElement = document.getElementById('videoIframe');
-    tryLockPortrait();
+    syncPreferredOrientation();
 
     settings = Storage.getSettings();
     videoElement.playbackRate = settings.speed;
@@ -413,23 +442,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('fullscreenchange', () => {
         const fs = !!document.fullscreenElement;
         applyFullscreenMode(fs);
-        if (fs) {
-            tryLockLandscape();
-        } else {
-            tryUnlockOrientation();
-            tryLockPortrait();
-        }
+        queueOrientationSync(0);
     });
 
     document.addEventListener('webkitfullscreenchange', () => {
         const fs = !!document.webkitFullscreenElement;
-        if (fs) {
-            applyFullscreenMode(true);
-            tryLockLandscape();
-        } else {
-            applyFullscreenMode(false);
-            tryUnlockOrientation();
-            tryLockPortrait();
+        applyFullscreenMode(fs);
+        queueOrientationSync(0);
+    });
+
+    window.addEventListener('pageshow', () => queueOrientationSync(0));
+    window.addEventListener('focus', () => queueOrientationSync(0));
+    window.addEventListener('resize', () => queueOrientationSync(120), { passive: true });
+    window.addEventListener('orientationchange', () => queueOrientationSync(180));
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            queueOrientationSync(0);
         }
     });
 
@@ -812,6 +840,7 @@ window.openPlayer = function (anime, episode = null) {
 
     document.getElementById('playerOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    queueOrientationSync(0);
 
     renderEpisodeList(currentEpisodes, preferredEpisode);
 

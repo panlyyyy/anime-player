@@ -1,4 +1,4 @@
-const CACHE = 'panlyyy-shell-v20260323-1';
+const CACHE = 'panlyyy-shell-v20260323-3';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -6,14 +6,15 @@ const APP_SHELL = [
   '/ongoing.html',
   '/favorites.html',
   '/history.html',
-  '/css/style.css?v=20260323-1',
-  '/css/nimestream.css?v=20260323-1',
-  '/js/layout-shell.js?v=20260323-1',
-  '/js/api.js?v=20260323-1',
-  '/js/storage.js?v=20260323-1',
-  '/js/ui.js?v=20260323-1',
-  '/js/player-overlay.js?v=20260323-1',
-  '/js/home.js?v=20260323-1'
+  '/manifest.json?v=20260323-3',
+  '/css/style.css?v=20260323-3',
+  '/css/nimestream.css?v=20260323-3',
+  '/js/layout-shell.js?v=20260323-3',
+  '/js/api.js?v=20260323-3',
+  '/js/storage.js?v=20260323-3',
+  '/js/ui.js?v=20260323-3',
+  '/js/player-overlay.js?v=20260323-3',
+  '/js/home.js?v=20260323-3'
 ];
 
 self.addEventListener('install', (event) => {

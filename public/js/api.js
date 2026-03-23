@@ -59,6 +59,31 @@ const API = {
         return this.dataCache;
     },
 
+    getAnimeNumericScore(anime) {
+        const rawScore = parseFloat(anime?.score ?? anime?.rating);
+        return Number.isFinite(rawScore) && rawScore >= 0 && rawScore <= 10 ? rawScore : null;
+    },
+
+    getSeededWeight(seed, value) {
+        const input = `${seed}:${value}`;
+        let hash = 0;
+        for (let i = 0; i < input.length; i += 1) {
+            hash = ((hash << 5) - hash) + input.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    },
+
+    shuffleAnimeBySeed(list = [], seed = 'default') {
+        return [...list].sort((a, b) => {
+            const aKey = String(a?.slug || a?.title || '');
+            const bKey = String(b?.slug || b?.title || '');
+            const shuffleDiff = this.getSeededWeight(seed, aKey) - this.getSeededWeight(seed, bKey);
+            if (shuffleDiff !== 0) return shuffleDiff;
+            return aKey.localeCompare(bKey, 'id');
+        });
+    },
+
     getEpisodeCount(anime) {
         return Array.isArray(anime?.episodes) ? anime.episodes.length : 0;
     },
@@ -95,9 +120,49 @@ const API = {
         return filtered;
     },
 
+    getDiscoveryPool(list = [], options = {}) {
+        const minScore = Number.isFinite(options.minScore) ? options.minScore : 7;
+        const minPool = Number.isFinite(options.minPool) ? options.minPool : 12;
+        const maxPool = Number.isFinite(options.maxPool) ? options.maxPool : 40;
+        const requirePlayable = options.requirePlayable === true;
+        const preferPlayable = options.preferPlayable !== false;
+
+        const source = Array.isArray(list)
+            ? list.filter((anime) => this.isDisplayableAnime(anime))
+            : [];
+        const ranked = this.sortAnimeByRanking(source);
+        const playableRanked = ranked.filter((anime) => this.hasPlayableMedia(anime));
+        const minimumRequired = Math.min(minPool, ranked.length || minPool);
+
+        let baseRanked = ranked;
+        if (requirePlayable) {
+            baseRanked = playableRanked;
+        } else if (preferPlayable && playableRanked.length >= minimumRequired) {
+            baseRanked = playableRanked;
+        }
+
+        const highRated = baseRanked.filter((anime) => {
+            const score = this.getAnimeNumericScore(anime);
+            return score != null && score >= minScore;
+        });
+        const rated = baseRanked.filter((anime) => this.getAnimeNumericScore(anime) != null);
+        const minimumPoolSize = Math.min(minPool, baseRanked.length || minPool);
+        const pool = highRated.length >= minimumPoolSize
+            ? highRated
+            : (rated.length >= minimumPoolSize ? rated : baseRanked);
+
+        return pool.slice(0, Math.min(maxPool, pool.length));
+    },
+
+    getShuffledDiscoverySelection(list = [], seed = 'default', options = {}) {
+        const limit = Number.isFinite(options.limit) ? options.limit : null;
+        const pool = this.getDiscoveryPool(list, options);
+        const shuffled = this.shuffleAnimeBySeed(pool, seed);
+        return limit == null ? shuffled : shuffled.slice(0, limit);
+    },
+
     getAnimeRankScore(anime) {
-        const rawScore = parseFloat(anime?.score ?? anime?.rating);
-        const score = Number.isFinite(rawScore) && rawScore >= 0 && rawScore <= 10 ? rawScore : 0;
+        const score = this.getAnimeNumericScore(anime) ?? 0;
         const episodeCount = this.getEpisodeCount(anime);
         const genreCount = Array.isArray(anime?.genre) ? anime.genre.length : 0;
         const hasTrailer = anime?.trailer ? 1 : 0;
@@ -111,10 +176,8 @@ const API = {
             const rankDiff = this.getAnimeRankScore(b) - this.getAnimeRankScore(a);
             if (rankDiff !== 0) return rankDiff;
 
-            const rawScoreA = parseFloat(a?.score ?? a?.rating);
-            const rawScoreB = parseFloat(b?.score ?? b?.rating);
-            const safeScoreA = Number.isFinite(rawScoreA) && rawScoreA >= 0 && rawScoreA <= 10 ? rawScoreA : 0;
-            const safeScoreB = Number.isFinite(rawScoreB) && rawScoreB >= 0 && rawScoreB <= 10 ? rawScoreB : 0;
+            const safeScoreA = this.getAnimeNumericScore(a) ?? 0;
+            const safeScoreB = this.getAnimeNumericScore(b) ?? 0;
             const scoreDiff = safeScoreB - safeScoreA;
             if (scoreDiff !== 0) return scoreDiff;
 

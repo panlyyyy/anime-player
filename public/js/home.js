@@ -1,7 +1,7 @@
 let allAnime = [];
 let heroCarouselTimer = null;
 let heroCandidates = [];
-const recommendationShuffleSeed = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const homeShuffleSeed = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
@@ -26,18 +26,6 @@ async function loadData() {
     }
 }
 
-const FEATURED_HERO_SLUGS = ['jigokuraku-s2', 'jujutsu-kaisen-s3-the-culling-game', 'one-piece', 'gintama-s5-gintama'];
-
-function stableShuffleWeight(value) {
-    const input = `${recommendationShuffleSeed}:${value}`;
-    let hash = 0;
-    for (let i = 0; i < input.length; i += 1) {
-        hash = ((hash << 5) - hash) + input.charCodeAt(i);
-        hash |= 0;
-    }
-    return Math.abs(hash);
-}
-
 function startHeroCarousel() {
     if (heroCarouselTimer) {
         clearInterval(heroCarouselTimer);
@@ -45,12 +33,22 @@ function startHeroCarousel() {
     }
 
     const withPlayableMedia = allAnime.filter((anime) => API.hasPlayableMedia(anime));
-    const byScore = API.sortAnimeByRanking(withPlayableMedia);
-    const featured = FEATURED_HERO_SLUGS.map((slug) => withPlayableMedia.find((anime) => anime.slug === slug)).filter(Boolean);
+    const source = withPlayableMedia.length > 0 ? withPlayableMedia : allAnime;
 
-    heroCandidates = featured.length > 0
-        ? featured
-        : (byScore.length > 0 ? byScore : allAnime).slice(0, Math.min(5, allAnime.length));
+    heroCandidates = API.getShuffledDiscoverySelection(source, `${homeShuffleSeed}:hero`, {
+        minScore: 7.6,
+        minPool: 10,
+        maxPool: 24,
+        limit: Math.min(5, source.length),
+        requirePlayable: withPlayableMedia.length > 0
+    });
+
+    if (heroCandidates.length === 0) {
+        heroCandidates = API.shuffleAnimeBySeed(
+            API.sortAnimeByRanking(source).slice(0, Math.min(5, source.length)),
+            `${homeShuffleSeed}:hero:fallback`
+        );
+    }
 
     if (heroCandidates.length === 0) return;
 
@@ -78,8 +76,9 @@ function renderFeatured(anime) {
     const synopsis = safe(anime.synopsis || anime.description || '');
     const episodeCount = anime.episodes?.length ?? '?';
     const year = anime.release_date ? (anime.release_date.match(/\d{4}/) || [])[0] : (anime.year || '-');
-    const rawRating = parseFloat(anime.score ?? anime.rating);
-    const rating = Number.isFinite(rawRating) && rawRating >= 0 && rawRating <= 10 ? rawRating : '-';
+    const rating = API.getAnimeNumericScore(anime) ?? '-';
+    const availabilityText = episodeCount > 0 ? `${episodeCount} EP` : (anime.trailer ? 'Trailer' : 'Info');
+    const availabilityTag = episodeCount > 0 ? `Eps ${episodeCount}` : (anime.trailer ? 'Trailer tersedia' : 'Belum ada episode');
     const genreLine = (anime.genre?.slice(0, 4) || []).map((genre) => safe(genre)).filter(Boolean).join(' | ');
 
     featured.innerHTML = `
@@ -91,13 +90,13 @@ function renderFeatured(anime) {
                 <div class="hero-meta-row">
                     <span class="hero-rating"><i class="fas fa-star"></i> ${safe(rating)}</span>
                     <span class="hero-pill">${safe(year)}</span>
-                    <span class="hero-pill">${episodeCount} EP</span>
+                    <span class="hero-pill">${safe(availabilityText)}</span>
                     ${genreLine ? `<span class="hero-genres">${genreLine}</span>` : ''}
                 </div>
                 <p class="hero-synopsis line-clamp-3 line-clamp-md-none">${synopsis || 'Sinopsis belum tersedia.'}</p>
                 <div class="tags">
                     ${anime.genre?.slice(0, 3).map((genre) => `<span class="tag">${safe(genre)}</span>`).join('') || '<span class="tag">Anime</span>'}
-                    <span class="tag">Eps ${episodeCount}</span>
+                    <span class="tag">${safe(availabilityTag)}</span>
                 </div>
                 <div class="action-group">
                     <button type="button" class="btn btn-primary watch-btn" data-slug="${anime.slug}"><i class="fas fa-play"></i> Tonton</button>
@@ -206,12 +205,13 @@ function renderRecommendations() {
         ? allAnime
         : allAnime.filter((anime) => (anime.genre || []).includes(currentGenre));
 
-    const playable = filtered.filter((anime) => API.hasPlayableMedia(anime));
-    const source = playable.length > 0 ? playable : filtered;
-    const topPool = API.sortAnimeByRanking(source).slice(0, Math.min(30, source.length));
-    const recommendations = [...topPool]
-        .sort((a, b) => stableShuffleWeight(`${currentGenre}:${a.slug}`) - stableShuffleWeight(`${currentGenre}:${b.slug}`))
-        .slice(0, 12);
+    const recommendations = API.getShuffledDiscoverySelection(filtered, `${homeShuffleSeed}:recommend:${currentGenre}`, {
+        minScore: 7.2,
+        minPool: 18,
+        maxPool: 36,
+        limit: 12,
+        preferPlayable: true
+    });
 
     const container = document.getElementById('recommendList');
     if (!container) return;
