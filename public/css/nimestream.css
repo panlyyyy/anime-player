@@ -1779,7 +1779,21 @@ body.ns-theme .episode-scroll::-webkit-scrollbar-thumb {
     border-radius: 10px;
 }
 
-body.ns-theme .ep-card {
+body.ns-theme .ep-card.trailer-card {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: 2px solid #6366f1;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.ep-card.trailer-card:hover {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.ep-card {
     border-radius: 10px;
     padding: 12px 8px;
     font-size: 12px;

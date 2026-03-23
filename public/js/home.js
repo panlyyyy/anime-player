@@ -194,13 +194,21 @@ function renderRecommendations() {
         ? allAnime
         : allAnime.filter((a) => (a.genre || []).includes(currentGenre));
     
-    // Sort by rating (high to low) and take top 10
-    const byScore = [...filtered].sort((a, b) => {
+    // Sort by rating and popularity (high to low) and take top 10
+    const byScoreAndPopularity = [...filtered].sort((a, b) => {
         const scoreA = parseFloat(a.score) || 0;
         const scoreB = parseFloat(b.score) || 0;
-        return scoreB - scoreA;
+        
+        // Prioritize score, but also consider episode count as popularity indicator
+        const popularityA = (a.episodes?.length || 0) * 0.1;
+        const popularityB = (b.episodes?.length || 0) * 0.1;
+        
+        const finalScoreA = scoreA + popularityA;
+        const finalScoreB = scoreB + popularityB;
+        
+        return finalScoreB - finalScoreA;
     });
-    const recommendations = byScore.slice(0, 10);
+    const recommendations = byScoreAndPopularity.slice(0, 10);
 
     const container = document.getElementById('recommendList');
     if (!container) return;

@@ -380,8 +380,35 @@ function playCurrentEpisodeMediaByQuality(quality) {
 
     // Pastikan hanya URL absolut yang dipakai (hindari 404 dari token/ID seperti "3561110768215")
     const isValidUrl = (u) => u && typeof u === 'string' && (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('//'));
-    if (videoUrl && !isValidUrl(videoUrl)) videoUrl = null;
-    if (streamUrl && !isValidUrl(streamUrl)) streamUrl = null;
+    
+    // Handle base64 encoded URLs from streaming services
+    if (videoUrl && !isValidUrl(videoUrl)) {
+        // Try to decode if it looks like base64
+        try {
+            const decoded = atob(videoUrl);
+            if (decoded && isValidUrl(decoded)) {
+                videoUrl = decoded;
+            } else {
+                videoUrl = null;
+            }
+        } catch {
+            videoUrl = null;
+        }
+    }
+    
+    if (streamUrl && !isValidUrl(streamUrl)) {
+        // Try to decode if it looks like base64
+        try {
+            const decoded = atob(streamUrl);
+            if (decoded && isValidUrl(decoded)) {
+                streamUrl = decoded;
+            } else {
+                streamUrl = null;
+            }
+        } catch {
+            streamUrl = null;
+        }
+    }
 
     console.log('Playing video with quality:', quality, 'videoUrl:', videoUrl, 'streamUrl:', streamUrl);
 
@@ -544,9 +571,44 @@ async function loadEpisode(episode) {
 
 function renderEpisodeList(episodes, activeEpisode) {
     const container = document.getElementById('episodeList');
-    container.innerHTML = episodes.map(ep =>
-        UI.renderEpisodeCard(ep, activeEpisode && ep.number === activeEpisode.number)
-    ).join('');
+    
+    // Separate trailer from regular episodes
+    const trailerEpisode = episodes.find(ep => 
+        ep.number === 0 || (ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer'))
+    );
+    const regularEpisodes = episodes.filter(ep => 
+        ep.number !== 0 && !(ep.number === 1 && ep.title && ep.title.toLowerCase().includes('trailer'))
+    );
+    
+    let html = '';
+    
+    // Add trailer first if exists
+    if (trailerEpisode) {
+        html += `
+            <div class="ep-card trailer-card" data-episode='${encodeURIComponent(JSON.stringify(trailerEpisode))}'>
+                <i class="fas fa-film" style="font-size: 1.2rem; margin-bottom: 5px; display: block;"></i>
+                <div>Trailer</div>
+            </div>
+        `;
+    }
+    
+    // Add regular episodes
+    regularEpisodes.forEach(ep => {
+        html += `
+            <div class="ep-card ${activeEpisode && ep.number === activeEpisode.number ? 'active' : ''}" data-episode='${encodeURIComponent(JSON.stringify(ep))}'>
+                <div>EP ${ep.number}</div>
+            </div>
+        `;
+    });
+    
+    // Show message if no episodes but has trailer
+    if (regularEpisodes.length === 0 && !trailerEpisode) {
+        html = '<div class="empty" style="padding: 20px; text-align: center; color: var(--ns-muted);">Tidak ada episode yang tersedia</div>';
+    } else if (regularEpisodes.length === 0 && trailerEpisode) {
+        html += '<div class="notice" style="padding: 10px; text-align: center; color: var(--ns-muted); font-size: 0.9rem;">Anime ini hanya memiliki trailer, tidak ada episode.</div>';
+    }
+    
+    container.innerHTML = html;
 
     container.querySelectorAll('.ep-card').forEach(el => {
         el.addEventListener('click', () => {
