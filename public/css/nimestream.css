@@ -1354,6 +1354,31 @@ body.ns-theme .ns-page-head .ns-filters .ns-filter-group .ns-filter-chips .ns-fi
     }
 }
 
+body.ns-theme .ns-filter-select,
+body.ns-theme .ns-select {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--ns-border);
+    background: var(--ns-surface);
+    color: var(--ns-text);
+    font-size: 0.875rem;
+    min-width: 120px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.ns-theme .ns-filter-select:focus,
+body.ns-theme .ns-select:focus {
+    outline: none;
+    border-color: var(--ns-primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+body.ns-theme .ns-filter-select:hover,
+body.ns-theme .ns-select:hover {
+    border-color: var(--ns-primary);
+}
+
 body.ns-theme .ns-filter-select {
     padding: 6px 10px;
     border-radius: 8px;

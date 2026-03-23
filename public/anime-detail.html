@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=1.0.7">
-    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.7">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.8">
+    <link rel="stylesheet" href="/css/nimestream.css?v=1.0.8">
     <style>
         .detail-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .detail-hero {
@@ -211,6 +211,7 @@
                 }
                 
                 currentAnime = anime;
+                console.log('Loaded anime:', anime); // Debug log
                 renderDetail(anime);
             } catch (error) {
                 console.error('Error:', error);
@@ -242,6 +243,8 @@
             const hasYoutubeTrailer = anime.trailer && anime.trailer.embed_url;
             const hasTrailerEpisode = !!trailerEpisode;
             const hasEpisodes = regularEpisodes.length > 0;
+            
+            console.log('Anime data:', { hasEpisodes, hasYoutubeTrailer, hasTrailerEpisode, episodes: anime.episodes });
             
             let html = `
                 <div class="detail-hero">
@@ -337,15 +340,21 @@
             document.getElementById('animeDetail').innerHTML = html;
         }
         
-        function playEpisode(episodeIndex) {
-            if (!currentAnime || !currentAnime.episodes) return;
+        function playEpisode(index) {
+            if (!currentAnime || !currentAnime.episodes || !currentAnime.episodes[index]) {
+                showError('Episode tidak tersedia');
+                return;
+            }
             
-            const episode = currentAnime.episodes[episodeIndex];
-            if (!episode) return;
+            const episode = currentAnime.episodes[index];
+            console.log('Playing episode:', episode);
             
-            // Dispatch event to player-overlay.js
-            const event = new CustomEvent('openPlayer', { 
-                detail: { anime: currentAnime, episode: episode } 
+            // Send event to player-overlay
+            const event = new CustomEvent('openPlayer', {
+                detail: {
+                    anime: currentAnime,
+                    episode: episode
+                }
             });
             document.dispatchEvent(event);
         }
