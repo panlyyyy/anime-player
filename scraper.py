@@ -34,7 +34,11 @@ HEADERS = {
 LOG_DIR = "logs"
 DATA_DIR = "public/data"
 COUNT_FILE = os.path.join(LOG_DIR, "last_total_nimegami.txt")
-DB_PATH = os.path.join(DATA_DIR, "anime_master_nimegami.json")
+DB_PATH = os.path.join(DATA_DIR, "anime_master.json")
+LEGACY_DB_PATHS = [
+    os.path.join(DATA_DIR, "anime_master_nimegami.json"),
+    os.path.join(DATA_DIR, "anime_master_backup.json"),
+]
 EXPECTED_MIN_ANIME = 500
 EXPECTED_MIN_WITH_EPISODES_RATIO = 0.5
 
@@ -671,32 +675,53 @@ def extract_status_from_list_page() -> Dict[str, str]:
     logger.info(f"✓ Status map: {len(status_map)} entries")
     return status_map
 
-def load_existing_db() -> Dict[str, Dict]:
-    """Load database existing dari file JSON."""
-    if not os.path.exists(DB_PATH):
-        return {}
-    
+def load_json_db(path: str) -> Dict[str, Dict]:
+    """Load satu database JSON lalu ubah ke dict keyed by slug."""
     try:
-        with open(DB_PATH, 'r', encoding='utf-8') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+
         if isinstance(data, dict) and 'data' in data:
             anime_list = data['data']
         elif isinstance(data, list):
             anime_list = data
         else:
-            logger.warning(f"Unexpected JSON structure in {DB_PATH}")
+            logger.warning(f"Unexpected JSON structure in {path}")
             return {}
-        
-        # Convert to dict keyed by slug
+
         return {a['slug']: a for a in anime_list if isinstance(a, dict) and 'slug' in a}
-    
+
     except json.JSONDecodeError as e:
-        logger.error(f"JSON decode error: {e}")
+        logger.error(f"JSON decode error in {path}: {e}")
         return {}
     except Exception as e:
-        logger.error(f"Error loading existing DB: {e}")
+        logger.error(f"Error loading DB {path}: {e}")
         return {}
+
+def load_existing_db() -> Dict[str, Dict]:
+    """Load database existing dari file JSON utama, fallback ke legacy bila perlu."""
+    candidates = [DB_PATH, *LEGACY_DB_PATHS]
+
+    for path in candidates:
+        if not os.path.exists(path):
+            continue
+
+        data = load_json_db(path)
+        if not data:
+            continue
+
+        sample = next(iter(data.values()), {})
+        sample_url = str(sample.get('url') or '')
+        sample_image = str(sample.get('image') or '')
+        source_hint = f"{sample_url} {sample_image}".lower()
+
+        if 'nimegami.id' in source_hint or path == DB_PATH:
+            logger.info(f"✓ Existing DB loaded from: {path}")
+            return data
+
+        logger.warning(f"Skipping legacy/non-target DB source from {path}")
+
+    return {}
 
 def is_data_valid(data: List[Dict], min_total: int = EXPECTED_MIN_ANIME, 
                   min_episode_ratio: float = EXPECTED_MIN_WITH_EPISODES_RATIO) -> bool:
