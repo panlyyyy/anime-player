@@ -2,8 +2,11 @@ name: Update Anime Data (Safe Mode)
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '7 20 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -57,4 +60,9 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add public/data/anime_master.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto update anime data [safe]" && git push)
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan data anime."
+          else
+            git commit -m "Auto update anime data [safe]"
+            git push
+          fi
