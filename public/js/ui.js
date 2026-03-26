@@ -78,6 +78,7 @@ const UI = {
             }
             const epLabel = anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?';
             const timeLabel = t > 0 ? Storage.formatTime(t) : '0:00';
+            const resumeText = t > 0 ? `Eps ${epLabel} | ${timeLabel}` : `Eps ${epLabel} terakhir`;
             return `
                 <div class="anime-card-wide ns-card ns-card-continue portrait" data-slug="${anime.slug}">
                     <div class="ns-card-poster">
@@ -88,7 +89,7 @@ const UI = {
                     </div>
                     <div class="ns-card-body">
                         <div class="card-title ns-card-title">${anime.title.replace(/"/g, '&quot;')}</div>
-                        <div class="card-sub ns-card-sub">Eps ${epLabel} | ${timeLabel}</div>
+                        <div class="card-sub ns-card-sub">${resumeText}</div>
                     </div>
                 </div>
             `;
@@ -154,8 +155,14 @@ const UI = {
     renderGridCard(anime, options = {}) {
         const showResume = options.showResume !== false && (anime.lastEpisodeNumber != null || (anime.lastProgressSeconds || 0) > 0);
         const showMeta = options.showMeta === true;
+        const resumeSeconds = Number(anime.lastProgressSeconds) || 0;
+        const resumeText = anime.lastEpisodeNumber != null
+            ? (resumeSeconds > 0
+                ? `Eps ${anime.lastEpisodeNumber} | ${Storage.formatTime(resumeSeconds)}`
+                : `Eps ${anime.lastEpisodeNumber} terakhir`)
+            : (resumeSeconds > 0 ? Storage.formatTime(resumeSeconds) : '');
         const resumeLine = showResume
-            ? `<div class="anime-meta resume-line">Eps ${anime.lastEpisodeNumber != null ? anime.lastEpisodeNumber : '?'} | ${Storage.formatTime(anime.lastProgressSeconds || 0)}</div>`
+            ? `<div class="anime-meta resume-line">${resumeText}</div>`
             : '';
         const metaLine = showMeta ? (() => {
             const parts = [this.getAvailabilityText(anime)];

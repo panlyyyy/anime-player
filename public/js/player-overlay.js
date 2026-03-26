@@ -745,6 +745,17 @@ function showNoMediaState(anime) {
     );
 }
 
+function rememberCurrentEpisodeInHistory(episode) {
+    if (!currentAnime || !episode || isTrailerItem(episode)) return;
+    const savedProgress = Storage.getProgress(episode);
+    Storage.updateHistoryWatchProgress(currentAnime.slug, {
+        lastEpisodeKey: Storage.getEpisodeKey(episode),
+        lastEpisodeNumber: episode.number,
+        lastEpisodeUrl: episode.url,
+        lastProgressSeconds: savedProgress > 0 ? savedProgress : 0,
+    });
+}
+
 function playCurrentEpisodeMediaByQuality(quality) {
     if (!currentMediaResponse) return;
     if (!videoElement || !iframeElement) return;
@@ -863,6 +874,7 @@ async function loadEpisode(episode) {
     resetMediaElements();
     currentEpisode = episode;
     updateActiveEpisodeCard(episode);
+    rememberCurrentEpisodeInHistory(episode);
 
     document.getElementById('currentEpisodeTag').textContent = isTrailerItem(episode)
         ? 'Trailer'

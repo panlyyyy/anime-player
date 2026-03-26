@@ -122,6 +122,82 @@ def looks_like_direct_video_url(url: str) -> bool:
         return True
     return False
 
+def normalize_media_url(raw_url: str, base_url: str = BASE_URL) -> str:
+    """Normalisasi URL media agar selalu absolut."""
+    if not raw_url:
+        return ""
+
+    raw_url = raw_url.strip()
+    if not raw_url:
+        return ""
+
+    if raw_url.startswith("//"):
+        return f"https:{raw_url}"
+    if raw_url.startswith("/"):
+        return urljoin(base_url, raw_url)
+    return raw_url
+
+def extract_image_from_element(element: Any, base_url: str) -> str:
+    """Ambil URL gambar dari elemen img/meta dengan urutan atribut umum."""
+    if not element:
+        return ""
+
+    for attr in ("src", "data-src", "data-lazy-src", "data-original", "content"):
+        candidate = normalize_media_url(element.get(attr, ""), base_url)
+        if candidate and not looks_like_direct_video_url(candidate):
+            return candidate
+
+    srcset = element.get("srcset", "")
+    if srcset:
+        first_src = srcset.split(",")[0].strip().split(" ")[0]
+        candidate = normalize_media_url(first_src, base_url)
+        if candidate and not looks_like_direct_video_url(candidate):
+            return candidate
+
+    return ""
+
+def extract_best_detail_image(soup: BeautifulSoup, page_url: str) -> str:
+    """
+    Pilih poster terbaik dari halaman detail Nimegami.
+    Prioritas utama adalah cover portrait di `.coverthumbnail img`.
+    """
+    cover_selectors = [
+        "div.coverthumbnail img",
+        ".coverthumbnail img",
+    ]
+
+    for selector in cover_selectors:
+        candidate = extract_image_from_element(soup.select_one(selector), page_url)
+        if candidate:
+            return candidate
+
+    for script in soup.find_all("script"):
+        script_text = script.string or script.get_text(" ", strip=True)
+        if not script_text:
+            continue
+
+        match = re.search(r"(?:const|let|var)\s+poster\s*=\s*['\"]([^'\"]+)['\"]", script_text)
+        if not match:
+            continue
+
+        candidate = normalize_media_url(match.group(1), page_url)
+        if candidate and not looks_like_direct_video_url(candidate):
+            return candidate
+
+    fallback_selectors = [
+        "div.thumbnail img",
+        ".thumbnail img",
+        "meta[property='og:image']",
+        "meta[name='twitter:image']",
+    ]
+
+    for selector in fallback_selectors:
+        candidate = extract_image_from_element(soup.select_one(selector), page_url)
+        if candidate:
+            return candidate
+
+    return ""
+
 def is_download_page_url(url: str) -> bool:
     """Cek apakah URL adalah halaman download (bukan video langsung)."""
     if not url:
@@ -467,17 +543,7 @@ def scrape_anime_detail(url: str) -> Optional[Dict[str, Any]]:
     slug = url.rstrip('/').split('/')[-1]
 
     # ===== IMAGE =====
-    image = ''
-    thumbnail_div = soup.find('div', class_='thumbnail')
-    if thumbnail_div:
-        img_tag = thumbnail_div.find('img')
-        if img_tag and img_tag.get('src'):
-            image = img_tag['src'].strip()
-            if image.startswith('/'):
-                image = urljoin(BASE_URL, image)
-            # Validasi: jangan simpan jika ternyata video
-            if looks_like_direct_video_url(image):
-                image = ''
+    image = extract_best_detail_image(soup, url)
     
     # ===== SYNOPSIS =====
     synopsis = ''
