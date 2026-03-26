@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 180" role="img" aria-labelledby="title desc">
-<title id="title">PANLYYY</title>
-<desc id="desc">Stylized PANLYYY wordmark</desc>
-<g transform="translate(18 18) skewX(-8)">
-<text x="0" y="118" font-family="Arial Black, Impact, sans-serif" font-size="120" font-weight="900" letter-spacing="-10" fill="#11161d">PANLYYY</text>
-<polygon fill="#ffffff" points="185,111 236,44 300,44 216,126"/>
-<polygon fill="#0d1117" opacity="0.2" points="210,84 286,44 298,44 216,89"/>
-</g>
-</svg>
