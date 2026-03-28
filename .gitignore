@@ -1,6 +1,0 @@
-__pycache__/
-*.pyc
-.python-version
-logs/
-public/data/anime_master_backup.json
-node_modules/
